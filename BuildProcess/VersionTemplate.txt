@@ -1,0 +1,28 @@
+Lparameters toUpdateObject
+Local lcDate, ldDate
+
+lcDate = '{VersionDate}'
+
+With m.toUpdateObject
+	.VersionNumber    = '{Version} - ' + lcDate
+
+	.AvailableVersion = '{AppName}-{Version}-{JULIAN}-' + lcDate
+	*	.RegisterWithThor = GetRegisterWithThor(.ApplicationName)
+	.Notes			  = GetReleaseNotes()
+Endwith
+
+Return m.toUpdateObject
+
+
+* ================================================================================
+* ================================================================================
+
+Procedure GetReleaseNotes
+
+Text to lcNote NoShow
+{ChangeLog}
+EndText
+
+Return lcNote
+
+EndProc 
