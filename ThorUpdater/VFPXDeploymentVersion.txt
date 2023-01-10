@@ -1,0 +1,33 @@
+Lparameters toUpdateObject
+Local lcDate, ldDate
+
+lcDate = '20230110'
+
+With m.toUpdateObject
+	.VersionNumber    = '0.01 - ' + lcDate
+
+	.AvailableVersion = 'VFPX Deployment-0.01-08410-' + lcDate
+	*	.RegisterWithThor = GetRegisterWithThor(.ApplicationName)
+	.Notes			  = GetReleaseNotes()
+Endwith
+
+Return m.toUpdateObject
+
+
+* ================================================================================
+* ================================================================================
+
+Procedure GetReleaseNotes
+
+Text to lcNote NoShow
+
+## Manages VFPX project creation and deployment
+
+### 2023-01-11 Version 0.01
+
+* Initial release
+EndText
+
+Return lcNote
+
+EndProc 
