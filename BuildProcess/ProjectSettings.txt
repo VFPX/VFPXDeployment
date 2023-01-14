@@ -1,5 +1,5 @@
 AppName        = VFPX Deployment
 AppID          = VFPXDeployment
-Version   	   = 0.01
+Version   	   = 0.02
 ChangeLog      = Change Log.md
 Bin2PRGFolder  = InstalledFiles

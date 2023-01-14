@@ -93,14 +93,8 @@ Procedure Validate(lcFolder)
 	* already in the Project Home Folder?	
 	Local lcHomeFolder
 
-	If Directory(Addbs(m.lcFolder) + 'BuildProcess')
+	If Directory(Addbs(m.lcFolder) + '.git', 1)
 		Return m.lcFolder
-	Endif
-
-	* or in BuildProcess sub-folder?
-	lcHomeFolder = Strtran(m.lcFolder, '\BuildProcess\', '', 1, 1, 1)
-	If Upper(m.lcFolder) = Upper(m.lcHomeFolder) And Len(m.lcFolder) > Len(m.lcHomeFolder)
-		Return m.lcHomeFolder
 	Endif
 
 	Return ''

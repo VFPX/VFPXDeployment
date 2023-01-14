@@ -1,103 +1,40 @@
-*******************************************************************************
-* Deploy.prg does the deployment steps necessary to update the files needed by
-* Thor Check For Updates (CFU). This PRG is expected to be in a subdirectory of
-* the project root folder named BuildProcess. Other files that need to be in
-* this subdirectory are:
-
-* - InstalledFiles.txt: contain the paths for the files to be installed by Thor
-* 	CFU, one file per line. Paths relative to the root of the project folder
-*	should be used. Alternatively, manually create a subdirectory of the
-*	project root folder named InstalledFiles and copy the necessary files into
-*	that folder (only the files to be installed; no extra stuff allowed).
-
-* - ProjectSettings.txt: contains the project settings (for backward
-*		compatibility, the file can also be named Project.txt):
-*
-*		appName      = descriptive name of the project (required)
-*		appID        = project name (usually the descriptive name but must be
-*						URL-friendly--no spaces or other illegal URL
-*						characters; required)
-*		version      = version number (optional; see below)
-*		versionDate  = release date as YYYY-MM-DD (optional; see below)
-*		prompt       = Y to prompt for version if it isn't specified; N to not
-*						prompt. Not required if version is specified
-*		changeLog    = path for a file containing changes (optional; see below)
-*		Bin2PRGFolder = path to the source code folder to which FoxBin2PRG is to 
-*						 be applied (optional, ignored if not supplied)
-*
-*	For example:
-*
-*		appName      = Project Explorer
-*		appID        = ProjectExplorer
-*		version      = 1.0
-*		versionDate  = 2023-01-07
-*		changeLog    = Change Log.md
-*
-*	These values are store in public variables:
-*
-*		pcAppName: the appName setting
-*		pcAppID: the appID setting
-*		pcVersion: the version number
-*		pdVersionDate: the release date
-*		pcVersionDate: the release date as a string (YYYY-MM-DD)
-*		pcChangeLog: the path for the change log
-*		plContinue: .T. to continue the deployment process or .F. to stop
-*
-*	Note that only appName and appID are required. For the other settings:
-*
-*		- version: you can either edit Project.txt and update version before
-*			running Deploy.prg or omit it from Project.txt, in which case
-*			you'll be prompted for a value if the prompt setting is Y or
-*			omitted. If the prompt setting is N, that means your Build.prg
-*			(see below) will update the pcVersion variable with the version
-*			number (for example, by reading from an INI file or source code).
-*		- versionDate: you can either edit Project.txt and update versionDate
-*			before running Deploy.prg or omit it from Project.txt, in which
-*			case today's date is used.
-
-* - VersionTemplate.txt: contains the template for the Thor CFU version file.
-*	Although it has a TXT extension, it actually contains VFP code. It must
-*	accept a single parameter, which is a Thor CFU updater object. The code
-*	will typically set properties of that object to do whatever is necessary.
-*	This template file should have placeholders for project settings:
-*
-*		- {VERSION}: substituted with the value of pcVersion
-*		- {VERSIONDATE}: substituted with the value of pdVersionDate
-*		- {APPNAME}: substituted with the value of pcAppName
-*		- {APPID}: substituted with the value of pcAppID
-*		- {JULIAN}: substituted with the value of pdVersionDate as a numeric
-*			value: the Julian date since 2000-01-01 (some projects use that as
-*			a minor version number)
-*		- {CHANGELOG}: substituted with the contents of the file specified in
-*			pcChangeLog
-*
-*	For backward compatibility, the file can also be named Version.txt.
-
-* - BuildMe.prg: an optional program that performs any build tasks necessary
-*	for the project, such as building an APP, updating version numbers in code
-*	or include files, etc. This program can use the public variables discussed
-*	above.
-*******************************************************************************
-
-* Start by making sure the current folder is the root for the project (one
-* level up from the location of this PRG).
-
-
-* Parameter lcFolder is the home folder for the project OR the BuildProcess sub-folder
+* Parameter lcFolder is the home folder for the project
 *   and defaults to the current folder if not supplied
 Lparameters lcFolder
 
 Local lcCurrFolder, lcStartFolder
 
+* Create the BuildProcess subdirectory of the project folder if necessary.
+
 lcStartFolder = Curdir()
 lcFolder = Evl(lcFolder, lcStartFolder)
-If Directory(Addbs(m.lcFolder) + 'BuildProcess')
-	lcCurrFolder = Addbs(Addbs(m.lcFolder) + 'BuildProcess') && BuildProcess
-	Cd (m.lcFolder) && Project Home
-Else
-	lcCurrFolder = Addbs(lcFolder) && BuildProcess
-	Cd (lcCurrFolder + '\..') && Project Home
+Cd (m.lcFolder) && Project Home
+lcCurrFolder = Addbs(Addbs(m.lcFolder) + 'BuildProcess') && BuildProcess
+If not Directory(lcCurrFolder)
+	md (lcCurrFolder)
 Endif
+
+* If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt,
+* BuildMe.prg, and Thor_Update_Template.prg from the VFPXDeployment folder.
+
+if not file(lcCurrFolder + 'ProjectSettings.txt')
+	lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPX Deployment\'
+	copy file (lcVFPXDeploymentFolder + 'ProjectSettings.txt') to ;
+		(lcCurrFolder + 'ProjectSettings.txt')
+	copy file (lcVFPXDeploymentFolder + 'VersionTemplate.txt') to ;
+		(lcCurrFolder + 'VersionTemplate.txt')
+	copy file (lcVFPXDeploymentFolder + 'BuildMe.prg') to ;
+		(lcCurrFolder + 'BuildMe.prg')
+	copy file (lcVFPXDeploymentFolder + 'Thor_Update_Template.prg') to ;
+		(lcCurrFolder + 'Thor_Update_Template.prg')
+	messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
+		'for this project. Also, edit InstalledFiles.txt and specify ' + ;
+		'which files should be installed. Then run VFPX Deployment again.', ;
+		16, 'Project Deployment')
+	modify file (lcCurrFolder + 'ProjectSettings.txt') nowait
+	modify file (lcCurrFolder + 'InstalledFiles.txt') nowait
+	return
+endif not file(lcCurrFolder + 'ProjectSettings.txt')
 
 lcProjectName = GetWordNum(lcCurrFolder, GetWordCount(lcCurrFolder, '\') - 1, '\')
 Deploy(lcProjectName, lcCurrFolder)
@@ -121,39 +58,24 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcInstalledFilesFolder  = 'InstalledFiles'
 	lcBuildProgram          = lcCurrFolder + 'BuildMe.prg'
 	lcVersionTemplateFile   = lcCurrFolder + 'VersionTemplate.txt'
-
-	* Give a warning and exit if ProjectSettings.txt or VersionTemplate.txt (or
-	* older names for backward compatibility) don't exist.
-
-	if not file(lcProjectFile)
-		lcProjectFile = lcCurrFolder + 'Project.txt'
-		if not file(lcProjectFile)
-			messagebox('Please create ProjectSettings.txt in the BuildProcess ' + ;
-				'folder.', 16, 'Project Deployment')
-			return
-		endif not file(lcProjectFile)
-	endif not file(lcProjectFile)
-	if not file(lcVersionTemplateFile)
-		lcVersionTemplateFile = lcCurrFolder + 'Version.txt'
-		if not file(lcVersionTemplateFile)
-			messagebox('Please create VersionTemplate.txt in the BuildProcess ' + ;
-				'folder.', 16, 'Project Deployment')
-			return
-		endif not file(lcVersionTemplateFile)
-	endif not file(lcVersionTemplateFile)
+	lcUpdateTemplateFile    = lcCurrFolder + 'Thor_Update_Template.prg'
 
 	* Get the current project settings into public variables. 
 
 	lcProjectSettings = filetostr(lcProjectFile)
 	public pcAppName, pcAppID, pcVersion, pdVersionDate, ;
 		pcVersionDate, pcChangeLog, plContinue
-	pdVersionDate  = date()
-	pcVersion      = ''
-	pcChangeLog    = ''
-	plContinue     = .T.
-	llPrompt       = .T.
-	lcBin2PRGFolder = ''
-	lnSettings     = alines(laSettings, lcProjectSettings)	
+	pdVersionDate         = date()
+	pcVersion             = ''
+	pcChangeLog           = ''
+	plContinue            = .T.
+	llPrompt              = .T.
+	lcBin2PRGFolderSource = ''
+	lcComponent           = 'Yes'
+	lcCategory            = 'Applications'
+	lcPJXFile             = ''
+	lcAppFile             = ''
+	lnSettings            = alines(laSettings, lcProjectSettings)
 	for lnI = 1 to lnSettings
 		lcLine  = laSettings[lnI]
 		lnPos   = at('=', lcLine)
@@ -166,7 +88,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 			case lcUName = 'APPID'
 				pcAppID = lcValue
 			case lcUName = 'VERSION'
-				pcVersion      = lcValue
+				pcVersion = lcValue
 			case lcUName = 'VERSIONDATE'
 				pdVersionDate = evaluate('{^' + lcValue + '}')
 			case lcUName = 'PROMPT'
@@ -175,6 +97,14 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 				pcChangeLog = lcValue
 			case lcUName = 'BIN2PRGFOLDER'
 				lcBin2PRGFolderSource = lcValue
+			case lcUName = 'COMPONENT'
+				lcComponent = lcValue
+			case lcUName = 'CATEGORY'
+				lcCategory = lcValue
+			case lcUName = 'PJXFILE'
+				lcPJXFile = lcValue
+			case lcUName = 'APPFILE'
+				lcAppFile = lcValue
 		endcase
 	next lnI
 
@@ -196,11 +126,29 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		return
 	endif ' ' $ pcAppID
 
-	* If setting Bin2PRGFolder is supplied, ensure folder exists
-	*   and also FoxBin2PRG.EXE
+	* If we're supposed to build an APP or EXE, ensure we have both settings
+	* and we're running VFP 9 and not VFP Advanced since the APP/EXE structure
+	* is different.
 
+	if (empty(lcPJXFile) and not empty(lcAppFile)) or ;
+		(empty(lcAppFile) and not empty(lcPJXFile))
+		messagebox('If you specify one of them, you have to specify both ' + ;
+			'PJXFile and AppFile.', 16, 'Project Deployment')
+		return
+	endif (empty(lcPJXFile) ...
+	if not empty(lcPJXFile) and val(version(4)) > 9
+	    messagebox('You must run VFPX Deployment using VFP 9 not VFP Advanced.', ;
+	        16, 'Project Deployment')
+	    return
+	endif not empty(lcPJXFile) ...
+
+	* If setting Bin2PRGFolderSource is supplied, ensure folder exists
+	* and also find FoxBin2PRG.EXE.
+
+	lcBin2PRGFolder = ''
 	If Not Empty(lcBin2PRGFolderSource)
-		lcFoxBin2PRG = _Screen.cThorFolder + 'Tools\Components\FoxBIN2PRG\FoxBIN2PRG.EXE'
+		lcFoxBin2PRG = execscript(_screen.cThorDispatcher, 'Thor_Proc_GetFoxBin2PrgFolder') + ;
+			'FoxBin2Prg.exe'
 		If File(m.lcFoxBin2PRG)
 			lcBin2PRGFolder = Fullpath(m.lcCurrFolder + '..\' + lcBin2PRGFolderSource)
 			If Not Directory(m.lcBin2PRGFolder)
@@ -215,11 +163,12 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		Endif
 	Endif Empty(pcAppName)
 	
-	* Get the names of the zip and Thor CFU version files and set pcVersionDate to
+	* Get the names of the zip, Thor CFU version, and Thor updaters files and set pcVersionDate to
 	* a string version of the release date.
 
 	lcZipFile     = 'ThorUpdater\' + pcAppID + '.zip'
 	lcVersionFile = 'ThorUpdater\' + pcAppID + 'Version.txt'
+	lcUpdateFile  = lcCurrFolder + 'Thor_Update_' + pcAppID + '.prg'
 	lcDate        = dtoc(pdVersionDate, 1)
 	pcVersionDate = substr(lcDate, 1, 4) + '-' + substr(lcDate, 5, 2) + '-' + ;
 		substr(lcDate, 7, 2)
@@ -255,6 +204,24 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 			'Project Deployment')
 		return
 	endif empty(pcVersion)
+
+	* Create an APP/EXE if we're supposed to.
+	
+	do case
+		case empty(lcPJXFile)
+		case upper(justext(lcAppFile)) = 'EXE'
+			build exe (lcAppFile) from (lcPJXFile)
+		otherwise
+			build app (lcAppFile) from (lcPJXFile)
+	endcase
+	lcErrFile = forceext(lcAppFile, 'err')
+	if not empty(lcPJXFile) and file(lcErrFile)
+		messagebox('An error occurred building the project. Please see ' + ;
+			'the ERR file for details.', 16, 'Project Deployment')
+		modify file (lcErrFile) nowait
+		return
+	endif not empty(lcPJXFile) ...
+
 	do case
 
 	* If InstalledFiles.txt exists, copy the files listed in it to the
@@ -278,8 +245,9 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		case not directory(lcInstalledFilesFolder)
 			messagebox('Please either create InstalledFiles.txt in the ' + ;
 				'BuildProcess folder with each file to be installed by Thor ' + ;
-				'listed on a separate line, or create folder named ' + ;
-				'InstalledFiles with the files Thor should install.', ;
+				'listed on a separate line, or create a subdirectory of ' + ;
+				'the project folder named InstalledFiles and copy the ' + ;
+				'files Thor should install to it.', ;
 				16, 'Project Deployment')
 			return
 	endcase
@@ -297,15 +265,40 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lnJulian  = pdVersionDate - {^2000-01-01}
 	lcJulian  = padl(lnJulian, 5, '0')
 	lcChange  = iif(file(pcChangeLog), filetostr(pcChangeLog), '')
-	lcVersion = strtran(lcVersion, '{APPNAME}',      pcAppName, -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{APPID}',        pcAppID,   -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{VERSIONDATE}',  lcDate,    -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{VERSION}',      pcVersion, -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{JULIAN}',       lcJulian,  -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{CHANGELOG}',    lcChange,  -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{APPNAME}',     pcAppName, -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{APPID}',       pcAppID,   -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{VERSIONDATE}', lcDate,    -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{VERSION}',     pcVersion, -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{JULIAN}',      lcJulian,  -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{CHANGELOG}',   lcChange,  -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{COMPONENT}',   lcComponent, -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{CATEGORY}',    lcCategory,  -1, -1, 1)
+	lcVersion = textmerge(lcVersion)
+	for lnI = occurs('@@@', lcVersion) to 1 step -1
+		lcRemove  = strextract(lcVersion, '@@@', '\\\', lnI, 4)
+		lcVersion = strtran(lcVersion, lcRemove)
+	next lnI
 	strtofile(lcVersion, lcVersionFile)
 
+	* Update Thor_Update program.
+
+	if file(lcUpdateTemplateFile) and not file(lcUpdateFile)
+		lcContent = filetostr(lcUpdateTemplateFile)
+		lcContent = strtran(lcContent, '{APPNAME}', pcAppName, -1, -1, 1)
+		lcContent = strtran(lcContent, '{APPID}',   pcAppID,   -1, -1, 1)
+		strtofile(lcContent, lcUpdateFile)
+	endif file(lcUpdateTemplateFile) ...
+
+	* Zip the source files.
+
 	ExecScript(_Screen.cThorDispatcher, 'Thor_Proc_ZipFolder', lcInstalledFilesFolder, lcZipFile)
+
+	* Add AppID.zip and AppIDVersion.txt to the repository.
+	
+	lcCommand = 'git add ' + lcZipFile + ' -f'
+	run &lcCommand
+	lcCommand = 'git add ' + lcVersionFile
+	run &lcCommand
 
 	MessageBox('Deployment for ' + lcProjectName + ' complete', 64, 'All done', 5000)
 

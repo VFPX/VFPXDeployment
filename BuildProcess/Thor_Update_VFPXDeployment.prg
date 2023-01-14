@@ -41,6 +41,8 @@ with toUpdateObject
 	.Link                 = lcRepositoryURL
 	.LinkPrompt           = lcAppName + ' Home Page'
 	*	.Notes                = GetNotes()  && now handled to Version.txt
+	.ProjectCreationDate  = Date(2023, 1, 11)	
+	.InstallInTools	      = .T.
 endwith
 return toUpdateObject
 
