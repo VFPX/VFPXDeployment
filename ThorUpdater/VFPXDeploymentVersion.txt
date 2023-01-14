@@ -1,12 +1,15 @@
 Lparameters toUpdateObject
 Local lcDate, ldDate
 
-lcDate = '20230110'
+lcDate = '20230114'
 
 With m.toUpdateObject
-	.VersionNumber    = '0.01 - ' + lcDate
+	.VersionNumber    = '0.02 - ' + lcDate
+	
+    .Link                 = 'https://github.com/VFPX/VFPXDeployment'
+	.LinkPrompt           = 'VFPX Deployment Home Page'
 
-	.AvailableVersion = 'VFPX Deployment-0.01-08410-' + lcDate
+	.AvailableVersion = 'VFPX Deployment-0.02-08414-' + lcDate
 	*	.RegisterWithThor = GetRegisterWithThor(.ApplicationName)
 	.Notes			  = GetReleaseNotes()
 Endwith
