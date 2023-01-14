@@ -5,6 +5,9 @@ lcDate = '{VersionDate}'
 
 With m.toUpdateObject
 	.VersionNumber    = '{Version} - ' + lcDate
+	
+    .Link                 = 'https://github.com/VFPX/VFPXDeployment'
+	.LinkPrompt           = 'VFPX Deployment Home Page'
 
 	.AvailableVersion = '{AppName}-{Version}-{JULIAN}-' + lcDate
 	*	.RegisterWithThor = GetRegisterWithThor(.ApplicationName)
