@@ -18,8 +18,8 @@ Here are the steps to updating to a new version:
 2. Make whatever changes are necessary.
 ---
 3. Edit the Version setting in _BuildProcess\ProjectSettings.txt_.
-4. Update the version and date in _ReadMe.md_.
-5. Describe the changes in the top of _Change Log.md_.
+4. Update the version and date in _README.md_.
+5. Describe the changes in the top of _docs\Change Log.md_.
 6. Run Thor Tool "**Deploy VFPX Project**" to create the installation files.
 ---
 7. Commit
