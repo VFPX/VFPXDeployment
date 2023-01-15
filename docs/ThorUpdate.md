@@ -76,13 +76,11 @@ This looks like a lot of steps but most of it is simple and you only have to do 
 
 ### 1. Download the VFPX Deployment tool
 
-* Choose Check for Updates from the Thor menu and install VFPX Deployment.
-
-* If desired, create a hot key for it or add it to the Thor menu.
+* Choose Check for Updates from the Thor menu and install VFPX Deployment. It's automatically added to the Thor Tools menu under Applications, VFPX Project Deployment.
 
 ### 2. Customize the project settings for your project
 
-Start VFP, CD to the folder containing your project, and invoke the VFPX Deployment tool, such as from a Thor menu or hotkey or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```. The first time you do that, it'll create a BuildProcess subdirectory of the project folder, copy some files to it, and terminate.
+Start VFP, CD to the folder containing your project, and invoke the VFPX Deployment tool (from the Thor Tools, Application, VFPX Project Deployment menu item or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```. The first time you do that, it'll create a BuildProcess subdirectory of the project folder, copy some files to it, and terminate.
 
 Edit ProjectSettings.txt to specify your project information (the case of these settings is unimportant):
 
@@ -164,7 +162,7 @@ After doing all of the tasks in the previous section, you're ready to create the
 
 3. If you've specified the ChangeLog setting in ProjectSettings.txt, update the specified file to describe the changes.
 
-4. Invoke the VFPX Deployment tool, such as from a Thor menu or hotkey or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```.
+4. Invoke the VFPX Deployment tool from the Thor Tools, Application, VFPX Project Deployment menu item or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```.
 
 5. Commit and push to the remote repository.
 
