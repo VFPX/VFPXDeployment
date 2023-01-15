@@ -28,21 +28,17 @@ lcVersionFileURL = lcDownloadsURL + lcAppID + 'Version.txt'
 lcZIPFileURL     = lcDownloadsURL + lcAppID + '.zip'
 	&& the URL for the zip file containing the project
 
-
 * Set the properties of the passed updater object. You likely won't need to edit this code.
 
 with toUpdateObject
 	.ApplicationName      = lcAppName
 	.Component            = 'No'
 	.VersionLocalFilename = lcAppID + 'VersionFile.txt'
-	*	.RegisterWithThor     = lcRegisterWithThor  && now handled to Version.txt
 	.VersionFileURL       = lcVersionFileURL
 	.SourceFileUrl        = lcZIPFileURL
 	.Link                 = lcRepositoryURL
 	.LinkPrompt           = lcAppName + ' Home Page'
-	*	.Notes                = GetNotes()  && now handled to Version.txt
-	.ProjectCreationDate  = Date(2023, 1, 11)	
+	.ProjectCreationDate  = Date(2023, 1, 15)	
 	.InstallInTools	      = .T.
 endwith
 return toUpdateObject
-

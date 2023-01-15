@@ -1,18 +1,17 @@
 # VFPX Deployment
 
-Version 0.01 Released 2023-01-11
+VFPX Deployment automates the steps needed to include your project in the Thor Check for Updates (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.
 
-[What's new in this release](Change%20Log.md)
+![](./docs/images/ThorCFUDialog.png)
 
-***
+[Documentation](./docs/ThorUpdate.md)
 
-*Manages VFPX project creation and deployment.*
+Version 1.0 Released 2023-01-15
 
+[Release history](./docs/Change%20Log.md)
 
-[What's new in this release](Change%20Log.md)
+## Helping with this project
 
-----
-## Contribution
-See [contribution](./.github/CONTRIBUTING.md)
+See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _2023/01/11 ![Picture](./docs/images/vfpxpoweredby_alternative.gif)
+Last changed: 2023-01-15 ![Picture](./docs/images/vfpxpoweredby_alternative.gif)

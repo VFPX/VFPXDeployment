@@ -1,17 +1,12 @@
 Lparameters toUpdateObject
 Local lcDate, ldDate
 
-lcDate = '20230114'
+lcDate = '20230115'
 
 With m.toUpdateObject
-	.VersionNumber    = '0.02 - ' + lcDate
-	
-    .Link                 = 'https://github.com/VFPX/VFPXDeployment'
-	.LinkPrompt           = 'VFPX Deployment Home Page'
-
-	.AvailableVersion = 'VFPX Deployment-0.02-08414-' + lcDate
-	*	.RegisterWithThor = GetRegisterWithThor(.ApplicationName)
-	.Notes			  = GetReleaseNotes()
+	.VersionNumber    = '1.0 - ' + lcDate
+	.AvailableVersion = 'VFPX Deployment-1.0-08415-' + lcDate
+	.Notes            = GetReleaseNotes()
 Endwith
 
 Return m.toUpdateObject
@@ -23,14 +18,13 @@ Return m.toUpdateObject
 Procedure GetReleaseNotes
 
 Text to lcNote NoShow
+# Release History
 
-## Manages VFPX project creation and deployment
-
-### 2023-01-11 Version 0.01
+## 2023-01-15 Version 1.0
 
 * Initial release
 EndText
 
 Return lcNote
 
-EndProc 
+EndProc

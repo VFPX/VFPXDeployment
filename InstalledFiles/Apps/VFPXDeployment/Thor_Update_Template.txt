@@ -1,0 +1,30 @@
+lparameters toUpdateObject
+local lcRepositoryURL, ;
+	lcDownloadsURL, ;
+	lcVersionFileURL, ;
+	lcZIPFileURL, ;
+	lcRegisterWithThor
+
+* Get the URL for the version and ZIP files.
+
+lcRepositoryURL  = 'https://github.com/VFPX/{APPID}'
+	&& the URL for the project's repository
+lcDownloadsURL   = strtran(lcRepositoryURL, 'github.com', ;
+	'raw.githubusercontent.com') + '/master/ThorUpdater/'
+lcVersionFileURL = lcDownloadsURL + '{APPID}Version.txt'
+	&& the URL for the file containing code to get the available version number
+lcZIPFileURL     = lcDownloadsURL + '{APPID}.zip'
+	&& the URL for the zip file containing the project
+
+* Set the properties of the passed updater object.
+
+with toUpdateObject
+	.ApplicationName      = '{APPNAME}'
+	.VersionLocalFilename = '{APPID}VersionFile.txt'
+	.VersionFileURL       = lcVersionFileURL
+	.SourceFileUrl        = lcZIPFileURL
+	.Link                 = lcRepositoryURL
+	.LinkPrompt           = '{APPNAME} Home Page'
+	.ProjectCreationDate  = {CURRDATE}
+endwith
+return toUpdateObject

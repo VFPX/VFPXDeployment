@@ -1,0 +1,4 @@
+AppName   = MyApp
+AppID     = MyApp
+Version   = 1.0
+Component = Yes

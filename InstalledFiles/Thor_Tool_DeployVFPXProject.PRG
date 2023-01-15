@@ -12,12 +12,12 @@ If Pcount() = 1								;
 	With m.lxParam1
 
 		* Required
-		.Prompt		   = 'Deploy VFPX Project' && used in menus
+		.Prompt		   = 'VFPX Project Deployment' && used in menus
 
 		Text To .Description Noshow
 Deploy VFPX Project
 		Endtext
-		.Category = 'JRN'
+		.Category = 'Applications'
 		.Author	  = 'JRN'
 	Endwith
 
@@ -72,7 +72,7 @@ Procedure GetProjectFolder(lcPreviousFolder)
 	Endif
 
 	Do While .T.
-		lcFolder = Inputbox('Project Home Folder', 'Home Path', m.lcPreviousFolder, 0, '', '')
+		lcFolder = getdir(m.lcPreviousFolder, 'Project Home Folder', 'Home Path')
 		If Empty(m.lcFolder)
 			Return ''
 		Endif

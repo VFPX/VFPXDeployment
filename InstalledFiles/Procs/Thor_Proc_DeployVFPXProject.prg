@@ -14,8 +14,8 @@ If not Directory(lcCurrFolder)
 	md (lcCurrFolder)
 Endif
 
-* If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt,
-* BuildMe.prg, and Thor_Update_Template.prg from the VFPXDeployment folder.
+* If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt, and
+* BuildMe.prg from the VFPXDeployment folder.
 
 if not file(lcCurrFolder + 'ProjectSettings.txt')
 	lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPX Deployment\'
@@ -25,8 +25,6 @@ if not file(lcCurrFolder + 'ProjectSettings.txt')
 		(lcCurrFolder + 'VersionTemplate.txt')
 	copy file (lcVFPXDeploymentFolder + 'BuildMe.prg') to ;
 		(lcCurrFolder + 'BuildMe.prg')
-	copy file (lcVFPXDeploymentFolder + 'Thor_Update_Template.prg') to ;
-		(lcCurrFolder + 'Thor_Update_Template.prg')
 	messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
 		'for this project. Also, edit InstalledFiles.txt and specify ' + ;
 		'which files should be installed. Then run VFPX Deployment again.', ;
@@ -58,7 +56,8 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcInstalledFilesFolder  = 'InstalledFiles'
 	lcBuildProgram          = lcCurrFolder + 'BuildMe.prg'
 	lcVersionTemplateFile   = lcCurrFolder + 'VersionTemplate.txt'
-	lcUpdateTemplateFile    = lcCurrFolder + 'Thor_Update_Template.prg'
+	lcUpdateTemplateFile    = _screen.cThorFolder + ;
+		'Tools\Apps\VFPX Deployment\Thor_Update_Template.txt'
 
 	* Get the current project settings into public variables. 
 
@@ -265,14 +264,14 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lnJulian  = pdVersionDate - {^2000-01-01}
 	lcJulian  = padl(lnJulian, 5, '0')
 	lcChange  = iif(file(pcChangeLog), filetostr(pcChangeLog), '')
-	lcVersion = strtran(lcVersion, '{APPNAME}',     pcAppName, -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{APPID}',       pcAppID,   -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{VERSIONDATE}', lcDate,    -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{VERSION}',     pcVersion, -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{JULIAN}',      lcJulian,  -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{CHANGELOG}',   lcChange,  -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{COMPONENT}',   lcComponent, -1, -1, 1)
-	lcVersion = strtran(lcVersion, '{CATEGORY}',    lcCategory,  -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{APPNAME}',        pcAppName,   -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{APPID}',          pcAppID,     -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{VERSIONDATE}',    lcDate,      -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{VERSION}',        pcVersion,   -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{JULIAN}',         lcJulian,    -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{CHANGELOG}',      lcChange,    -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{COMPONENT}',      lcComponent, -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{CATEGORY}',       lcCategory,  -1, -1, 1)
 	lcVersion = textmerge(lcVersion)
 	for lnI = occurs('@@@', lcVersion) to 1 step -1
 		lcRemove  = strextract(lcVersion, '@@@', '\\\', lnI, 4)
@@ -283,9 +282,15 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	* Update Thor_Update program.
 
 	if file(lcUpdateTemplateFile) and not file(lcUpdateFile)
+		lcDate    = 'date(' + transform(year(date())) + ', ' + ;
+			transform(month(date())) + ', ' + transform(day(date())) + ')'
 		lcContent = filetostr(lcUpdateTemplateFile)
-		lcContent = strtran(lcContent, '{APPNAME}', pcAppName, -1, -1, 1)
-		lcContent = strtran(lcContent, '{APPID}',   pcAppID,   -1, -1, 1)
+		lcContent = strtran(lcContent, '{APPNAME}',  pcAppName, ;
+			-1, -1, 1)
+		lcContent = strtran(lcContent, '{APPID}',    pcAppID, ;
+			-1, -1, 1)
+		lcContent = strtran(lcContent, '{CURRDATE}', lcDate, ;
+			-1, -1, 1)
 		strtofile(lcContent, lcUpdateFile)
 	endif file(lcUpdateTemplateFile) ...
 
