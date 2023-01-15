@@ -18,7 +18,7 @@ Endif
 * BuildMe.prg from the VFPXDeployment folder.
 
 if not file(lcCurrFolder + 'ProjectSettings.txt')
-	lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPX Deployment\'
+	lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
 	copy file (lcVFPXDeploymentFolder + 'ProjectSettings.txt') to ;
 		(lcCurrFolder + 'ProjectSettings.txt')
 	copy file (lcVFPXDeploymentFolder + 'VersionTemplate.txt') to ;
@@ -27,8 +27,8 @@ if not file(lcCurrFolder + 'ProjectSettings.txt')
 		(lcCurrFolder + 'BuildMe.prg')
 	messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
 		'for this project. Also, edit InstalledFiles.txt and specify ' + ;
-		'which files should be installed. Then run VFPX Deployment again.', ;
-		16, 'Project Deployment')
+		'which files should be installed. Then run VFPX Project Deployment again.', ;
+		16, 'VFPX Project Deployment')
 	modify file (lcCurrFolder + 'ProjectSettings.txt') nowait
 	modify file (lcCurrFolder + 'InstalledFiles.txt') nowait
 	return
@@ -57,7 +57,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcBuildProgram          = lcCurrFolder + 'BuildMe.prg'
 	lcVersionTemplateFile   = lcCurrFolder + 'VersionTemplate.txt'
 	lcUpdateTemplateFile    = _screen.cThorFolder + ;
-		'Tools\Apps\VFPX Deployment\Thor_Update_Template.txt'
+		'Tools\Apps\VFPXDeployment\Thor_Update_Template.txt'
 
 	* Get the current project settings into public variables. 
 
@@ -111,17 +111,17 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 
 	if empty(pcAppName)
 		messagebox('The appName setting was not specified.', 16, ;
-			'Project Deployment')
+			'VFPX Project Deployment')
 		return
 	endif empty(pcAppName)
 	if empty(pcAppID)
 		messagebox('The appID setting was not specified.', 16, ;
-			'Project Deployment')
+			'VFPX Project Deployment')
 		return
 	endif empty(pcAppID)
 	if ' ' $ pcAppID
 		messagebox('The appID setting cannot have spaces.', 16, ;
-			'Project Deployment')
+			'VFPX Project Deployment')
 		return
 	endif ' ' $ pcAppID
 
@@ -132,12 +132,12 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	if (empty(lcPJXFile) and not empty(lcAppFile)) or ;
 		(empty(lcAppFile) and not empty(lcPJXFile))
 		messagebox('If you specify one of them, you have to specify both ' + ;
-			'PJXFile and AppFile.', 16, 'Project Deployment')
+			'PJXFile and AppFile.', 16, 'VFPX Project Deployment')
 		return
 	endif (empty(lcPJXFile) ...
 	if not empty(lcPJXFile) and val(version(4)) > 9
-	    messagebox('You must run VFPX Deployment using VFP 9 not VFP Advanced.', ;
-	        16, 'Project Deployment')
+	    messagebox('You must run VFPX Project Deployment using VFP 9 not VFP Advanced.', ;
+	        16, 'VFPX Project Deployment')
 	    return
 	endif not empty(lcPJXFile) ...
 
@@ -151,13 +151,13 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		If File(m.lcFoxBin2PRG)
 			lcBin2PRGFolder = Fullpath(m.lcCurrFolder + '..\' + lcBin2PRGFolderSource)
 			If Not Directory(m.lcBin2PRGFolder)
-				Messagebox('Folder "' + lcBin2PRGFolderSource + '" not found.', 16,			;
-					  'Project Deployment')
+				Messagebox('Folder "' + lcBin2PRGFolderSource + '" not found.', 16,	;
+					  'VFPX Project Deployment')
 				Return
 			Endif
 		Else
-			Messagebox('FoxBin2PRG.EXE not found.', 16,			;
-				  'Project Deployment')
+			Messagebox('FoxBin2PRG.EXE not found.', 16, ;
+				  'VFPX Project Deployment')
 			Return
 		Endif
 	Endif Empty(pcAppName)
@@ -175,7 +175,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	* Get the version number if it wasn't specified and we're supposed to.
 
 	if empty(pcVersion) and llPrompt
-		lcValue = inputbox('Version', 'Project Deployment', '')
+		lcValue = inputbox('Version', 'VFPX Project Deployment', '')
 		if empty(lcValue)
 			return
 		endif empty(lcValue)
@@ -200,7 +200,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 
 	if empty(pcVersion)
 		messagebox('The version setting was not specified.', 16, ;
-			'Project Deployment')
+			'VFPX Project Deployment')
 		return
 	endif empty(pcVersion)
 
@@ -216,7 +216,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcErrFile = forceext(lcAppFile, 'err')
 	if not empty(lcPJXFile) and file(lcErrFile)
 		messagebox('An error occurred building the project. Please see ' + ;
-			'the ERR file for details.', 16, 'Project Deployment')
+			'the ERR file for details.', 16, 'VFPX Project Deployment')
 		modify file (lcErrFile) nowait
 		return
 	endif not empty(lcPJXFile) ...
@@ -247,7 +247,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 				'listed on a separate line, or create a subdirectory of ' + ;
 				'the project folder named InstalledFiles and copy the ' + ;
 				'files Thor should install to it.', ;
-				16, 'Project Deployment')
+				16, 'VFPX Project Deployment')
 			return
 	endcase
 
