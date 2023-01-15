@@ -17,17 +17,16 @@ Here are the steps to updating to a new version:
    - See this [guide](https://www.dataschool.io/how-to-contribute-on-github/) for setting up and using a fork
 2. Make whatever changes are necessary.
 ---
-3. In folder _BuildProcess_:
-   - Edit the Version setting in _ProjectSettings.txt_
-   - Run Thor Tool "**Deploy VFPX Project**" to create the installation files.
-3. Update the version and date in the top few lines and at the very bottom of _ReadMe.md_ 
-3. Describe the changes in the top of _Change Log.md_.
+3. Edit the Version setting in _BuildProcess\ProjectSettings.txt_.
+4. Update the version and date in _ReadMe.md_.
+5. Describe the changes in the top of _Change Log.md_.
+6. Run Thor Tool "**Deploy VFPX Project**" to create the installation files.
 ---
-6. Commit
-9. Push to your fork
-10. Create a pull request
+7. Commit
+8. Push to your fork
+9. Create a pull request
 
 ----
 
-Last changed: _2023-01-10_
-![Picture](../Docs/Images/vfpxpoweredby_alternative.gif)
+Last changed: _2023-01-15_
+![Picture](../docs/Images/vfpxpoweredby_alternative.gif)

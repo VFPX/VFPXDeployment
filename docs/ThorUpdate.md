@@ -2,7 +2,7 @@
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor Check for Updates (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.
 
-![](./images/ThorCFUDialog.png)
+![](./Images/ThorCFUDialog.png)
 
 ## Overview
 
@@ -86,7 +86,7 @@ Start VFP, CD to the folder containing your project, and invoke the VFPX Deploym
 
 Edit ProjectSettings.txt to specify your project information (the case of these settings is unimportant):
 
-![](./images/ProjectSettings.png)
+![](./Images/ProjectSettings.png)
 
 * AppName: the display name for the project.
 
@@ -118,7 +118,7 @@ You can also add the following optional settings if you wish:
 
 Edit InstalledFiles.txt and list each file to be copied to the InstalledFiles folder on a separate line. All paths should be relative to the project root folder.
 
-![](./images/InstalledFiles.png)
+![](./Images/InstalledFiles.png)
 
 ### 4. Optional: customize the version template
 
