@@ -18,6 +18,7 @@ If Pcount() = 1								;
 Deploy VFPX Project
 		Endtext
 		.Category = 'Applications'
+		.Link     = 'https://github.com/VFPX/VFPXDeployment/blob/main/README.md'
 		.Author	  = 'JRN'
 	Endwith
 
