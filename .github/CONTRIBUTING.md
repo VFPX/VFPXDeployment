@@ -1,4 +1,4 @@
-# How to contribute to Object Explorer
+# How to contribute to VFPX Deployment
 
 ## Bug report?
 - Please check [issues](https://github.com/VFPX/ObjectExplorer/issues) if the bug is reported
@@ -20,7 +20,10 @@ Here are the steps to updating to a new version:
 3. Edit the Version setting in _BuildProcess\ProjectSettings.txt_.
 4. Update the version and date in _README.md_.
 5. Describe the changes in the top of _docs\Change Log.md_.
-6. Invoke the VFPX Deployment tool from the Thor Tools, Application, VFPX Project Deployment menu item or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')``` to create the installation files.
+6. Run the VFPX Deployment tool to create the installation files by
+    -   Invoking menu item  **Thor Tools -> Application -> VFPX Project Deployment**  
+    -   Or executing ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')``` 
+    -   Or executing Thor tool **"VFPX Project Deployment"**
 ---
 7. Commit
 8. Push to your fork
@@ -28,5 +31,5 @@ Here are the steps to updating to a new version:
 
 ----
 
-Last changed: _2023-01-15_
+Last changed: _2023-01-19_
 ![Picture](../docs/Images/vfpxpoweredby_alternative.gif)
