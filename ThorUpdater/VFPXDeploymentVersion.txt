@@ -1,11 +1,11 @@
 Lparameters toUpdateObject
 Local lcDate, ldDate
 
-lcDate = '20230119'
+lcDate = '20230120'
 
 With m.toUpdateObject
 	.VersionNumber    = '1.0 - ' + lcDate
-	.AvailableVersion = 'VFPX Deployment-1.0-08419-' + lcDate
+	.AvailableVersion = 'VFPX Deployment-1.0-08420-' + lcDate
 	.Notes            = GetReleaseNotes()
 Endwith
 
