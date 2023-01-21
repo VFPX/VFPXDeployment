@@ -100,9 +100,9 @@ You can also add the following optional settings if you wish:
 
 * ChangeLog: the path for a file containing changes (see below).
 
-* Component: Yes if this project is a Thor Component (meaning it doesn't have to be registered with Thor and is installed in Thor\Tools\Components) or No if it's a Thor App (meaning it does have to be registered with Thor and is installed in Thor\Tools\Apps).
+* Component: Yes if this project is a Thor Component (meaning it doesn't have to be registered with Thor and is installed in Thor\Tools\Components) or No if it's a Thor App (meaning it does have to be registered with Thor and is installed in Thor\Tools\Apps). If this is omitted, "Yes" is used.
 
-* Category: the Thor category to use when adding to the Thor menu.
+* Category: the category to use when adding to the Thor menu. If this is omitted, "Applications" is used. This is only used when Component is No.
 
 * PJXFile: the relative path to the PJX file to build an APP or EXE from. Omit this if that isn't required.
 
