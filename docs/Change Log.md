@@ -6,6 +6,8 @@
 
 * FoxBin2PRG is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting.
 
+* If a file named NoVFPXDeployment.txt exists, VFPX Deployment will terminate.
+
 ## 2023-01-20 Version 1.0
 
 * Initial release

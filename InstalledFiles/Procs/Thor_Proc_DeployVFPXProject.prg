@@ -4,11 +4,22 @@ Lparameters lcFolder
 
 Local lcCurrFolder, lcStartFolder
 
-* Create the BuildProcess subdirectory of the project folder if necessary.
+* Get the project folder.
 
 lcStartFolder = Curdir()
 lcFolder = Evl(lcFolder, lcStartFolder)
 Cd (m.lcFolder) && Project Home
+
+* Bug out if NoVFPXDeployment.txt exists.
+
+if file('NoVFPXDeployment.txt')
+	messagebox('VFPX Project Deployment will not run because NoVFPXDeployment.txt exists.', ;
+		16, 'VFPX Project Deployment')
+	return
+endif file('NoVFPXDeployment.txt')
+
+* Create the BuildProcess subdirectory of the project folder if necessary.
+
 lcCurrFolder = Addbs(Addbs(m.lcFolder) + 'BuildProcess') && BuildProcess
 If not Directory(lcCurrFolder)
 	md (lcCurrFolder)
