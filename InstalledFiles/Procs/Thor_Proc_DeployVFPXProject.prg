@@ -127,8 +127,12 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 
 	* If we're supposed to build an APP or EXE, ensure we have both settings
 	* and we're running VFP 9 and not VFP Advanced since the APP/EXE structure
-	* is different.
+	* is different. If AppFile is omitted, use the same folder and name as the
+	* PJX file.
 
+	if not empty(lcPJXFile) and empty(lcAppFile)
+		lcAppFile = forceext(lcPJXFile, 'app')
+	endif not empty(lcPJXFile) ...
 	if (empty(lcPJXFile) and not empty(lcAppFile)) or ;
 		(empty(lcAppFile) and not empty(lcPJXFile))
 		messagebox('If you specify one of them, you have to specify both ' + ;
@@ -141,26 +145,27 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	    return
 	endif not empty(lcPJXFile) ...
 
-	* If setting Bin2PRGFolderSource is supplied, ensure folder exists
-	* and also find FoxBin2PRG.EXE.
+	* If Bin2PRGFolderSource or PJXFile was supplied, find FoxBin2PRG.EXE.
 
 	lcBin2PRGFolder = ''
-	If Not Empty(lcBin2PRGFolderSource)
+	lcFoxBin2PRG    = ''
+	If Not Empty(lcBin2PRGFolderSource) or not empty(lcPJXFile)
 		lcFoxBin2PRG = execscript(_screen.cThorDispatcher, 'Thor_Proc_GetFoxBin2PrgFolder') + ;
 			'FoxBin2Prg.exe'
-		If File(m.lcFoxBin2PRG)
-			lcBin2PRGFolder = Fullpath(m.lcCurrFolder + '..\' + lcBin2PRGFolderSource)
-			If Not Directory(m.lcBin2PRGFolder)
-				Messagebox('Folder "' + lcBin2PRGFolderSource + '" not found.', 16,	;
+		do case
+			case not file(m.lcFoxBin2PRG)
+				Messagebox('FoxBin2PRG.EXE not found.', 16, ;
 					  'VFPX Project Deployment')
 				Return
-			Endif
-		Else
-			Messagebox('FoxBin2PRG.EXE not found.', 16, ;
-				  'VFPX Project Deployment')
-			Return
-		Endif
-	Endif Empty(pcAppName)
+			case not empty(lcBin2PRGFolderSource)
+				lcBin2PRGFolder = Fullpath(m.lcCurrFolder + '..\' + lcBin2PRGFolderSource)
+				If Not Directory(m.lcBin2PRGFolder)
+					Messagebox('Folder "' + lcBin2PRGFolderSource + '" not found.', 16,	;
+						  'VFPX Project Deployment')
+					Return
+				Endif
+		endcase
+	endif
 	
 	* Get the names of the zip, Thor CFU version, and Thor updaters files and set pcVersionDate to
 	* a string version of the release date.
@@ -192,9 +197,14 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	endif file(lcBuildProgram)
 
 	*** JRN 2023-01-10 : Call FoxBin2PRG, if applicable
-	If Not Empty(m.lcBin2PRGFolder)
-		Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcBin2PRGFolder + '\*.*'
-	Endif
+	if not empty(lcFoxBin2PRG)
+		if not empty(lcPJXFile)
+			Do (m.lcFoxBin2PRG) With fullpath(lcPJXFile), '*'
+		endif not empty(lcPJXFile)
+		If Not Empty(m.lcBin2PRGFolder)
+			Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcBin2PRGFolder + '\*.*'
+		Endif
+	endif not empty(lcFoxBin2PRG)
 	
 	* Ensure we have a version number (Build.prg may have set it).
 

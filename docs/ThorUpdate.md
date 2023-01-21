@@ -100,17 +100,19 @@ You can also add the following optional settings if you wish:
 
 * ChangeLog: the path for a file containing changes (see below).
 
-* Bin2PRGFolder: the path to the source code folder to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folder to create their text equivalents. This is important because Git cannot do diffs on binary files.
-
 * Component: Yes if this project is a Thor Component (meaning it doesn't have to be registered with Thor and is installed in Thor\Tools\Components) or No if it's a Thor App (meaning it does have to be registered with Thor and is installed in Thor\Tools\Apps).
 
 * Category: the Thor category to use when adding to the Thor menu.
 
 * PJXFile: the relative path to the PJX file to build an APP or EXE from. Omit this if that isn't required.
 
-* AppFile: the path to the APP or EXE to build from the project (specified with the extension; for example, MyApp.app builds an APP and MyApp.exe builds an EXE). Omit this if that isn't required.
+* AppFile: the path to the APP or EXE to build from the project (specified with the extension; for example, MyApp.app builds an APP and MyApp.exe builds an EXE). If PJXFile is specified and AppFile is omitted, VFPX Deployment automatically builds an APP file in the same folder and with the same file name as the PJX file specified in the PJXFile setting.
 
-> If ProjectSettings.txt specifies that an APP or EXE is part of the project, VFPX Deployment ensures it's built using VFP 9 and not VFP Advanced because the APP/EXE structure is different. While VFP Advanced can run APP/EXEs created in VFP 9, VFP 9 cannot run APP/EXEs created in VFP Advanced.
+    > If ProjectSettings.txt specifies that an APP or EXE is part of the project, VFPX Deployment ensures it's built using VFP 9 and not VFP Advanced because the APP/EXE structure is different. While VFP Advanced can run APP/EXEs created in VFP 9, VFP 9 cannot run APP/EXEs created in VFP Advanced.
+
+* Bin2PRGFolder: the path to the source code folder to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folder to create their text equivalents. This is important because Git cannot do diffs on binary files.
+
+    > FoxBin2PRG is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting.
 
 ### 3. Specify what files are installed
 
