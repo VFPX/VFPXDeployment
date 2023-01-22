@@ -178,7 +178,7 @@ You can test that the updater PRG works by copying it to Thor\Tools\Updates\My U
 
 Once you confirm the update process works, zip Thor_Update_*AppID*.prg and email it to the VFPX administrators (<a href="mailto:projects@vfpx.org">projects@vfpx.org</a>). They'll add it to the Thor repository so Thor knows about your project.
 
-> Note to admins: download Updates.zip from the ThorUpdater folder of https://github.com/VFPX/Thor, add the PRG to the zip, and re-upload the file).
+> Note to admins: see [How to contribute to Thor](https://github.com/VFPX/Thor/blob/master/.github/CONTRIBUTING.md) for instructions to handle the new Thor_Update_*AppID*.prg.
 
 ### Checking for updates
 
