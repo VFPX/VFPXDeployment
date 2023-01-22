@@ -114,6 +114,8 @@ You can also add the following optional settings if you wish:
 
     > FoxBin2PRG is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting.
 
+* Repository: when VFPX Deployment generates Thor_Update_*AppID*.prg, it assumes the project repository is github.com/VFPX/*AppID*. If your project exists in a different location (for example, github.com/*YourName*/*AppID*), add a Repository setting with the full URL, such as ```https://github.com/DougHennig/SFMail```.
+
 ### 3. Specify what files are installed
 
 Edit InstalledFiles.txt and list each file to be copied to the InstalledFiles folder on a separate line. All paths should be relative to the project root folder.

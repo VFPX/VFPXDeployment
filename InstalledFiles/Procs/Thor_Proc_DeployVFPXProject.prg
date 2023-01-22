@@ -85,6 +85,8 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcCategory            = 'Applications'
 	lcPJXFile             = ''
 	lcAppFile             = ''
+	lcRepositoryRoot      = 'https://github.com/VFPX/'
+	lcRepository          = ''
 	lnSettings            = alines(laSettings, lcProjectSettings)
 	for lnI = 1 to lnSettings
 		lcLine  = laSettings[lnI]
@@ -115,6 +117,8 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 				lcPJXFile = lcValue
 			case lcUName = 'APPFILE'
 				lcAppFile = lcValue
+			case lcUName = 'REPOSITORY'
+				lcRepository = lcValue
 		endcase
 	next lnI
 
@@ -188,6 +192,12 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	pcVersionDate = substr(lcDate, 1, 4) + '-' + substr(lcDate, 5, 2) + '-' + ;
 		substr(lcDate, 7, 2)
 
+* Get the repository to use if it wasn't specified.
+	
+	if empty(lcRepository)
+		lcRepository = lcRepositoryRoot + pcAppID
+	endif empty(lcRepository)
+
 	* Get the version number if it wasn't specified and we're supposed to.
 
 	if empty(pcVersion) and llPrompt
@@ -249,7 +259,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 
 		case file(lcInstalledFilesListing)
 			lcFiles = filetostr(lcInstalledFilesListing)
-			lnFiles = alines(laFiles, lcFiles)
+			lnFiles = alines(laFiles, lcFiles, 1 + 4)
 			for lnI = 1 to lnFiles
 				lcSource = laFiles[lnI]
 				lcTarget = addbs(lcInstalledFilesFolder) + lcSource
@@ -306,11 +316,15 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		lcDate    = 'date(' + transform(year(date())) + ', ' + ;
 			transform(month(date())) + ', ' + transform(day(date())) + ')'
 		lcContent = filetostr(lcUpdateTemplateFile)
-		lcContent = strtran(lcContent, '{APPNAME}',  pcAppName, ;
+		lcContent = strtran(lcContent, '{APPNAME}',    pcAppName, ;
 			-1, -1, 1)
-		lcContent = strtran(lcContent, '{APPID}',    pcAppID, ;
+		lcContent = strtran(lcContent, '{APPID}',      pcAppID, ;
 			-1, -1, 1)
-		lcContent = strtran(lcContent, '{CURRDATE}', lcDate, ;
+		lcContent = strtran(lcContent, '{CURRDATE}',   lcDate, ;
+			-1, -1, 1)
+		lcContent = strtran(lcContent, '{REPOSITORY}', lcRepository, ;
+			-1, -1, 1)
+		lcContent = strtran(lcContent, '{COMPONENT}',  lcComponent, ;
 			-1, -1, 1)
 		strtofile(lcContent, lcUpdateFile)
 	endif file(lcUpdateTemplateFile) ...

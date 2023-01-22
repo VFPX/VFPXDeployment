@@ -7,7 +7,7 @@ local lcRepositoryURL, ;
 
 * Get the URL for the version and ZIP files.
 
-lcRepositoryURL  = 'https://github.com/VFPX/{APPID}'
+lcRepositoryURL  = '{REPOSITORY}'
 	&& the URL for the project's repository
 lcDownloadsURL   = strtran(lcRepositoryURL, 'github.com', ;
 	'raw.githubusercontent.com') + '/master/ThorUpdater/'
@@ -23,6 +23,7 @@ with toUpdateObject
 	.VersionLocalFilename = '{APPID}VersionFile.txt'
 	.VersionFileURL       = lcVersionFileURL
 	.SourceFileUrl        = lcZIPFileURL
+	.Component            = '{COMPONENT}'
 	.Link                 = lcRepositoryURL
 	.LinkPrompt           = '{APPNAME} Home Page'
 	.ProjectCreationDate  = {CURRDATE}
