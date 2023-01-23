@@ -308,8 +308,14 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		lcRemove  = strextract(lcVersion, '@@@', '\\\', lnI, 4)
 		lcVersion = strtran(lcVersion, lcRemove)
 	next lnI
+	
 	strtofile(lcVersion, lcVersionFile)
-
+	
+	* check proposed version file for errors
+	If CheckVersionFile(lcVersionFile) = .F.
+		Return
+	EndIf 
+	
 	* Update Thor_Update program.
 
 	if file(lcUpdateTemplateFile) and not file(lcUpdateFile)
@@ -343,3 +349,30 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	MessageBox('Deployment for ' + lcProjectName + ' complete', 64, 'All done', 5000)
 
 EndProc 
+
+
+#Define CRLF chr[13] + chr[10] 
+
+Procedure CheckVersionFile(lcVersionFile)
+	Local lcErrorMsg, llSuccess, loException, loUpdater
+
+	loUpdater  = Execscript (_Screen.cThorDispatcher, 'Thor_Proc_GetUpdaterObject2')
+	Try
+		Do (m.lcVersionFile) With m.loUpdater
+		llSuccess = .T.
+	Catch To m.loException
+		llSuccess = .F.
+	Endtry
+
+	If m.llSuccess = .F.
+		lcErrorMsg = 'Error in Version file:' 		+ CRLF + 			;
+			'Msg:   ' + m.loException.Message 		+ CRLF +			;
+			'Code:  ' + m.loException.LineContents
+		Messagebox(m.lcErrorMsg, 16, 'ABORTING')
+	Endif
+
+	Return m.llSuccess
+
+Endproc
+
+	

@@ -100,7 +100,9 @@ You can also add the following optional settings if you wish:
 
 * ChangeLog: the path for a file containing changes (see below).
 
-* Component: Yes if this project is a Thor Component (meaning it doesn't have to be registered with Thor and is installed in Thor\Tools\Components) or No if it's a Thor App (meaning it does have to be registered with Thor and is installed in Thor\Tools\Apps). If this is omitted, "Yes" is used.
+* Component: "Yes" for Components (Default), else "No" for Apps.
+    * Apps create Thor tools for use in your IDE (e.g., GoFish, PEMEditor).
+    * Components are not called directly from Thor tools but are used indirectly in either your IDE (FoxBin2PRG) or in production applications (Dynamic Forms)
 
 * Category: the category to use when adding to the Thor menu. If this is omitted, "Applications" is used. This is only used when Component is No.
 
