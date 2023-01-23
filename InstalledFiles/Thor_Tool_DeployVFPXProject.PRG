@@ -47,8 +47,11 @@ Return
 Procedure ToolCode
 	Lparameters lxParam1
 
-	Local lcPreviousFolder, lcProjectFolder
-	
+	Local lcPreviousFolder, lcProjectFolder, lcStartFolder
+
+	lcStartFolder = Curdir()
+
+	* ================================================================================ 
 	lcPreviousFolder = Nvl(Execscript(_Screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
 
 	lcProjectFolder	 = GetProjectFolder(m.lcPreviousFolder)
@@ -59,6 +62,9 @@ Procedure ToolCode
 
 		Execscript(_Screen.cThorDispatcher, 'Thor_Proc_DeployVFPXProject', m.lcProjectFolder)
 	Endif
+	* ================================================================================ 
+
+	Cd (m.lcStartFolder)
 
 Endproc
 

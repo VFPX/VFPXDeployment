@@ -1,5 +1,11 @@
 # Release History
 
+## 2023-01-23 Version 1.0.08423
+
+* Restored starting directory when complete (failed previously under some conditions)
+
+* Performs test execution of the Version file to ensure if does not fail with errors
+
 ## 2023-01-22 Version 1.0.08422
 
 * Added support for specifying the URL for the project's repository.
