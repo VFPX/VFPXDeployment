@@ -1,5 +1,9 @@
 # Release History
 
+## 2023-01-29 Version 1.0.08429
+
+* Run FoxBin2PRG includes sub-folders
+
 ## 2023-01-23 Version 1.0.08423
 
 * Restored starting directory when complete (failed previously under some conditions)
