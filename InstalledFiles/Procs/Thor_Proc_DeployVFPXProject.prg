@@ -223,7 +223,8 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 			Do (m.lcFoxBin2PRG) With fullpath(lcPJXFile), '*'
 		endif not empty(lcPJXFile)
 		If Not Empty(m.lcBin2PRGFolder)
-			Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcBin2PRGFolder + '\*.*'
+			*** JRN 2023-01-29 : BIN2PRG for folder and sub-folders
+			Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcBin2PRGFolder && + '\*.*'
 		Endif
 	endif not empty(lcFoxBin2PRG)
 	
