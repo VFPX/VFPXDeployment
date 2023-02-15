@@ -1,14 +1,18 @@
 # Release History
 
+## 2023-02-15 Version 1.0.08446
+
+* Added support for InstalledFilesFolder and Recompile settings in ProjectSettings.txt.
+
 ## 2023-01-29 Version 1.0.08429
 
-* Run FoxBin2PRG includes sub-folders
+* Run FoxBin2PRG includes sub-folders.
 
 ## 2023-01-23 Version 1.0.08423
 
-* Restored starting directory when complete (failed previously under some conditions)
+* Restored starting directory when complete (failed previously under some conditions).
 
-* Performs test execution of the Version file to ensure if does not fail with errors
+* Performs test execution of the Version file to ensure if does not fail with errors.
 
 ## 2023-01-22 Version 1.0.08422
 

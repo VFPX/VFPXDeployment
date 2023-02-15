@@ -84,6 +84,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcComponent           = 'Yes'
 	lcCategory            = 'Applications'
 	lcPJXFile             = ''
+	llRecompile           = .F.
 	lcAppFile             = ''
 	lcRepositoryRoot      = 'https://github.com/VFPX/'
 	lcRepository          = ''
@@ -115,10 +116,14 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 				lcCategory = lcValue
 			case lcUName = 'PJXFILE'
 				lcPJXFile = lcValue
+			case lcUName = 'RECOMPILE'
+				llRecompile = upper(lcValue) = 'Y'
 			case lcUName = 'APPFILE'
 				lcAppFile = lcValue
 			case lcUName = 'REPOSITORY'
 				lcRepository = lcValue
+			case lcUName = 'INSTALLEDFILESFOLDER'
+				lcInstalledFilesFolder = lcValue
 		endcase
 	next lnI
 
@@ -238,12 +243,13 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 
 	* Create an APP/EXE if we're supposed to.
 	
+	lcRecompile = iif(llRecompile, 'recompile', '')
 	do case
 		case empty(lcPJXFile)
 		case upper(justext(lcAppFile)) = 'EXE'
-			build exe (lcAppFile) from (lcPJXFile)
+			build exe (lcAppFile) from (lcPJXFile) &lcRecompile
 		otherwise
-			build app (lcAppFile) from (lcPJXFile)
+			build app (lcAppFile) from (lcPJXFile) &lcRecompile
 	endcase
 	lcErrFile = forceext(lcAppFile, 'err')
 	if not empty(lcPJXFile) and file(lcErrFile)
@@ -316,6 +322,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	If CheckVersionFile(lcVersionFile) = .F.
 		Return
 	EndIf 
+	erase (forceext(lcVersionFile, 'fxp'))
 	
 	* Update Thor_Update program.
 
