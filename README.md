@@ -6,7 +6,7 @@ VFPX Deployment automates the steps needed to include your project in the Thor C
 
 [Documentation](./docs/ThorUpdate.md)
 
-Version 1.0.08421 Released 2023-01-21
+Version 1.0.08446 released 2023-02-15
 
 [Release history](./docs/Change%20Log.md)
 
