@@ -354,6 +354,16 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcCommand = 'git add ' + lcVersionFile
 	run &lcCommand
 
+* Add the BuildProcess files to the repository.
+
+	for lnI = 1 to adir(laFiles, 'BuildProcess\*.*', '', 1)
+		lcFile = laFiles[lnI, 1]
+		if lower(justext(lcFile)) <> 'fxp'
+			lcCommand = 'git add BuildProcess\' + lcFile
+			run &lcCommand
+		endif lower(justext(lcFile)) <> 'fxp'
+	next lnI
+
 	MessageBox('Deployment for ' + lcProjectName + ' complete', 64, 'All done', 5000)
 
 EndProc 

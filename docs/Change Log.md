@@ -1,5 +1,9 @@
 # Release History
 
+## 2023-03-12 Version 1.0.08471
+
+* The files in the BuildProcess folder are now automatically added to the repository.
+
 ## 2023-02-15 Version 1.0.08446
 
 * Added support for InstalledFilesFolder and Recompile settings in ProjectSettings.txt.
