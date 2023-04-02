@@ -1,5 +1,9 @@
 # Release History
 
+## 2023-04-02 Version 1.0.08492
+
+* Added support for multiple folders to be processed by FoxBin2PRG.
+
 ## 2023-03-12 Version 1.0.08471
 
 * The files in the BuildProcess folder are now automatically added to the repository.

@@ -178,12 +178,16 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 					  'VFPX Project Deployment')
 				Return
 			case not empty(lcBin2PRGFolderSource)
-				lcBin2PRGFolder = Fullpath(m.lcCurrFolder + '..\' + lcBin2PRGFolderSource)
-				If Not Directory(m.lcBin2PRGFolder)
-					Messagebox('Folder "' + lcBin2PRGFolderSource + '" not found.', 16,	;
+				lnBin2PRGFolders = alines(laBin2PRGFolders, lcBin2PRGFolderSource, 4, ',')
+				for lnI = 1 to lnBin2PRGFolders
+					lcFolder = laBin2PRGFolders[lnI]
+					laBin2PRGFolders[lnI] = Fullpath(m.lcCurrFolder + '..\' + lcFolder)
+					If Not Directory(laBin2PRGFolders[lnI])
+						Messagebox('Folder "' + lcFolder + '" not found.', 16,	;
 						  'VFPX Project Deployment')
-					Return
-				Endif
+						Return
+					Endif
+				next lnI
 		endcase
 	endif
 	
@@ -210,7 +214,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		if empty(lcValue)
 			return
 		endif empty(lcValue)
-		pcVersion      = lcValue
+		pcVersion = lcValue
 	endif empty(pcVersion) ...
 
 	* Execute Build.prg if it exists. If it sets plContinue to .F., exit.
@@ -227,9 +231,12 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		if not empty(lcPJXFile)
 			Do (m.lcFoxBin2PRG) With fullpath(lcPJXFile), '*'
 		endif not empty(lcPJXFile)
-		If Not Empty(m.lcBin2PRGFolder)
+		If Not Empty(m.lcBin2PRGFolderSource)
 			*** JRN 2023-01-29 : BIN2PRG for folder and sub-folders
-			Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcBin2PRGFolder && + '\*.*'
+			for lnI = 1 to lnBin2PRGFolders
+				lcFolder = laBin2PRGFolders[lnI]
+				Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcFolder && + '\*.*'
+			next lnI
 		Endif
 	endif not empty(lcFoxBin2PRG)
 	

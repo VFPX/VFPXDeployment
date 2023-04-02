@@ -1,11 +1,11 @@
 Lparameters toUpdateObject
 Local lcDate, ldDate
 
-lcDate = '20230312'
+lcDate = '20230402'
 
 With m.toUpdateObject
 	.VersionNumber    = '1.0 - ' + lcDate
-	.AvailableVersion = 'VFPX Deployment-1.0-08471-' + lcDate
+	.AvailableVersion = 'VFPX Deployment-1.0-08492-' + lcDate
 	.Notes            = GetReleaseNotes()
 Endwith
 
@@ -19,6 +19,10 @@ Procedure GetReleaseNotes
 
 Text to lcNote NoShow
 # Release History
+
+## 2023-04-02 Version 1.0.08492
+
+* Added support for multiple folders to be processed by FoxBin2PRG.
 
 ## 2023-03-12 Version 1.0.08471
 
