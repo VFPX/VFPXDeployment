@@ -75,10 +75,18 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcProjectSettings = filetostr(lcProjectFile)
 	public pcAppName, pcAppID, pcVersion, pdVersionDate, ;
 		pcVersionDate, pcChangeLog, plContinue
+*SF 20230512: add new flags
+	public pcFullVersion, plRun_Bin2Prg, plRun_git
+
 	pdVersionDate         = date()
 	pcVersion             = ''
 	pcChangeLog           = ''
 	plContinue            = .T.
+*SF 20230512: add new flags
+	pcFullVersion         = ''		&& For autoset README.MD. full version info. Either pcVersion or returned from BuilMe.prg
+	plRun_Bin2Prg         = .T.		&& Run FoxBin2Prg; from ProjectSettings.txt
+	plRun_git             = .T.		&& Run git; from ProjectSettings.txt
+*/SF 20230512
 	llPrompt              = .T.
 	lcBin2PRGFolderSource = ''
 	lcComponent           = 'Yes'
@@ -124,6 +132,12 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 				lcRepository = lcValue
 			case lcUName = 'INSTALLEDFILESFOLDER'
 				lcInstalledFilesFolder = lcValue
+*SF 20230512: new flags
+			case lcUName = 'RUNBIN2PRG'
+				plRun_Bin2Prg = upper(lcValue) = 'Y'
+			case lcUName = 'RUNGIT'
+				plRun_git = upper(lcValue) = 'Y'
+*/SF 20230512
 		endcase
 	next lnI
 
@@ -227,7 +241,8 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	endif file(lcBuildProgram)
 
 	*** JRN 2023-01-10 : Call FoxBin2PRG, if applicable
-	if not empty(lcFoxBin2PRG)
+*SF 20230512: flag to disable FoxBin2PRG
+	if plRun_Bin2Prg AND not empty(lcFoxBin2PRG)
 		if not empty(lcPJXFile)
 			Do (m.lcFoxBin2PRG) With fullpath(lcPJXFile), '*'
 		endif not empty(lcPJXFile)
@@ -238,7 +253,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 				Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcFolder && + '\*.*'
 			next lnI
 		Endif
-	endif not empty(lcFoxBin2PRG)
+	endif plRun_Bin2Prg AND not empty(lcFoxBin2PRG)
 	
 	* Ensure we have a version number (Build.prg may have set it).
 
@@ -356,20 +371,23 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 
 	* Add AppID.zip and AppIDVersion.txt to the repository.
 	
-	lcCommand = 'git add ' + lcZipFile + ' -f'
-	run &lcCommand
-	lcCommand = 'git add ' + lcVersionFile
-	run &lcCommand
+*SF 20230512: flag to disable git
+	if plRun_git
+		lcCommand = 'git add ' + lcZipFile + ' -f'
+		run &lcCommand
+		lcCommand = 'git add ' + lcVersionFile
+		run &lcCommand
 
 * Add the BuildProcess files to the repository.
 
-	for lnI = 1 to adir(laFiles, 'BuildProcess\*.*', '', 1)
-		lcFile = laFiles[lnI, 1]
-		if lower(justext(lcFile)) <> 'fxp'
-			lcCommand = 'git add BuildProcess\' + lcFile
-			run &lcCommand
-		endif lower(justext(lcFile)) <> 'fxp'
-	next lnI
+		for lnI = 1 to adir(laFiles, 'BuildProcess\*.*', '', 1)
+			lcFile = laFiles[lnI, 1]
+			if lower(justext(lcFile)) <> 'fxp'
+				lcCommand = 'git add BuildProcess\' + lcFile
+				run &lcCommand
+			endif lower(justext(lcFile)) <> 'fxp'
+		next lnI
+	endif plRun_git
 
 	MessageBox('Deployment for ' + lcProjectName + ' complete', 64, 'All done', 5000)
 
