@@ -56,6 +56,12 @@ The VFPX Deployment process does the following:
     
     * plContinue: .T. to continue the deployment process or .F. to stop
 
+    * plRun_Bin2Prg: .T. to auto run FoxBin2prg (default)
+
+    * plRun_git: .T. to auto run git (default)
+
+    * pcFullVersion: The version as it should look like to replace in README.md on each run. Default: pcVersion
+
 * Prompts for the version number if necessary (see below).
 
 * Runs BuildMe.prg if it exists. If BuildMe.prg sets plContinue to .F., the build process terminates.
@@ -68,9 +74,17 @@ The VFPX Deployment process does the following:
 
 * Creates Thor_Update_*AppID*.prg in the BuildProcess folder (the first time only).
 
+* Creates from the VFPXTemplate folder, add files missing, and fills with AppName (the first time only):
+  * README.md file
+  * .gitattributes file
+  * .github/ folder
+  * docs/ folder
+  * images/ folder
+  * .gitignore file in regular style (exclude-all-include-special is provided in VFPXTemplate folder too)
+
 * Zips the contents of the InstalledFiles folder into *AppID*.zip in the ThorUpdater folder.
 
-* Adds *AppID*Version.txt and *AppID*.zip to the Git repository for the project.
+* Adds *AppID*Version.txt and *AppID*.zip to the Git repository for the project. (optional)
 
 ## Setting up the build process
 
@@ -118,11 +132,15 @@ You can also add the following optional settings if you wish:
 
 * Bin2PRGFolder: a comma-separated list of relative paths to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folders to create their text equivalents. This is important because Git cannot do diffs on binary files.
 
-    > FoxBin2PRG is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting.
+    > FoxBin2PRG is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting. The use of FoxBin2Prg can be turned off.
 
 * Repository: when VFPX Deployment generates Thor_Update_*AppID*.prg, it assumes the project repository is github.com/VFPX/*AppID*. If your project exists in a different location (for example, github.com/*YourName*/*AppID*), add a Repository setting with the full URL, such as ```https://github.com/DougHennig/SFMail```.
 
 * InstalledFilesFolder: by default, the staging folder VFPX Deployment uses to generate the ZIP file from is called InstalledFiles. This setting allows you to specify a different name.
+
+* RunBin2Prg: "Yes" to auto run FoxBin2prg (Default), else "No" to not run.
+
+* RunGit: "Yes" to auto run git (Default), else "No" to not run.
 
 ### 3. Specify what files are installed
 
