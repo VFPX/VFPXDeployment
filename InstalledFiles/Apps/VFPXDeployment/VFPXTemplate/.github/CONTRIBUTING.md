@@ -1,4 +1,10 @@
-# How to contribute to {Project Name}
+<!-- 
+The following will be set on initial run:
+{APPNAME}
+
+Fill other placeholders
+-->
+# How to contribute to {APPNAME}
 
 ## Report a bug
 

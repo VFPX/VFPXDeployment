@@ -1,4 +1,10 @@
-# {Project Name}
+<!-- 
+The following will be set on initial run:
+{APPNAME}
+
+Fill other placeholders
+-->
+# {APPNAME}
 
 {Abbreviated project description}
 

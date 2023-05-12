@@ -1,4 +1,10 @@
-# {Project Name} Documentation
+<!-- 
+The following will be set on initial run:
+{APPNAME}
+
+Fill other placeholders
+-->
+# {APPNAME} Documentation
 
 {Overview of documentation}
 

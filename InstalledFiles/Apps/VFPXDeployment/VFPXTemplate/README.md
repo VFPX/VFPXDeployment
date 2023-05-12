@@ -1,4 +1,13 @@
-# {Project Name}
+<!-- 
+The following will be set on initial run:
+{APPNAME}
+
+Fill other placeholders
+--><!-- 
+On each build, the sections framed by
+"VerNo" or "DeploymentDate" will be replaced with recent data
+-->
+# {APPNAME}
 
 Project manager: {Your Name}
 
@@ -10,15 +19,16 @@ See the [documentation](docs/documentation.md) for details on using {Project Nam
 
 ## Releases
 
-Latest release: {Release date as YYYY-MM-DD}, version {Version number}
+Latest release: <!--DeploymentDate--> -will be replaced on build- <!--/DeploymentDate-->,
+version <!--VerNo--> -will be replaced on build- <!--/VerNo-->
 
 See the [change log](ChangeLog.md) for release information.
 
 ## Helping with this project
 
-See [How to contribute to {ProjectName}](.github/CONTRIBUTING.md) for details on how to help with this project.
+See [How to contribute to {APPNAME}](.github/CONTRIBUTING.md) for details on how to help with this project.
 
 ----
-Last changed: {Date as YYYY-MM-DD}
+Last changed: <!--DeploymentDate--> -will be replaced on build- <!--/DeploymentDate-->
 
 ![](images/vfpxpoweredby_alternative.gif)
