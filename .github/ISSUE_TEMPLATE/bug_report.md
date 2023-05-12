@@ -10,7 +10,7 @@ assignees: ''
 ## ℹ Computer information
 
 - VFP version: 
-- ObjectExplorer version: 
+- VFPXDeployment version: 
 
 ## 📝 Provide detailed reproduction steps (if any)
 
