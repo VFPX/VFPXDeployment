@@ -86,7 +86,7 @@ Procedure GetProjectFolder(lcPreviousFolder)
 
 		lcValidFolder = Validate(m.lcFolder)
 		If Empty(m.lcValidFolder)
-			Messagebox('Home Folder not found', 16)
+			Messagebox('Home Folder not found. No .git folder.', 16)
 		Else
 			Return m.lcValidFolder
 		Endif
