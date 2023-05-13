@@ -1,7 +1,7 @@
 * Parameter lcFolder is the home folder for the project
 *   and defaults to the current folder if not supplied
 Lparameters lcFolder
-
+return
 Local lcCurrFolder, lcStartFolder
 
 * Get the project folder.
@@ -22,20 +22,31 @@ endif file('NoVFPXDeployment.txt')
 
 lcCurrFolder = Addbs(Addbs(m.lcFolder) + 'BuildProcess') && BuildProcess
 If not Directory(lcCurrFolder)
+*SF 20230512 we better check if this exists a different Thor
+*this is not fool-proof, since there are many ways to do Thor
+*but a very common one
+	if Directory(Addbs(m.lcFolder) + 'ThorUpdater')
+		messagebox('There is allready a Thor folder. Stoped.', ;
+			16, 'VFPX Project Deployment')
+		return
+	endif
 	md (lcCurrFolder)
 Endif
 
 * If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt, and
-* BuildMe.prg from the VFPXDeployment folder.
+* BuildMe.prg, AfterBuild.prg from the VFPXDeployment folder.
+
+lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
 
 if not file(lcCurrFolder + 'ProjectSettings.txt')
-	lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
 	copy file (lcVFPXDeploymentFolder + 'ProjectSettings.txt') to ;
 		(lcCurrFolder + 'ProjectSettings.txt')
 	copy file (lcVFPXDeploymentFolder + 'VersionTemplate.txt') to ;
 		(lcCurrFolder + 'VersionTemplate.txt')
 	copy file (lcVFPXDeploymentFolder + 'BuildMe.prg') to ;
 		(lcCurrFolder + 'BuildMe.prg')
+	copy file (lcVFPXDeploymentFolder + 'AfterBuild.prg') to ;
+		(lcCurrFolder + 'AfterBuild.prg')
 	messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
 		'for this project. Also, edit InstalledFiles.txt and specify ' + ;
 		'which files should be installed. Then run VFPX Project Deployment again.', ;
@@ -46,7 +57,7 @@ if not file(lcCurrFolder + 'ProjectSettings.txt')
 endif not file(lcCurrFolder + 'ProjectSettings.txt')
 
 lcProjectName = GetWordNum(lcCurrFolder, GetWordCount(lcCurrFolder, '\') - 1, '\')
-Deploy(lcProjectName, lcCurrFolder)
+Deploy(lcVFPXDeploymentFolder, lcProjectName, lcCurrFolder)
 
 * Restore the former current directory.
 
@@ -59,13 +70,14 @@ Return
 * ================================================================================ 
 * The work horse - put in separate Proc so that any the cd (lcStartFolder) is always run
 
-Procedure Deploy(lcProjectName, lcCurrFolder)
+Procedure Deploy(tcVFPXDeploymentFolder,lcProjectName, lcCurrFolder)
 	* Put the paths for files we may use into variables.
 
 	lcProjectFile           = lcCurrFolder + 'ProjectSettings.txt'
 	lcInstalledFilesListing = lcCurrFolder + 'InstalledFiles.txt'
 	lcInstalledFilesFolder  = 'InstalledFiles'
 	lcBuildProgram          = lcCurrFolder + 'BuildMe.prg'
+	lcAfterBuildProgram     = lcCurrFolder + 'AfterBuild.prg'
 	lcVersionTemplateFile   = lcCurrFolder + 'VersionTemplate.txt'
 	lcUpdateTemplateFile    = _screen.cThorFolder + ;
 		'Tools\Apps\VFPXDeployment\Thor_Update_Template.txt'
@@ -83,7 +95,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	pcChangeLog           = ''
 	plContinue            = .T.
 *SF 20230512: add new flags
-	pcFullVersion         = ''		&& For autoset README.MD. full version info. Either pcVersion or returned from BuilMe.prg
+	pcFullVersion         = ''		&& For autoset README.MD. Full version info. Either pcVersion or returned from BuilMe.prg
 	plRun_Bin2Prg         = .T.		&& Run FoxBin2Prg; from ProjectSettings.txt
 	plRun_git             = .T.		&& Run git; from ProjectSettings.txt
 */SF 20230512
@@ -141,6 +153,37 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		endcase
 	next lnI
 
+*SF 20230512, get pjx version
+	if UPPER(pcVersion)=='PJX'
+		pcVersion = ''
+		if empty(lcPJXFile)
+*use the active pjx, since no pjx is defined
+			if TYPE("_VFP.ActiveProject")='O'
+				pcVersion = _VFP.ActiveProject.VersionNumber
+			endif
+		else
+*use pjx defined
+*bit more work
+*see if the project is open
+			for lnProject = 1 to _VFP.Projects.Count
+				if upper(fullpath(lcPJXFile))==upper(_VFP.Projects(lnProject).Name)
+					pcVersion = _VFP.Projects(lnProject).VersionNumber
+					exit
+				endif
+			endfor
+			if empty(pcVersion);
+					and file(fullpath(lcPJXFile))
+				MODIFY PROJECT (fullpath(lcPJXFile)) NOWAIT NOSHOW NOPROJECTHOOK
+				pcVersion = _VFP.Projects(lnProject).VersionNumber
+				_VFP.ActiveProject.Close
+			endif
+		endif
+		if empty(pcVersion)
+				messagebox('No project to get version number from found.', 16, ;
+				'VFPX Project Deployment')
+				return
+		endif
+	endif
 	* Ensure we have valid pcAppName and pcAppID values.
 
 	if empty(pcAppName)
@@ -153,8 +196,8 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 			'VFPX Project Deployment')
 		return
 	endif empty(pcAppID)
-	if ' ' $ pcAppID
-		messagebox('The appID setting cannot have spaces.', 16, ;
+	if ' ' $ pcAppID or '	' $ pcAppID
+		messagebox('The appID setting cannot have spaces or tabs.', 16, ;
 			'VFPX Project Deployment')
 		return
 	endif ' ' $ pcAppID
@@ -233,12 +276,16 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 
 	* Execute Build.prg if it exists. If it sets plContinue to .F., exit.
 
+	pcFullVersion = pcVersion
+
 	if file(lcBuildProgram)
 		do (lcBuildProgram)
 		if not plContinue
 			return
 		endif not plContinue
 	endif file(lcBuildProgram)
+
+	SetDocumentation (addbs(justpath(justpath(lcCurrFolder))), tcVFPXDeploymentFolder, lcRepository)
 
 	*** JRN 2023-01-10 : Call FoxBin2PRG, if applicable
 *SF 20230512: flag to disable FoxBin2PRG
@@ -327,6 +374,7 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 	lcVersion = strtran(lcVersion, '{APPNAME}',        pcAppName,   -1, -1, 1)
 	lcVersion = strtran(lcVersion, '{APPID}',          pcAppID,     -1, -1, 1)
 	lcVersion = strtran(lcVersion, '{VERSIONDATE}',    lcDate,      -1, -1, 1)
+	lcVersion = strtran(lcVersion, '{CVERSIONDATE}',   STUFF(STUFF(lcDate, 7, 0, '-'), 5, 0, '-'),      -1, -1, 1)
 	lcVersion = strtran(lcVersion, '{VERSION}',        pcVersion,   -1, -1, 1)
 	lcVersion = strtran(lcVersion, '{JULIAN}',         lcJulian,    -1, -1, 1)
 	lcVersion = strtran(lcVersion, '{CHANGELOG}',      lcChange,    -1, -1, 1)
@@ -389,10 +437,127 @@ Procedure Deploy(lcProjectName, lcCurrFolder)
 		next lnI
 	endif plRun_git
 
+	if file(lcAfterBuildProgram)
+		do (lcAfterBuildProgram)
+	endif file(lcAfterBuildProgram)
+
+
 	MessageBox('Deployment for ' + lcProjectName + ' complete', 64, 'All done', 5000)
 
 EndProc 
 
+Procedure SetDocumentation (tcCurrFolder, tcVFPXDeploymentFolder, tcRepository)
+*check for several VFPX defaults:
+set step on
+	lcVersionDateD = STUFF(STUFF(dtoc(pdVersionDate, 1), 7, 0, '-'), 5, 0, '-')
+
+	if not file(tcCurrFolder + 'README.md')
+		copy file (tcVFPXDeploymentFolder + 'VFPXTemplate\README.md') to ;
+			README.md
+
+*alter
+		lcText = filetostr('README.md')
+		lcText = strtran(lcText,'{APPNAME}',pcAppName)
+*remove comment
+		lcText = stuff(lcText,1,at('-->',lcText) + 2,'')
+		lcText = ReplacePlaceholders (lcText, lcVersionDateD)
+		strtofile(lcText, 'README.md')
+	else  not file(tcCurrFolder + 'README.md')
+		lcText = filetostr('README.md')
+		lcText = ReplacePlaceholders (lcText, lcVersionDateD)
+		strtofile(lcText, 'README.md')
+	endif not file(tcCurrFolder + 'README.md')
+
+	if not file(tcCurrFolder + '.gitignore')
+		copy file (tcVFPXDeploymentFolder + 'VFPXTemplate\C.gitignore') to ;
+			.gitignore
+
+*add head
+		lcText = filetostr('.gitignore')
+		lcText = strtran(lcText,chr(10),chr(10)+"#" + pcAppName +chr(10),1,1)
+		strtofile(lcText, '.gitignore')
+	endif not file(tcCurrFolder + '.gitignore')
+
+	if not file(tcCurrFolder + '.gitattributes')
+		copy file (tcVFPXDeploymentFolder + 'VFPXTemplate\.gitattributes') to ;
+			.gitattributes
+
+*add head
+		lcText = filetostr('.gitattributes')
+		lcText = strtran(lcText,chr(10),chr(10)+"#" + pcAppName +chr(10),1,1)
+		strtofile(lcText, '.gitattributes')
+	endif not file(tcCurrFolder + '.gitattributes')
+
+	if not directory(tcCurrFolder + '.github')
+		mkdir .github
+		copy file (tcVFPXDeploymentFolder + 'VFPXTemplate\.github\*.*') to ;
+			.github\*.*
+	
+		mkdir .github\ISSUE_TEMPLATE
+		copy file (tcVFPXDeploymentFolder + 'VFPXTemplate\.github\ISSUE_TEMPLATE\*.*') to ;
+			.github\ISSUE_TEMPLATE\*.*
+
+*alter CONTRIBUTING.md
+		if file('.github\CONTRIBUTING.md')
+			lcText = filetostr('.github\CONTRIBUTING.md')
+*remove comment
+			lcText = stuff(lcText,1,at('-->',lcText) + 2,'')
+*replace
+			lcText = strtran(lcText,'{APPNAME}',pcAppName)
+			lcText = strtran(lcText,'{REPOSITORY}',tcRepository)
+			lcText = strtran(lcText,'{CVERSIONDATE}',lcVersionDateD)
+			strtofile(lcText, '.github\CONTRIBUTING.md')
+		endif file('.github\CONTRIBUTING.md')
+	endif not directory(tcCurrFolder + '.github')
+
+	if not directory(tcCurrFolder + 'docs')
+		mkdir docs
+		copy file (tcVFPXDeploymentFolder + 'VFPXTemplate\docs\*.*') to ;
+			docs\*.*
+
+*alter documentation.md
+		if file('docs\documentation.md')
+			lcText = filetostr('docs\documentation.md')
+*remove comment
+			lcText = stuff(lcText,1,at('-->',lcText) + 2,'')
+*replace
+			lcText = strtran(lcText,'{APPNAME}',pcAppName)
+			lcText = strtran(lcText,'{CVERSIONDATE}',lcVersionDateD)
+			strtofile(lcText, 'docs\documentation.md')
+		endif file('docs\documentation.md')
+	endif not directory(tcCurrFolder + 'docs')
+
+	if not directory(tcCurrFolder + 'images')
+		mkdir images
+		copy file (tcVFPXDeploymentFolder + 'VFPXTemplate\images\*.*') to ;
+			images\*.*
+	
+	endif not directory(tcCurrFolder + 'images')
+
+EndProc 
+
+Procedure ReplacePlaceholders (tcText, tcVersionDateD)
+
+	for lnOccurence = 1 to occurs('<!--VERNO-->', upper(tcText))
+	 lnStart = atc('<!--VerNo-->', tcText, lnOccurence)
+	 lnLen   = atc('<!--/VerNo-->', SUBSTR(tcText,lnStart))
+*	 tcText  = stuff(tcText, lnStart, lnLen, '<!--VerNo-->' + pcFullVersion)
+     if lnlen>0 
+	 	tcText  = stuff(tcText, lnStart, lnLen - 1, '<!--VERNO-->' + pcFullVersion)
+     endif lnlen>0 
+	next
+
+	for lnOccurence = 1 to occurs('<!--DEPLOYMENTDATE-->', upper(tcText))
+	 lnStart = atc('<!--DeploymentDate-->', tcText, lnOccurence)
+	 lnLen   = atc('<!--/DeploymentDate-->', SUBSTR(tcText,lnStart))
+*	 tcText  = stuff(tcText, lnStart, lnLen, '<!--DeploymentDate-->' + tcVersionDateD)
+     if lnlen>0 
+		 tcText  = stuff(tcText, lnStart, lnLen - 1, '<!--DeploymentDate-->' + tcVersionDateD)
+     endif lnlen>0 
+	next
+
+	return tcText
+endproc
 
 #Define CRLF chr[13] + chr[10] 
 
@@ -417,5 +582,3 @@ Procedure CheckVersionFile(lcVersionFile)
 	Return m.llSuccess
 
 Endproc
-
-	
