@@ -1,10 +1,11 @@
 <!-- 
 The following will be set on initial run:
 {APPNAME}
+{CVERSIONDATE}
 
 Fill other placeholders
 -->
-# {APPNAME}
+# {APPNAME} Change list
 
 {Abbreviated project description}
 
@@ -13,3 +14,8 @@ Fill other placeholders
 ### {Release date as YYYY-MM-DD}, Version {Version number}}
 
 * {List of changes}
+
+----
+Last changed: {CVERSIONDATE}
+
+![](../images/vfpxpoweredby_alternative.gif)

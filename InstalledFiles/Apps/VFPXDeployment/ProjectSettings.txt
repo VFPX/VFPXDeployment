@@ -13,5 +13,9 @@ Component = Yes
 
 *Remote repository on a git server. There are two ways for the remote repository.
 *- the builder assumes https://github.com/VFPX/[AppId]
-*- or enter the URL here (uncomment)
+*- or enter the URL here (uncomment to use):
 *Repository = {your URL}
+
+*The changelog file. Might be merged into the {AppID}Version.txt
+*The file installed as template  (uncomment to use):
+*ChangeLog = docs\ChangeLog.md

@@ -29,10 +29,11 @@ Fill other placeholders
 - Update the documentation in the docs folder as necessary.
 
 - Update the release date and version number in *README.md*.
+(Might be done by the program, please check. Depends when the file was created. See [template](../README.md))
 
 - If you haven't already done so, install VFPX Deployment: choose Check for Updates from the Thor menu, turn on the checkbox for VFPX Deployment, and click Install.
 
-- Start VFP 9 (not VFP Advanced) and CD to the {APPNAME} folder.
+- Start VFP 9 (not VFP Advanced) and CD into the project or make the pjx the active one.
 
 - Run the VFPX Deployment tool to create the installation files: choose VFPX Project Deployment from the Thor Tools, Application menu. Alternately, execute ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```.
 

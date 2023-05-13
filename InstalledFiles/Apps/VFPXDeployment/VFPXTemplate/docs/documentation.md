@@ -1,6 +1,7 @@
 <!-- 
 The following will be set on initial run:
 {APPNAME}
+{CVERSIONDATE}
 
 Fill other placeholders
 -->
