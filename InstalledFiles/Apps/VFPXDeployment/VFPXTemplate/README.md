@@ -15,7 +15,7 @@ Project manager: {Your Name}
 
 ## Documentation
 
-See the [documentation](docs/documentation.md) for details on using {Project Name}.
+See the [documentation](docs/documentation.md) for details on using {APPNAME}.
 
 ## Releases
 

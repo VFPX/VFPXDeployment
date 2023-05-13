@@ -1,14 +1,16 @@
 <!-- 
 The following will be set on initial run:
 {APPNAME}
-
+{REPOSITORY}
+{CVERSIONDATE}
+	
 Fill other placeholders
 -->
 # How to contribute to {APPNAME}
 
 ## Report a bug
 
-- Please check [issues](https://github.com/{YourName}/{ProjectName}/issues) if the bug has already been reported.
+- Please check [issues]({REPOSITORY}/issues) if the bug has already been reported.
 
 - If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
@@ -30,7 +32,7 @@ Fill other placeholders
 
 - If you haven't already done so, install VFPX Deployment: choose Check for Updates from the Thor menu, turn on the checkbox for VFPX Deployment, and click Install.
 
-- Start VFP 9 (not VFP Advanced) and CD to the {ProjectName} folder.
+- Start VFP 9 (not VFP Advanced) and CD to the {APPNAME} folder.
 
 - Run the VFPX Deployment tool to create the installation files: choose VFPX Project Deployment from the Thor Tools, Application menu. Alternately, execute ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```.
 
@@ -41,6 +43,6 @@ Fill other placeholders
 - Create a pull request; ensure the description clearly describes the problem and solution or the enhancement.
 
 ----
-Last changed: {Date as YYYY-MM-DD}
+Last changed: {CVERSIONDATE}
 
 ![](../images/vfpxpoweredby_alternative.gif)

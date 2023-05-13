@@ -11,3 +11,8 @@ Fill other placeholders
 [Topic 1](topic1.md)
 
 [Topic 2](topic2.md)
+
+----
+Last changed: {CVERSIONDATE}
+
+![](../images/vfpxpoweredby_alternative.gif)
