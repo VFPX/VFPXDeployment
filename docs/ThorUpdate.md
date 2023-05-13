@@ -162,6 +162,8 @@ The template file should have placeholders for project settings (the case of the
 
 * {VERSIONDATE}: substituted with the value of pdVersionDate formatted as YYYYMMDD.
 
+* {CVERSIONDATE}: substituted with the value of pdVersionDate formatted as YYYY-MM-DD.
+
 * {VERSION}: substituted with the value of pcVersion.
 
 * {JULIAN}: substituted with the value of pdVersionDate as a numeric value: the Julian date since 2000-01-01. If you wish, you can use that as a minor version number (see the example below).

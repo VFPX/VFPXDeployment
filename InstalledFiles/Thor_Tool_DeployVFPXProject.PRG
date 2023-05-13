@@ -73,11 +73,26 @@ Procedure GetProjectFolder(lcPreviousFolder)
 
 	Local lcFolder, lcValidFolder
 
+* try if active folder is in a git repository
 	lcValidFolder = Validate(Curdir())
 	If Not Empty(m.lcValidFolder)
 		Return m.lcValidFolder
 	Endif
 
+* SF 20230512, try active project next
+*in case we have a structure where we sit in a base with many scatterd projects
+*we try if the Active Project is the one
+	if TYPE("_VFP.ActiveProject")='O'
+		if messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"';
+				_VFP.ActiveProject.Name + '" ?', 36, 'VFPX Project Deployment')=6
+			lcValidFolder = justpath(_VFP.ActiveProject.Name)
+			If Not Empty(m.lcValidFolder)
+				Return m.lcValidFolder
+			Endif
+		endif
+	endif
+	
+*try to get a folder
 	Do While .T.
 		lcFolder = getdir(m.lcPreviousFolder, 'Project Home Folder', 'Home Path')
 		If Empty(m.lcFolder)
@@ -86,7 +101,7 @@ Procedure GetProjectFolder(lcPreviousFolder)
 
 		lcValidFolder = Validate(m.lcFolder)
 		If Empty(m.lcValidFolder)
-			Messagebox('Home Folder not found. No .git folder.', 16)
+			Messagebox('Home Folder not found, not a git repository.', 16, 'VFPX Project Deployment')
 		Else
 			Return m.lcValidFolder
 		Endif
@@ -96,14 +111,30 @@ Endproc
 
 
 Procedure Validate(lcFolder)
+* SF 20230512
+*we test if this folder is a git folder and return the git base folder
+*no need to search the base folder, git will tell this
+* (and not embarrassingly testing for ".git" folder)
+	Local lcOldFolder, lcCommand
 
-	* already in the Project Home Folder?	
-	Local lcHomeFolder
+	lcOldFolder = FULLPATH('','')
+	CD (m.lcFolder)
+	delete file git_x.tmp	&& in case
 
-	If Directory(Addbs(m.lcFolder) + '.git', 1)
-		Return m.lcFolder
+*if git is not installed, we get an empty or no file
+	lcCommand = 'git rev-parse --show-toplevel>git_x.tmp'
+	run &lcCommand
+
+	If file('git_x.tmp')
+*the result is either the git base folder or empty for no git repo
+		lcFolder = chrtran(filetostr('git_x.tmp'), '/' + chr(13) + chr(10), '\')
+		delete file git_x.tmp
+	else
+* no file, no git
+		lcFolder = ''
 	Endif
 
-	Return ''
+	CD (m.lcOldFolder)
+	Return m.lcFolder
 
 Endproc
