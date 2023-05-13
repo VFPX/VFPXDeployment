@@ -1,4 +1,17 @@
+*The name to show in Thor
 AppName   = MyApp
+
+*The ID for Thor operation
 AppID     = MyApp
+
+*Version number
+*A string, or enter pjx to use _VFP.ActiveProject.VersionNumber or, if defined PJXFile
 Version   = 1.0
+
+*Component of Thor or Tool
 Component = Yes
+
+*Remote repository on a git server. There are two ways for the remote repository.
+*- the builder assumes https://github.com/VFPX/[AppId]
+*- or enter the URL here (uncomment)
+*Repository = {your URL}
