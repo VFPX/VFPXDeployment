@@ -40,4 +40,5 @@ Most likely you must alter something in InstallFiles or it's sub folders.
 
 ----
 Last changed: _2023-05-16_
+
 ![Picture](../docs/Images/vfpxpoweredby_alternative.gif)
