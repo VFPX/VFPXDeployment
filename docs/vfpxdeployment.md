@@ -8,7 +8,7 @@ For the use of folders in projects **using VFPX Deployment** see
 [Thor Update](./ThorUpdate.md).
 
 ## Using this document
-- Paths are relative to the project root folder. This is the toplevel folder of the local git repository you can get invoking `git rev-parse --show-toplevel`.
+- Paths are relative to your projects root folder. This is the toplevel folder of the local git repository you can get invoking `git rev-parse --show-toplevel`.
 
 ### Folder
 | Folder | Use |

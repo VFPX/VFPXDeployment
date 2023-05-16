@@ -8,7 +8,9 @@ It shows the setup of *VFPX related data* and *Thor* in two chapters.
 See https://vfpx.github.io/newproject/
 
 There are endless informations about the problem on the web.   
-This document only giefs a brief one about some tasks not usual for VFP developers. It focus on github, using for gitlab is not that different.
+This document only gives a brief one about some tasks not usual for VFP developers. It focus on github, using for gitlab is not that different.
+
+See [VFPX Templates](./vfpx_templates.md) what VFPX Deployment can do to support with this.
 
 ----
 ## Table of contents
@@ -32,6 +34,10 @@ For the root folder of your project there is more work to do. This is the primar
 
 For the root README.md, this VFPX Deployoment will create a brief version from template. The file need to be altered to your needs.   
 Each run of VFPX Deployoment will auto update Version number and release date.
+
+Notable exclusion. <u>.github\\README.md</u>.
+This file would be used by github as product documentation on the root of your project instead of the *README.md* placed there.
+This is a bit unusual.
 
 ## Documentation
 ### Project Documentation
@@ -70,6 +76,6 @@ VFPX Deployment set up the most basic - root folder README.md and .github\\CONTR
 Look up [Community Standards](https://opensource.guide/) for more information.
 
 ----
-Last changed: 2023-05-14
+Last changed: 2023-05-16
 
 ![](./Images/vfpxpoweredby_alternative.gif)

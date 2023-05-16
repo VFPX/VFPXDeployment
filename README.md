@@ -26,7 +26,7 @@ See the [Release history](./docs/ChangeLog.md) for release information.
 
 ### Highlights to version 1.1.*
 - A better sophisticated way to determine projects home folder.
-- Additional templates for VFPX community standards
+- Additional templates for VFPX community standards. See [VFPX Templates](./vfpx_templates.md).
 - Better control of work flow
 
 ## External information
