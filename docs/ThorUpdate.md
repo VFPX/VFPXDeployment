@@ -115,7 +115,7 @@ What to do should be noted step by step into **.github\\CONTRIBUTING.md** so eve
 ## Configuration
 ### Folder
 This shows the use of folders in a project **using VFPX Deployment** For the use of folders in the **VFPX Deployment project** see
-[VFPX Deployment](.\vfpxdeployment.md).
+[VFPX Deployment](./vfpxdeployment.md).
 
 #### BuildProcess
 This folder is mandatory.   
@@ -175,7 +175,7 @@ This is the project root. Some files will copied on first run, if they are not e
   - All following runs will merge the values of pdVersionDate and pcVersionDate into this file. There are comments as place holder.
 - *.gitignore*: File to control what to exclude from git, for example executables and backups.
   - There are two ways to do this, this is the conventional *exclude* one.
-  - If you like the more secure *include* way, you need to copy the *[L.gitignore](..\InstalledFiles\Apps\VFPXDeployment\VFPXTemplate\L.gitignore)* file. The idea here is to only include what you are sure of, so private keys will not be included by accident.
+  - If you like the more secure *include* way, you need to copy the *[L.gitignore](../InstalledFiles/Apps/VFPXDeployment/VFPXTemplate/L.gitignore)* file. The idea here is to only include what you are sure of, so private keys will not be included by accident.
   - Fit to your needs
   - The second run on your system use [ProjectSettings.txt:](#settings) to mark this file as belonging to AppName
 - *.gitattributes*: Depending how you install or config git, it might transform  CRLF &lt;&gt; LF on add / checkout - or not. This creates havoc if different developers set there system different. This file forces to keep CRLF - the idea is VFP, i.e. DOS, not LINUX.
@@ -183,7 +183,7 @@ This is the project root. Some files will copied on first run, if they are not e
   - The second run on your system use [ProjectSettings.txt:](#settings) to mark this file as belonging to AppName
 
 ### Settings
-Those are the settings availanle in the BuildProcess\ProjectSettings.txt file.
+Those are the settings availanle in the BuildProcess\\ProjectSettings.txt file.
 | Setting | Usage |
 | ------ | ------ |
 | **AppName** | the display name for the project. |
@@ -207,7 +207,7 @@ Those are the settings availanle in the BuildProcess\ProjectSettings.txt file.
 | **Inculde_VFPX** | "Yes" to create community files, else "No" to not create. (Default)<br />This will create some files if missing, but not overwrite existing files. |
 
 ### Public variables
-Public variables read from the  BuildProcess\ProjectSettings.txt file,
+Public variables read from the  BuildProcess\\ProjectSettings.txt file,
 that might be modified or used in [BuildMe.prg](#buildme) preprocessing,
 or in the [AfterBuild.prg](#afterbuild) postprocess program.
 | Variable | Usage |
@@ -390,7 +390,7 @@ See [Anatomy of a VFPX Project](https://doughennig.blogspot.com/2023/05/anatomy-
 ## Example
 There is no explicit example project provided.
 Anyway, [VFPX Deployment](https://github.com/VFPX/VFPXDeployment) in itself is a VFPX Deployment project, so it might be a good idea to understand this project.
-A brief help is given in [VFPX Deployment](.\vfpxdeployment.md)
+A brief help is given in [VFPX Deployment](./vfpxdeployment.md)
 
 ## See also
 - https://git-scm.com/

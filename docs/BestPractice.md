@@ -1,5 +1,5 @@
 # VFPX Deployment - Best practice
-![](../docs/Images/vfpxdeployment.png)
+![](../docs/Images/vfpxdeployment.png)   
 These document gives an idea how to set up a VFP project for VFPX and  Thor - and some general points to publish on a remote server.
 
 See the great article [Anatomy of a VFPX Project](https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html) by Doug Hennig.
@@ -72,4 +72,4 @@ Look up [Community Standards](https://opensource.guide/) for more information.
 ----
 Last changed: 2023-05-14
 
-![](.\Images\vfpxpoweredby_alternative.gif)
+![](./Images/vfpxpoweredby_alternative.gif)

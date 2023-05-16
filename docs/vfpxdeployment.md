@@ -5,7 +5,7 @@
 This project is a bit like self referential, some code looks like to be on two places.
 This document shows the usage of the folders  **in this project**.
 For the use of folders in projects **using VFPX Deployment** see
-[Thor Update](.\ThorUpdate.md).
+[Thor Update](./ThorUpdate.md).
 
 ## Using this document
 - Paths are relative to the project root folder. This is the toplevel folder of the local git repository you can get invoking `git rev-parse --show-toplevel`.

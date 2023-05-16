@@ -65,4 +65,4 @@
 ----
 Last changed: 2023-05-16
 
-![](.\Images\vfpxpoweredby_alternative.gif)
+![](./Images/vfpxpoweredby_alternative.gif)
