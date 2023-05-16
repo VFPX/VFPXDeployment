@@ -1,4 +1,4 @@
-#L.gitignore
+#.gitignore for {AppName}
 # Lutz template for a .gitignore using TEXT ONLY sources
 # from https://github.com/fdbozzo/foxbin2prg/blob/master/docs/FoxBin2Prg_git.md
 # this is a exclude all and include only what you need approach

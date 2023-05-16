@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![](./Images/vfpxdeployment.png)
-## Version 1.1.08535
+## Version 1.1.08536
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github (check if you use gitlab, it's more or less the same, except naming).
@@ -26,14 +26,14 @@ A brief idea how to give your project a standard look is discussed in [BestPract
     - [ThorUpdater](#thorupdater)
     - [.github](#github)
     - [docs](#docs)
-    - [docs\\images](#docs-images)
+    - [docs\\images](#docs--images)
     - [Root folder](#root-folder)
   - [Settings](#settings)
   - [Public variables](#public-variables)
   - [Placeholders](#placeholders)
 - [Setting up the build process](#setting-up-the-build-process)
   - [git](#git)
-  - [Download the VFPX Deployment tool](#download-the-4-deployment-tool)
+  - [Download the VFPX Deployment tool](#download-the-vfpx-deployment-tool)
   - [Customize the project settings for your project](#customize-the-project-settings-for-your-project)
   - [Specify what files are to install on the target computer](#specify-what-files-are-to-install-on-the-target-computer)
   - [Customize the version template](#customize-the-version-template)
@@ -43,9 +43,10 @@ A brief idea how to give your project a standard look is discussed in [BestPract
   - [Customize documentation](#customize-documentation)
   - [VFPX Deployment process](#vfpx-deployment-process)
 - [Running the build process](#running-the-build-process)
-- [First time task to deploy](#first-time-task-to-deplay)
+- [First time task to deploy](#first-time-task-to-deploy)
 - [Checking for updates](#checking-for-updates)
 - [Test your project](#test-your-project)
+- [Example](#example)
 - [See also](#see-also)
 
 ## Using this document
@@ -66,7 +67,7 @@ To make it easier to create the files necessary to support Thor CFU, an automate
 In addition to whatever subdirectories your project root folder contains, it will also contain BuildProcess, InstalledFiles, and ThorUpdater subdirectories, and if enabled, some folders and files used for documentation in VFPX community standard.
 
 ## Setup Guide
-This is the step-by-step guide to set up your VFPX / Thor project. Some information is identicall to [VFPX Deployment process](#vfpx-deployment-process).
+This is the step-by-step guide to set up your VFPX / Thor project. Some information is identical to [VFPX Deployment process](#vfpx-deployment-process).
 See [Setting up the build process](#setting-up-the-build-process)
 
 In it's most simple way the setup for a project works like:
@@ -82,9 +83,9 @@ In it's most simple way the setup for a project works like:
 More detailed:
 1. Install Thor
 2. Download [VFPX Deployment](#download-the-4-deployment-tool) from Thors *Check for Update* (CFU)
-3. If not allready done, create a **remote** git repository for your project, for example at github. See [VFPX Add a Project](https://vfpx.github.io/newproject/)
-4. If not allready done, create a **local** git repository for your project root folder. Just init, do not add files.
-   - or clone the remote, that's up to your choice and level of git knowlodge.
+3. If not already done, create a **remote** git repository for your project, for example at github. See [VFPX Add a Project](https://vfpx.github.io/newproject/)
+4. If not already done, create a **local** git repository for your project root folder. Just init, do not add files.
+   - or clone the remote, that's up to your choice and level of git knowledge.
 5. Open your pjx or  CD into your project (anywhere) or simple
 6. Run *VFPX Project Deployment* from Thor/Applications menu
   - The program tries to figure out your project root from information provided by git in the following order:
@@ -106,7 +107,7 @@ More detailed:
 If something is missing, the file or folder is created, and some [Placeholders](#placeholders) like {AppName} name are substituted.
 13. Fill in documentation, .gitignore etc
 14. [Test your project](#test-your-project)
-15. See [First time task to deploy](#first-time-task-to-deplay) to publish yout project to Thor.
+15. See [First time task to deploy](#first-time-task-to-deploy) to publish your project to Thor.
 16. To run VFPX Deployment for production, one need to set up some information, documentation etc.
 What to do should be noted step by step into **.github\\CONTRIBUTING.md** so everybody know what to do.
 17. push
@@ -126,7 +127,7 @@ BuildProcess contains the files for the build process:
 - [AfterBuild.prg:](#afterbuild) contains custom code you write to do whatever is necessary after the build process. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
 - Thor_Update_{AppID}.prg (where *AppID* is the value of the AppID setting in ProjectSettings.txt): the Thor CFU update program, which contains the URLs for Thor to use to download the version and ZIP files to install the tool. This file is created the [first time](#first-time-task) you use the VFPX Deployment process and then not updated again after that.
 - InstalledFiles.txt: contain the paths for the files to be installed by Thor CFU. This file is optional.
-- Thor_Update_{AppID}.prg: The control to control the updateprocess in Thor
+- Thor_Update_{AppID}.prg: The file to control the update process in Thor
 
 #### InstalledFiles
 This folder is mandatory.   
@@ -147,7 +148,7 @@ Optional, only created if *Inculde_VFPX* is set.
 Folder to store some files to interact with github.
 
 Those files should be changed to the need of the project
-- *CONTRIBUTING.md* A file telling how to participate on the project, and what befor running this programm.
+- *CONTRIBUTING.md* A file telling how to participate on the project, and what to do before running this program.
 - *ISSUE_TEMPLATE/\*.md* Templates to create issues
 
 #### docs
@@ -156,17 +157,17 @@ Folder to store documentation.
 
 Those files should be changed to the need of the project
 - *documentation.md* Anchor for documentation, target of links from other documents.
-- *ChangeLog.md* File to list your changes, might be substituted into {AppID}Version.txt if set as ChangeLog setting.
+- *ChangeLog.md* File to list your changes, might be substituted into {AppID}Version.txt if set as *ChangeLog* setting.
 - *topic1.md*,*topic2.md* Example files.
 
 #### docs\\images
 Optional, only created if *Inculde_VFPX* is set.   
-Folder to store images for documention etc.
+Folder to store images for documentation etc.
 - Picture used in some templates and README.md
 
 #### Root folder
 Optional files, only created if *Inculde_VFPX* is set.   
-This is the project root. Some files will pe copied on first run, if they are not existing.
+This is the project root. Some files will copied on first run, if they are not existing.
 - *README.md*: Basic information about your project, the main information on git server pages.
   - Fit to your needs
   - The second run on your system use [ProjectSettings.txt:](#settings) to set the project with the value of AppName
@@ -192,14 +193,14 @@ Those are the settings availanle in the BuildProcess\ProjectSettings.txt file.
 | **Repository** | when VFPX Deployment generates Thor_Update_{AppID}.prg, it assumes the project repository is github.com/VFPX/{AppID}. If your project exists in a different location (for example, github.com/\[YourName\]/{AppID}), add a <br /> Repository setting with the full URL, such as ```https://github.com/DougHennig/SFMail```.   
 | | You can also add the following optional settings if you wish |
 | **VersionDate** | the release date formatted as YYYY-MM-DD; if omitted, today's date is used. |
-| **Prompt** | Yes to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If Version isn't specified, your code in BuildMe.prg can set the public pcVersion variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
+| **Prompt** | Yes to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If *Version* isn't specified, your code in BuildMe.prg can set the public *pcVersion* variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
 | **ChangeLog** | the path for a file containing changes (see below). |
 | **Component** | "Yes" for Components (Default), else "No" for Apps.<ul><li>Apps create Thor tools for use in your IDE (e.g., GoFish, PEMEditor).</li><li>Components are not called directly from Thor tools but are used indirectly in either your IDE (FoxBin2PRG) or in production applications (Dynamic Forms)</li></ul> |
 | **Category** | the category to use when adding to the Thor menu. If this is omitted, "Applications" is used. This is only used when Component is No. |
 | **PJXFile** | the relative path to the PJX file to build an APP or EXE from. Omit this if that isn't required.<br />The version number of this project can be auto-used, see Version setting.  |
 | **Recompile** | by default, VFPX Deployment builds the project specified in PJXFile without the RECOMPILE clause. Add _Recompile = Yes_ to force recompilation upon building. |
-| **AppFile** | the path to the APP or EXE to build from the project (specified with the extension; for example, MyApp.app builds an APP and MyApp.exe builds an EXE). If PJXFile is specified and AppFile is omitted, VFPX Deployment automatically builds an APP file in the same folder and with the same file name as the PJX file specified in the PJXFile setting.<br />  > If ProjectSettings.txt specifies that an APP or EXE is part of the VFPX project, VFPX Deployment ensures it's built using VFP 9 and not VFP Advanced because the APP/EXE structure is different. While VFP Advanced can run APP/EXEs created in VFP 9, VFP 9 cannot run APP/EXEs created in VFP Advanced. |
-| **Bin2PRGFolder** | a comma-separated list of relative paths to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folders to create their text equivalents. This is important because Git cannot do diffs on binary files. Also git is bad on binaries, it's made for text files.<br />  > FoxBin2PRG: is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting. The use of FoxBin2Prg can be turned off. |
+| **AppFile** | the path to the APP or EXE to build from the project (specified with the extension; for example, MyApp.app builds an APP and MyApp.exe builds an EXE). If PJXFile is specified and AppFile is omitted, VFPX Deployment automatically builds an APP file in the same folder and with the same file name as the PJX file specified in the PJXFile setting.<br />If ProjectSettings.txt specifies that an APP or EXE is part of the VFPX project, VFPX Deployment ensures it's built using VFP 9 and not VFP Advanced because the APP/EXE structure is different. While VFP Advanced can run APP/EXEs created in VFP 9, VFP 9 cannot run APP/EXEs created in VFP Advanced. |
+| **Bin2PRGFolder** | a comma-separated list of relative paths to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folders to create their text equivalents. This is important because Git cannot do diffs on binary files. Also git is bad on binaries, it's made for text files.<br />oxBin2PRG: is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting. The use of FoxBin2Prg can be turned off, see *RunBin2Prg*. |
 | **InstalledFilesFolder** | by default, the staging folder VFPX Deployment uses to generate the ZIP file from is called InstalledFiles. This setting allows you to specify a different name. |
 | **RunBin2Prg** | "Yes" to auto run FoxBin2prg (Default), else "No" to not run. |
 | **RunGit** | "Yes" to auto run git (Default), else "No" to not run. |
@@ -218,7 +219,7 @@ or in the [AfterBuild.prg](#afterbuild) postprocess program.
 | **pcDate** | the release date *pdVersionDate* as a string (YYYYMMDD) |
 | **pcVersionDate** | the release date *pdVersionDate* as a string (YYYY-MM-DD) |
 | **pcThisDate** | the release date `DATE`as a string (DATE(YYYY, MM, DD)) |
-| **pcJulian** | the release date as string as days sind 2000/01/01 |
+| **pcJulian** | the release date as string as days since 2000/01/01 |
 | **pcChangeLog** | the ChangeLog setting |
 | **plContinue** | .T. to continue the deployment process or .F. to stop |
 | **plRun_Bin2Prg** | .T. to auto run FoxBin2prg (default) |
@@ -243,7 +244,7 @@ For Thor_Update_{AppID}.prg and VFPX documentation on first run, for {AppID}Vers
 | **{CATEGORY}** | Category | substituted with the value of the *Category* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run. |
 | **{COMPONENT}** | Component | substituted with the value of the *Component* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run and<br/>Thor_Update_{AppID}.prg, first run, |
 
-The template may hold comments *availble while not substituded* like `@@@ Comments \\\`. The will be replaced after created in project folder.
+The template may hold comments *available while not substituted* like `@@@ Comments \\\`. The will be replaced after created in project folder.
 
 ## Setting up the build process
 
@@ -318,7 +319,7 @@ The VFPX Deployment process does the following:
 - Creates the BuildProcess subdirectory of the project root folder and copies the files listed above to it.
 - Reads the settings in [ProjectSettings.txt](#settings) into the [Public variables](#public-variables) so BuildMe.prg can read from or write to them if necessary:   
 
-This is he step-by-step walk through the Deplyoment process. Some information is identicall to [Setup Guide](#setup-guide).
+This is he step-by-step walk through the Deployment process. Some information is identical to [Setup Guide](#setup-guide).
 Special task on set up are provided on the [Setting up the build process](#setting-up-the-build-process) topic.
 
 If you run VFPX Deployment for production, you need to set information, documentation etc.
@@ -340,7 +341,7 @@ What to do you should note step by step into **.github\\CONTRIBUTING.md** so eve
 4. Rerun 
 5. The [ProjectSettings](#settings) will be read
 6. Additional processing and tests run
-7. If no Versionnumber could be determined, the user will be prompted.
+7. If no Version number could be determined, the user will be prompted.
 8. If found, [BuildProcess\\BuildMe.prg](#buildme) runs user defined code to pre-process and gather other information to the [Public variables](public-variables). Some ideas are provided in the file.
 9. If enabled, run [FoxBinb2Prg](https://github.com/fdbozzo/foxbin2prg)
 10. If a pjx (*PJXFILE*)is provided, compile the PJX, depending on *APPFILE*
@@ -350,7 +351,7 @@ If something is missing, the file or folder is created, and some information lik
 13. Check for [ThorUpdater](#thorupdater) folder and create if missing.
 14. Create Thor files
     - {AppID}Version.txt from BuildProcess\\VersionTemplate.txt
- Zips the contents of the InstalledFiles folder into {AppID}.zip in the ThorUpdater folder.
+ Zips the contents of the InstalledFiles folder into {AppID}.zip in the [ThorUpdater](#thorupdater) folder.
 15. If enabled, run git
 16. If found, [BuildProcess\\AfterBuild.prg](#afterbuild) runs user defined code to post-process. Some ideas are provided in the file.
 
@@ -359,7 +360,7 @@ If something is missing, the file or folder is created, and some information lik
 After doing all of the tasks in the previous section, you're ready to create the files Thor needs to download and install or update your project. This is the normal deployment process you'll use each time there's a new release for your project:
 
 1. Make whatever changes to your project files are necessary.
-2. Update [ProjectSettings.txt:](#settings) with a new version number if necessary. For example, if you use the Version setting as the version number, increment it. If you use Version as the major version number and the Julian date as a minor version number, and this is just a minor release (e.g. going from 3.2.1234 to 3.2.1245), you don't need to change Version at all.
+2. Update [ProjectSettings.txt:](#settings) with a new version number if necessary. For example, if you use the Version setting as the version number, increment it. If you use Version as the major version number and the Julian date as a minor version number, and this is just a minor release (e.g. going from 3.2.1234 to 3.2.1245), you don't need to change Version at all. Or, if you provide a pjx, you can automatic use the version number of the project.
 3. If you've specified the ChangeLog setting in ProjectSettings.txt, update the specified file to describe the changes.
 4. Start VFP 9 (not VFP Advanced) and CD into the project or make the pjx the active one.
 5. Invoke the VFPX Deployment tool from the Thor Tools, Application, VFPX Project Deployment menu item or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```.
@@ -369,22 +370,27 @@ The steps required for a project should be found in **.github\\CONTRIBUTING.md**
 
 ### First time task to deploy
 
-In order for Thor to know about your project, it needs a Thor updater program named Thor_Update_{AppID}.prg. The build process creates that PRG in the BuildProcess folder if mising and then doesn't update it again after that.
+In order for Thor to know about your project, it needs a Thor updater program named Thor_Update_{AppID}.prg. The build process creates that PRG in the BuildProcess folder if missing and then doesn't update it again after that.
 
-You can test that the updater PRG works by copying it to Thor\Tools\Updates\My Updates under your Thor installation folder. Then choose *Check for Updates* from the Thor menu. The tool should appear in the CFU dialog in italics, and installing it should work.
+You can test that the updater PRG works by copying it to Thor\Tools\Updates\My Updates under your Thor installation folder. Then choose *Check for Updates* from the Thor menu. The tool should appear in the CFU dialogue in italics, and installing it should work.
 
 Once you confirm the update process works, zip Thor_Update_{AppID}.prg and email it to the VFPX administrators (<a href="mailto:projects@vfpx.org">projects@vfpx.org</a>). They'll add it to the Thor repository so Thor knows about your project.
 
 > Note to admins: see [How to contribute to Thor](https://github.com/VFPX/Thor/blob/master/.github/CONTRIBUTING.md) for instructions to handle the new Thor_Update_{AppID}.prg.
 
 ### Checking for updates
-Now that Thor knows about your project, the next time a user chooses *Check for Updates* from the Thor menu in VFP, Thor will download {AppID}Version.txt from the ThorUpdater folder of your repository, see that the project is available to be installed or a new version is ready for download, and display it to the user in the update dialog.
+Now that Thor knows about your project, the next time a user chooses *Check for Updates* from the Thor menu in VFP, Thor will download {AppID}Version.txt from the ThorUpdater folder of your repository, see that the project is available to be installed or a new version is ready for download, and display it to the user in the update dialogue.
 
 If the user chooses to install the project or the update, Thor downloads {AppID}.zip from the ThorUpdater folder of your repository and unzips it in the appropriate folder on your machine (the {AppName} subdirectory of either the Thor\Tools\Apps or Thor\Tools\Components, depending on the Component setting in ProjectSettings.txt, subdirectory of the main Thor folder) and creates {AppID}VersionFile.txt in that folder so it knows what version the user has so they aren't prompted about an update until the next release.
 
 ## Test your project
 To test your project, push to your remote repository. Add the file *Thor_Update_{AppID}.prg* to the `"Thor\Thor\Tools\Updates\My Updates"` subdirectory in Thor folder, and run Thors *Check for Updates*.   
 See [Anatomy of a VFPX Project](https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html)  by Doug Hennig around around 57:00 for more information.
+
+## Example
+There is no explicit example project provided.
+Anyway, [VFPX Deployment](https://github.com/VFPX/VFPXDeployment) in itself is a VFPX Deployment project, so it might be a good idea to understand this project.
+A brief help is given in [VFPX Deployment](.\vfpxdeployment.md)
 
 ## See also
 - https://git-scm.com/
@@ -398,6 +404,6 @@ See [Anatomy of a VFPX Project](https://doughennig.blogspot.com/2023/05/anatomy-
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: 2023-05-15
+Last changed: 2023-05-16
 
 ![](./Images/vfpxpoweredby_alternative.gif)

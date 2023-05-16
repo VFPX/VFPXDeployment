@@ -37,7 +37,7 @@ endtext
 return lcNotes
 
 @@@* Register the tool with Thor. This template code assumes the tool is an APP
-* file named AppID.app, where AppID is the AppID setting in ProjectSettings.txt.
+* file named {AppID}.app, where AppID is the AppID setting in ProjectSettings.txt.
 * If that isn't the case, edit the Code property as necessary.
 
 \\\* Register the tool with Thor. Note: Thor replaces ##InstallFolder## with the

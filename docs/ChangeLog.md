@@ -1,24 +1,25 @@
 # Release History
 ![](./Images/vfpxdeployment.png)
-
-## 2023-05-15 Version 1.1.08535
+## 2023-05-16 Version 1.1.08536
 
 - Added support for VFPX community documentation (option)
   - create .gitattributes to fix issues with git
   - create .gitignore template
   - create document templates for user project
   - automatic update for release date and version in README.md
+  - .gitignore for BuildProcess and ThorUpdater folder, to allow simple git add . on whole project
 - Updated search for home folder, using git info
 - Updated search for home folder, using active project
 - Added flag to disable FoxBin2Prg
 - Added flag to disable git
-- Option to use projects Versionnumber as version
-- Several new public vars to interact with
+- Option to use projects Version number as version
+- Several new public variables to interact with
 - Substitutions while creating templates
 - Generalized substitution for templates and VersionTemplate.txt
 - Added post-processing program AfterBuild.prg
 - Clean up public variables
 - FULLPATH() instead of CURDIR()
+- Added logo
 
 
 ## 2023-04-02 Version 1.0.08492
@@ -60,3 +61,8 @@
 ## 2023-01-20 Version 1.0
 
 - Initial release
+
+----
+Last changed: 2023-05-16
+
+![](.\Images\vfpxpoweredby_alternative.gif)

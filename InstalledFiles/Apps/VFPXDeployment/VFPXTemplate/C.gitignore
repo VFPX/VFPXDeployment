@@ -1,4 +1,7 @@
-#C.gitignore
+@@@
+The template for .gitignore
+Placeholders will be replaced once
+\\\#.gitignore for {AppName}
 # Christofs template for a .gitignore
 # from https://github.com/cwollenhaupt/foxGitIgnore
 

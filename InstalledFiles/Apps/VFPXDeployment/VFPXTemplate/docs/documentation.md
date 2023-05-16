@@ -1,11 +1,10 @@
-<!-- 
+@@@ 
 The following will be set on initial run:
 {APPNAME}
 {CVERSIONDATE}
 
 Fill other placeholders
--->
-# {APPNAME} Documentation
+\\\# {APPNAME} Documentation
 
 {Overview of documentation}
 
@@ -16,4 +15,4 @@ Fill other placeholders
 ----
 Last changed: {CVERSIONDATE}
 
-![](../images/vfpxpoweredby_alternative.gif)
+![](./images/vfpxpoweredby_alternative.gif)

@@ -28,4 +28,5 @@ with toUpdateObject
 	.LinkPrompt           = '{APPNAME} Home Page'
 	.ProjectCreationDate  = {CURRDATE}
 endwith
+
 return toUpdateObject

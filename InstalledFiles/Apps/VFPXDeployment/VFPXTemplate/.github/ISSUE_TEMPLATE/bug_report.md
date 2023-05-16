@@ -7,6 +7,11 @@ assignees: ''
 
 ---
 
+## ℹ Computer information
+
+- VFP version: 
+- {APPNAME} version: 
+
 ## 📝 Provide detailed reproduction steps (if any)
 
 1. …

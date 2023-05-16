@@ -1,7 +1,7 @@
 * This program should can tasks like
-* - bin2text, if the automatic way was not used
+* - FoxBin2Prg, if the automatic way was not used
 * - git processing like add, commit or push
-* - set debug info on in pjx or include file
+* - set debug info On in pjx or include file
 *
 * The program runs after
 * - FoxBin2Prg is, if enabled, run

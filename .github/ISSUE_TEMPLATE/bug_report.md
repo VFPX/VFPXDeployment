@@ -10,7 +10,7 @@ assignees: ''
 ## ℹ Computer information
 
 - VFP version: 
-- VFPXDeployment version: 
+- VFPX Deployment version: 
 
 ## 📝 Provide detailed reproduction steps (if any)
 
