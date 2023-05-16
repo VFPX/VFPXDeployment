@@ -26,7 +26,7 @@ A brief idea how to give your project a standard look is discussed in [BestPract
     - [ThorUpdater](#thorupdater)
     - [.github](#github)
     - [docs](#docs)
-    - [docs\\images](#docs--images)
+    - [docs\\images](#docsimages)
     - [Root folder](#root-folder)
   - [Settings](#settings)
   - [Public variables](#public-variables)
