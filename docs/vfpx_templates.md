@@ -1,6 +1,6 @@
 # VFPX Templates in VFPX Deployment
-![](./Images/vfpxdeployment.png)
-## Version 1.1.08536
+![VFPX Deployment logo](./Images/vfpxdeployment.png)
+## Version 1.1.08537
 
 There is a common way to give documentation to projects that are published for common use. A brief idea how to give your project a standard look is discussed in [BestPractice.md](./BestPractice.md).
 
@@ -48,6 +48,6 @@ Some templates may hold comments *available while not substituted* like `@@@ Com
 | docs\\images\\\*.\* | <u>docs\\images\\\*.\*</u> | Pictures to used in the templates. The place to store pictures used in documentation.<br />The files will not be checked on every run. They will only be created, if the <u>docs</u> folder is missing. |
 
 ----
-Last changed: 2023-05-16
+Last changed: 2023-05-17
 
-![](./Images/vfpxpoweredby_alternative.gif)
+![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif)

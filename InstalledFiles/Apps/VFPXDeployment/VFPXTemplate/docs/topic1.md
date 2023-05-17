@@ -5,4 +5,4 @@ This is topic 1 for {APPNAME}.
 ----
 Last changed: {CVERSIONDATE}
 
-![](./images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./images/vfpxpoweredby_alternative.gif)

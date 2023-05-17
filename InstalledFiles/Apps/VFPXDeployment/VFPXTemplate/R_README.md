@@ -3,6 +3,7 @@ The template for README.md in project root folder
 The following will be set on initial run:
 {APPNAME}
 {REPOSITORY}
+{CHANGELOG_F}
 
 Fill other placeholders
 \\\<!-- 
@@ -16,9 +17,11 @@ Project manager: {Your Name}
 
 {Project Description}
 
+![VFPX Banner](./docs/images/vfpxbanner.gif)   
+This project is part of [VFPX](https://vfpx.github.io/).
 ## Documentation
 
-See the [documentation](docs/documentation.md) for details on using {APPNAME}.
+See the [documentation]({CHANGELOG_F}) for details on using {APPNAME}.
 
 ## Releases
 
@@ -27,6 +30,10 @@ version <!--VerNo--> -will be replaced on build- <!--/VerNo-->
 
 See the [change log](docs/ChangeLog.md) for release information.
 
+## Installation
+
+This project is available to you via [Thor](https://github.com/VFPX/Thor) *Check For Updates* function.
+
 ## Helping with this project
 
 See [How to contribute to {APPNAME}](.github/CONTRIBUTING.md) for details on how to help with this project.
@@ -34,4 +41,4 @@ See [How to contribute to {APPNAME}](.github/CONTRIBUTING.md) for details on how
 ----
 Last changed: _<!--DeploymentDate--> -will be replaced on build- <!--/DeploymentDate-->_   
 
-![](./docs/images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./docs/images/vfpxpoweredby_alternative.gif)

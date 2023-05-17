@@ -1,5 +1,5 @@
 # VFPX Deployment - Best practice
-![](../docs/Images/vfpxdeployment.png)   
+![VFPX Deployment logo](../docs/Images/vfpxdeployment.png)   
 These document gives an idea how to set up a VFP project for VFPX and  Thor - and some general points to publish on a remote server.
 
 See the great article [Anatomy of a VFPX Project](https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html) by Doug Hennig.
@@ -76,6 +76,6 @@ VFPX Deployment set up the most basic - root folder README.md and .github\\CONTR
 Look up [Community Standards](https://opensource.guide/) for more information.
 
 ----
-Last changed: 2023-05-16
+Last changed: 2023-05-17
 
-![](./Images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./Images/vfpxpoweredby_alternative.gif)

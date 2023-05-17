@@ -1,5 +1,5 @@
 # How to contribute to VFPX Deployment
-![](../docs/Images/vfpxdeployment.png)
+![VFPX Deployment logo](../docs/Images/vfpxdeployment.png)
 ## Bug report?
 - Please check [issues](https://github.com/VFPX/ObjectExplorer/issues) if the bug is reported
 - If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behaviour that is not occurring.
@@ -39,6 +39,6 @@ Most likely you must alter something in InstallFiles or it's sub folders.
 9. Create a pull request
 
 ----
-Last changed: _2023-05-16_
+Last changed: _2023-05-17_
 
-![Picture](../docs/Images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](../docs/Images/vfpxpoweredby_alternative.gif)

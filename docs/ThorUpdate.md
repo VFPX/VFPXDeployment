@@ -1,6 +1,6 @@
 # VFPX Deployment
-![](./Images/vfpxdeployment.png)
-## Version 1.1.08536
+![VFPX Deployment logo](./Images/vfpxdeployment.png)
+## Version 1.1.08537
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github (check if you use gitlab, it's more or less the same, except naming).
@@ -189,22 +189,22 @@ This is the project root. Some files will copied on first run, if they are not e
 Those are the settings availanle in the BuildProcess\\ProjectSettings.txt file.
 | Setting | Usage |
 | ------ | ------ |
-| **AppName** | the display name for the project. |
-| **AppID** | similar to appName but must be URL-friendly (no spaces or other illegal URL characters). |
-| **Version** | the version number, such as 1.0 (optional; see below).<br />There is a special value *pjx*. If this is set, the version number will be read from the project provided by PJXFile. |
+| **AppName** | The display name for the project. |
+| **AppID** | Similar to appName but must be URL-friendly (no spaces or other illegal URL characters). |
+| **Version** | The version number, such as 1.0 (optional; see below).<br />There is a special value *pjx*. If this is set, the version number will be read from the project provided by PJXFile. |
 | | Most will like to set up there own repository |
-| **Repository** | when VFPX Deployment generates Thor_Update_{AppID}.prg, it assumes the project repository is github.com/VFPX/{AppID}. If your project exists in a different location (for example, github.com/\[YourName\]/{AppID}), add a <br /> Repository setting with the full URL, such as ```https://github.com/DougHennig/SFMail```.   
+| **Repository** | When VFPX Deployment generates Thor_Update_{AppID}.prg, it assumes the project repository is github.com/VFPX/{AppID}. If your project exists in a different location (for example, github.com/\[YourName\]/{AppID}), add a <br /> Repository setting with the full URL, such as ```https://github.com/DougHennig/SFMail```.   
 | | You can also add the following optional settings if you wish |
-| **VersionDate** | the release date formatted as YYYY-MM-DD; if omitted, today's date is used. |
-| **Prompt** | Yes to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If *Version* isn't specified, your code in BuildMe.prg can set the public *pcVersion* variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
-| **ChangeLog** | the path for a file containing changes (see below). |
-| **Component** | "Yes" for Components (Default), else "No" for Apps.<ul><li>Apps create Thor tools for use in your IDE (e.g., GoFish, PEMEditor).</li><li>Components are not called directly from Thor tools but are used indirectly in either your IDE (FoxBin2PRG) or in production applications (Dynamic Forms)</li></ul> |
-| **Category** | the category to use when adding to the Thor menu. If this is omitted, "Applications" is used. This is only used when Component is No. |
-| **PJXFile** | the relative path to the PJX file to build an APP or EXE from. Omit this if that isn't required.<br />The version number of this project can be auto-used, see Version setting.  |
-| **Recompile** | by default, VFPX Deployment builds the project specified in PJXFile without the RECOMPILE clause. Add _Recompile = Yes_ to force recompilation upon building. |
-| **AppFile** | the path to the APP or EXE to build from the project (specified with the extension; for example, MyApp.app builds an APP and MyApp.exe builds an EXE). If PJXFile is specified and AppFile is omitted, VFPX Deployment automatically builds an APP file in the same folder and with the same file name as the PJX file specified in the PJXFile setting.<br />If ProjectSettings.txt specifies that an APP or EXE is part of the VFPX project, VFPX Deployment ensures it's built using VFP 9 and not VFP Advanced because the APP/EXE structure is different. While VFP Advanced can run APP/EXEs created in VFP 9, VFP 9 cannot run APP/EXEs created in VFP Advanced. |
-| **Bin2PRGFolder** | a comma-separated list of relative paths to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folders to create their text equivalents. This is important because Git cannot do diffs on binary files. Also git is bad on binaries, it's made for text files.<br />oxBin2PRG: is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting. The use of FoxBin2Prg can be turned off, see *RunBin2Prg*. |
-| **InstalledFilesFolder** | by default, the staging folder VFPX Deployment uses to generate the ZIP file from is called InstalledFiles. This setting allows you to specify a different name. |
+| **VersionDate** | The release date formatted as YYYY-MM-DD; if omitted, today's date is used. |
+| **Prompt** | Yes (default) to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If *Version* isn't specified, your code in BuildMe.prg can set the public *pcVersion* variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
+| **ChangeLog** | The path for a file containing changes (see below). |
+| **Component** | "Yes" for Components (default), else "No" for Apps.<ul><li>Apps create Thor tools for use in your IDE (e.g., GoFish, PEMEditor).</li><li>Components are not called directly from Thor tools but are used indirectly in either your IDE (FoxBin2PRG) or in production applications (Dynamic Forms)</li></ul> |
+| **Category** | The category to use when adding to the Thor menu. If this is omitted, "Applications" is used. This is only used when Component is No. |
+| **PJXFile** | The relative path to the PJX file to build an APP or EXE from. Omit this if that isn't required.<br />The version number of this project can be auto-used, see Version setting.  |
+| **AppFile** | The path to the APP or EXE to build from the project (specified with the extension; for example, MyApp.app builds an APP and MyApp.exe builds an EXE). If PJXFile is specified and AppFile is omitted, VFPX Deployment automatically builds an APP file in the same folder and with the same file name as the PJX file specified in the PJXFile setting.<br />If ProjectSettings.txt specifies that an APP or EXE is part of the VFPX project, VFPX Deployment ensures it's built using VFP 9 and not VFP Advanced because the APP/EXE structure is different. While VFP Advanced can run APP/EXEs created in VFP 9, VFP 9 cannot run APP/EXEs created in VFP Advanced. |
+| **Recompile** | By default, VFPX Deployment builds the project specified in PJXFile without the RECOMPILE clause. Add _Recompile = Yes_ to force recompilation upon building. |
+| **Bin2PRGFolder** | A comma-separated list of relative paths to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folders to create their text equivalents. This is important because Git cannot do diffs on binary files. Also git is bad on binaries, it's made for text files.<br />FoxBin2PRG: is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting. The use of FoxBin2Prg can be turned off, see *RunBin2Prg*. |
+| **InstalledFilesFolder** | By default, the staging folder VFPX Deployment uses to generate the ZIP file from is called InstalledFiles. This setting allows you to specify a different name. |
 | **RunBin2Prg** | "Yes" to auto run FoxBin2prg (Default), else "No" to not run. |
 | **RunGit** | "Yes" to auto run git (Default), else "No" to not run. |
 | **Inculde_VFPX** | "Yes" to create community files, else "No" to not create. (Default)<br />This will create some files if missing, but not overwrite existing files.<br />See [VFPX Templates](./vfpx_templates.md) for the use of this. |
@@ -243,7 +243,8 @@ For Thor_Update_{AppID}.prg and VFPX documentation on first run, for {AppID}Vers
 | **{VERSION}** | pcVersion | substituted with the value of *pcVersion*. |
 | **{JULIAN}** | pcJulian | substituted with the value of *pcJulian* as a numeric value: the release date as string as days since 2000/01/01. |
 | **{REPOSITORY}** | pcRepository | substituted with the value of *pcRepository*. |
-| **{CHANGELOG}** | pcChangeLog | substituted with the contents of the file specified in *pcChangeLog*.<br/>Only for {AppID}Version.txt, each run. |
+| **{CHANGELOG_F}** | pcChangeLog | substituted with **value** of *pcChangeLog*.|
+| **{CHANGELOG}** | \[pcChangeLog\] | substituted with the **contents** of the file specified in *pcChangeLog*.<br/>Only for {AppID}Version.txt, each run. |
 | **{CATEGORY}** | Category | substituted with the value of the *Category* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run. |
 | **{COMPONENT}** | Component | substituted with the value of the *Component* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run and<br/>Thor_Update_{AppID}.prg, first run, |
 
@@ -409,4 +410,4 @@ A brief help is given in [VFPX Deployment](./vfpxdeployment.md)
 ----
 Last changed: 2023-05-16
 
-![](./Images/vfpxpoweredby_alternative.gif)
+![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif)

@@ -93,7 +93,7 @@ procedure GetProjectFolder
 *in case we have a structure where we sit in a base with many scatterd projects
 *we try if the Active Project is the one
 	if type("_VFP.ActiveProject")='O' THEN 
-		if messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"';
+		if messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"' + ;
 				 _vfp.activeproject.name + '" ?', 36, 'VFPX Project Deployment') = 6 THEN 
 			lcValidFolder = justpath(_vfp.activeproject.name)
 			if not empty(m.lcValidFolder) THEN 

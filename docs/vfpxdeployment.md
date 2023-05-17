@@ -1,6 +1,6 @@
 # Internals of VFPX Deployment
-![](./Images/vfpxdeployment.png)
-## Version 1.1.08536
+![VFPX Deployment logo](./Images/vfpxdeployment.png)
+## Version 1.1.08537
 
 This project is a bit like self referential, some code looks like to be on two places.
 This document shows the usage of the folders  **in this project**.
@@ -25,6 +25,6 @@ For the use of folders in projects **using VFPX Deployment** see
 | .\\Apps\\VFPXDeployment\\VFPXTemplate | This folder and it's sub folders contain templates that will be used to create some community standard documentation.<br />As soon as this feature is enabled in projects BuildProcess\\ProjectSettings.txt file, the files will be copied and some substitutions will be made to gather basic informations.<br />The files must be modified on the project. |
 
 ----
-Last changed: 2023-05-16
+Last changed: 2023-05-17
 
-![](./Images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./Images/vfpxpoweredby_alternative.gif)

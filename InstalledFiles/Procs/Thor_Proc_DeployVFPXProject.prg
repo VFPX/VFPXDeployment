@@ -690,6 +690,7 @@ procedure ReplacePlaceholders_Once
 	tcText = strtran(m.tcText, '{VERSION}',     m.pcVersion,    -1, -1, 1)
 	tcText = strtran(m.tcText, '{JULIAN}',      m.pcJulian,     -1, -1, 1)
 	tcText = strtran(m.tcText, '{REPOSITORY}',  m.pcRepository, -1, -1, 1)
+	tcText = strtran(m.tcText, '{CHANGELOG_F}', m.pcChangeLog, -1, -1, 1)
 	tcText = textmerge(m.tcText)
 
 	for lnI = occurs('@@@', m.tcText) to 1 step -1

@@ -3,7 +3,7 @@ On each build, the sections framed by
 "VerNo" or "DeploymentDate" will be replaced with recent data
 -->
 # VFPX Deployment
-![](./docs/Images/vfpxdeployment.png)
+![VFPX Deployment logo](./docs/Images/vfpxdeployment.png)
 
 Project home: https://github.com/VFPX/VFPXDeployment
 
@@ -12,15 +12,18 @@ Project manager: {Your Name}
 VFPX Deployment automates the steps needed to include your project in the Thor Check for Updates (CFU) dialogue
 so you can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.
 
-![](./docs/Images/ThorCFUDialog.png)
+![Thor CFU](./docs/Images/ThorCFUDialog.png)
+
+![VFPX Banner](./docs/images/vfpxbanner.gif)   
+This project is part of [VFPX](https://vfpx.github.io/).
 
 ## Documentation
 See the [Documentation](./docs/ThorUpdate.md) for details on using VFPX Deployment.
 
 ## Releases
 
-Latest release: <!--DeploymentDate-->2023-05-16<!--/DeploymentDate-->,
-version <!--VERNO-->1.1.08536<!--/VerNo-->
+Latest release: <!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->,
+version <!--VERNO-->1.1.08537<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
 
@@ -38,5 +41,5 @@ Since version 1.1.08536 this tool merges both, but the article gives a good idea
 
 See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--DeploymentDate-->2023-05-16<!--/DeploymentDate-->_   
-![Picture](./docs/Images/vfpxpoweredby_alternative.gif)
+Last changed: _<!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->_   
+![powered by VFPX](./docs/Images/vfpxpoweredby_alternative.gif)
