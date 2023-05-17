@@ -17,7 +17,7 @@ Project manager: {Your Name}
 
 {Project Description}
 
-![VFPX Banner](./docs/images/vfpxbanner.gif)   
+![VFPX Banner](./docs/images/vfpxbanner.gif "VFPX")   
 This project is part of [VFPX](https://vfpx.github.io/).
 ## Documentation
 
@@ -32,7 +32,9 @@ See the [change log](docs/ChangeLog.md) for release information.
 
 ## Installation
 
-This project is available to you via [Thor](https://github.com/VFPX/Thor) *Check For Updates* function.
+This project is available to you via [Thor](https://github.com/VFPX/Thor) *Check For Updates* function.  
+If you do not use Thor, download or clone [this repository]({REPOSITORY}).
+
 
 ## Helping with this project
 
@@ -41,4 +43,4 @@ See [How to contribute to {APPNAME}](.github/CONTRIBUTING.md) for details on how
 ----
 Last changed: _<!--DeploymentDate--> -will be replaced on build- <!--/DeploymentDate-->_   
 
-![powered by VFPX](./docs/images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./docs/images/vfpxpoweredby_alternative.gif "powered by VFPX")

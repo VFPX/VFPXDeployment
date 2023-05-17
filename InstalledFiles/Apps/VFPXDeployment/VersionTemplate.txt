@@ -1,7 +1,7 @@
 @@@ Edit this template if necessary. Note the use of placeholders such as
 {APPNAME} and {APPID}; they are substituted with the correct values when
 the deployment process is run, so no need to edit those. Also, this file is
-textmerged so some text may not appear in the generated AppIDVersion.txt.
+textmerged so some text may not appear in the generated {APPID}Version.txt.
 Also, any text between @@@ and \\\ is removed.
 
 \\\lparameters toUpdateObject
@@ -47,6 +47,7 @@ procedure GetRegisterWithThor
 local lcCommand
 text to lcCommand noshow
 <<iif('{COMPONENT}' = 'No', '', '@@@')>>
+* "{APPNAME}" is a tool created by VFPX Deployment:
 * Create the tool under Thor Tools.
 
 loThorInfo = Execscript (_Screen.cThorDispatcher, 'Thor Register=')
@@ -77,5 +78,8 @@ with loThorInfo
 	llRegister = .Register()
 endwith
 <<iif('{COMPONENT}' = 'No', '', '\\\')>>
+<<iif('{COMPONENT}' = 'No', '@@@', '')>>
+* "{APPNAME}" is a Component. No code created by VFPX Deployment 
+<<iif('{COMPONENT}' = 'No', '\\\', '')>>
 endtext
 return lcCommand

@@ -1,5 +1,5 @@
 # Release History
-![VFPX Deployment logo](./Images/vfpxdeployment.png)
+![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
 ## 2023-05-17 Version 1.1.08537
 
@@ -7,13 +7,16 @@
   - create .gitattributes to fix issues with git
   - create .gitignore template
   - create document templates for user project
-  - automatic update for release date and version in README.md
+  - automatic substitution for release date and version in README.md
+  - automatic substitution for release date and version for a user defined list of files
   - .gitignore for BuildProcess and ThorUpdater folder, to allow simple git add . on whole project
 - Updated search for home folder, using git info
 - Updated search for home folder, using active project
 - Added flag to disable FoxBin2Prg
 - Added flag to disable git
 - Option to use projects Version number as version
+- InstalledFiles.txt may now target whole structures of subdirectories
+- InstalledFiles.txt may name a target for a source
 - Several new public variables to interact with
 - Substitutions while creating templates
 - Generalized substitution for templates and VersionTemplate.txt
@@ -64,6 +67,6 @@
 - Initial release
 
 ----
-Last changed: 2023-05-17
+Last changed: <!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->
 
-![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif)
+![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

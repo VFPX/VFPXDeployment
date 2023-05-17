@@ -1,5 +1,5 @@
 # {APPNAME}
 
-ThorUpdater for project {APPNAME}
+docs for project {APPNAME}
 
-This folder contains the deployment of this project to be used by Thor.
+This folder contains the documentation of this project.

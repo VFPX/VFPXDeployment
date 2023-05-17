@@ -1,5 +1,5 @@
 # VFPX Templates in VFPX Deployment
-![VFPX Deployment logo](./Images/vfpxdeployment.png)
+![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 ## Version 1.1.08537
 
 There is a common way to give documentation to projects that are published for common use. A brief idea how to give your project a standard look is discussed in [BestPractice.md](./BestPractice.md).
@@ -13,6 +13,7 @@ This document gives in introduction to the templates used by VFPX Deployment to 
 - [Prerequisites](#prerequisites)
 - [Overview](#overview)
 - [Files](#files)
+- [Processing](#processing)
 
 ## Using this document
 - Target paths are relative to your projects root folder. This is the toplevel folder of the local git repository you can get invoking `git rev-parse --show-toplevel`.
@@ -27,7 +28,7 @@ The templates are using substution of placeholders, see [Thor Update](./ThorUpda
 
 Some templates may hold comments *available while not substituted* like `@@@ Comments \\\`. They will be removed after merged into the project.
 
-### Files
+## Files
 | Source | Target | Use |
 |----|----|----|
 | \*\\README.md | <u>\*\\README.md</u> | Several templates for a <u>README.md</u> to give information about a folder.<br />Notable exclusion. There is no <u>.github\\README.md</u>. This file would be used by github as product documentation on the root of your project instead of the README.md placed there. This is a bit unusual. |
@@ -47,7 +48,16 @@ Some templates may hold comments *available while not substituted* like `@@@ Com
 | docs\\topic\[n\].md | <u>docs\\topic\[n\]</u> | Templates for subtopics to document your project.<br />This files need to be modified by you.<br />The files will not be checked on every run. They will only be created, if the <u>docs</u> folder is missing. |
 | docs\\images\\\*.\* | <u>docs\\images\\\*.\*</u> | Pictures to used in the templates. The place to store pictures used in documentation.<br />The files will not be checked on every run. They will only be created, if the <u>docs</u> folder is missing. |
 
+## Processing
+The templates will be processed like
+1. Get the template
+2. Replace the placeholders
+3. Run `Textmerge()`. This can do some processing.
+See InstalledFiles\Apps\VFPXDeployment\VersionTemplate.txt, procedure GetRegisterWithThor for example.
+Here this controls if a code snippet will be include by setting the template comments.
+4. Remove templates comments, that is anything like `@@@ Comments \\\`.
+
 ----
 Last changed: 2023-05-17
 
-![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif)
+![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

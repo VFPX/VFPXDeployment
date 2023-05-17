@@ -1,5 +1,5 @@
 # Internals of VFPX Deployment
-![VFPX Deployment logo](./Images/vfpxdeployment.png)
+![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 ## Version 1.1.08537
 
 This project is a bit like self referential, some code looks like to be on two places.
@@ -27,4 +27,4 @@ For the use of folders in projects **using VFPX Deployment** see
 ----
 Last changed: 2023-05-17
 
-![powered by VFPX](./Images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

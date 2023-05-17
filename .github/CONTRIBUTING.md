@@ -41,4 +41,4 @@ Most likely you must alter something in InstallFiles or it's sub folders.
 ----
 Last changed: _2023-05-17_
 
-![powered by VFPX](../docs/Images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](../docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")

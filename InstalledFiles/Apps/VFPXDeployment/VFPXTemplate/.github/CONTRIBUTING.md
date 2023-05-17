@@ -32,4 +32,4 @@ Fill other placeholders
 ----
 Last changed: {CVERSIONDATE}
 
-![powered by VFPX](../docs/images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](../docs/images/vfpxpoweredby_alternative.gif "powered by VFPX")

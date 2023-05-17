@@ -15,4 +15,4 @@ Fill other placeholders
 ----
 Last changed: {CVERSIONDATE}
 
-![](./images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./images/vfpxpoweredby_alternative.gif "powered by VFPX")

@@ -1,11 +1,11 @@
 # VFPX Deployment
-![VFPX Deployment logo](./Images/vfpxdeployment.png)
-## Version 1.1.08537
+![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
+## Version <!--VERNO-->1.1.08537<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github (check if you use gitlab, it's more or less the same, except naming).
 
-![](./Images/ThorCFUDialog.png)
+![Thor CFU](./Images/ThorCFUDialog.png "Thor CFU")
 
 See the great article [Anatomy of a VFPX Project](https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html) by Doug Hennig.
 It shows the setup of *VFPX related data* and *Thor* in two chapters.
@@ -41,6 +41,10 @@ A brief idea how to give your project a standard look is discussed in [BestPract
     - [BuildMe](#buildme)
     - [AfterBuild](#afterbuild)
   - [Customize documentation](#customize-documentation)
+    - [Templates substitution](#templates-substitution)
+    - [File substitution](#file-substitution)
+      - [README.md](#readmemd)
+      - [Substitude.txt](#substitudetxt)
   - [VFPX Deployment process](#vfpx-deployment-process)
 - [Running the build process](#running-the-build-process)
 - [First time task to deploy](#first-time-task-to-deploy)
@@ -82,7 +86,7 @@ In it's most simple way the setup for a project works like:
 
 More detailed:
 1. Install Thor
-2. Download [VFPX Deployment](#download-the-4-deployment-tool) from Thors *Check for Update* (CFU)
+2. Download [VFPX Deployment](#download-the-deployment-tool) from Thors *Check for Update* (CFU)
 3. If not already done, create a **remote** git repository for your project, for example at github. See [VFPX Add a Project](https://vfpx.github.io/newproject/)
 4. If not already done, create a **local** git repository for your project root folder. Just init, do not add files.
    - or clone the remote, that's up to your choice and level of git knowledge.
@@ -124,10 +128,16 @@ BuildProcess contains the files for the build process:
 
 - [ProjectSettings.txt:](#settings) contains project settings, such as project name and version number.
 - VersionTemplate.txt: contains the template for the Thor CFU version file. Although it has a TXT extension, it actually contains VFP code.
+This will be used to create *ThorUpdater\{AppID}Version.txt* file
 - [BuildMe.prg:](#buildme) contains custom code you write to do whatever is necessary for the build process. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
 - [AfterBuild.prg:](#afterbuild) contains custom code you write to do whatever is necessary after the build process. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
+- [Substitude.txt](#substitudetxt) contains a list of files or folders that will be processed like [README.md](#readmemd) on each run to substitude Version and date. This file is optional.
 - Thor_Update_{AppID}.prg (where *AppID* is the value of the AppID setting in ProjectSettings.txt): the Thor CFU update program, which contains the URLs for Thor to use to download the version and ZIP files to install the tool. This file is created the [first time](#first-time-task) you use the VFPX Deployment process and then not updated again after that.
-- InstalledFiles.txt: contain the paths for the files to be installed by Thor CFU. This file is optional.
+- [InstalledFiles.txt](#specify-what-files-are-to-install-on-the-target-computer): contain the paths for the files to be installed by Thor CFU. This file is optional.
+  - Files
+  - File skeletons
+  - Paths (ending with \\)
+  
 - Thor_Update_{AppID}.prg: The file to control the update process in Thor
 
 #### InstalledFiles
@@ -175,7 +185,7 @@ This is the project root. Some files will copied on first run, if they are not e
   - Fit to your needs
   - The second run on your system use [ProjectSettings.txt:](#settings) to set the project with the value of AppName
   - The second run on your system use [ProjectSettings.txt:](#settings) to set the project with the value of AppName
-  - All following runs will merge the values of pdVersionDate and pcVersionDate into this file. There are comments as place holder.
+  - [All following runs](#readmemd) will merge the values of *pdVersionDate* and *pcVersionDate* into this file. There are comments as place holder.
 - *.gitignore*: File to control what to exclude from git, for example executables and backups.
   - There are two ways to do this, this is the conventional *exclude* one.
   - If you like the more secure *include* way, you need to copy the *[L.gitignore](../InstalledFiles/Apps/VFPXDeployment/VFPXTemplate/L.gitignore)* file. The idea here is to only include what you are sure of, so private keys will not be included by accident.
@@ -198,7 +208,7 @@ Those are the settings availanle in the BuildProcess\\ProjectSettings.txt file.
 | **VersionDate** | The release date formatted as YYYY-MM-DD; if omitted, today's date is used. |
 | **Prompt** | Yes (default) to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If *Version* isn't specified, your code in BuildMe.prg can set the public *pcVersion* variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
 | **ChangeLog** | The path for a file containing changes (see below). |
-| **Component** | "Yes" for Components (default), else "No" for Apps.<ul><li>Apps create Thor tools for use in your IDE (e.g., GoFish, PEMEditor).</li><li>Components are not called directly from Thor tools but are used indirectly in either your IDE (FoxBin2PRG) or in production applications (Dynamic Forms)</li></ul> |
+| **Component** | "Yes" for Components (default), else "No" (exactly so) for Apps.<ul><li>Apps create Thor tools for use in your IDE (e.g., GoFish, PEMEditor).</li><li>Components are not called directly from Thor tools but are used indirectly in either your IDE (FoxBin2PRG) or in production applications (Dynamic Forms)</li></ul> |
 | **Category** | The category to use when adding to the Thor menu. If this is omitted, "Applications" is used. This is only used when Component is No. |
 | **PJXFile** | The relative path to the PJX file to build an APP or EXE from. Omit this if that isn't required.<br />The version number of this project can be auto-used, see Version setting.  |
 | **AppFile** | The path to the APP or EXE to build from the project (specified with the extension; for example, MyApp.app builds an APP and MyApp.exe builds an EXE). If PJXFile is specified and AppFile is omitted, VFPX Deployment automatically builds an APP file in the same folder and with the same file name as the PJX file specified in the PJXFile setting.<br />If ProjectSettings.txt specifies that an APP or EXE is part of the VFPX project, VFPX Deployment ensures it's built using VFP 9 and not VFP Advanced because the APP/EXE structure is different. While VFP Advanced can run APP/EXEs created in VFP 9, VFP 9 cannot run APP/EXEs created in VFP Advanced. |
@@ -208,6 +218,9 @@ Those are the settings availanle in the BuildProcess\\ProjectSettings.txt file.
 | **RunBin2Prg** | "Yes" to auto run FoxBin2prg (Default), else "No" to not run. |
 | **RunGit** | "Yes" to auto run git (Default), else "No" to not run. |
 | **Inculde_VFPX** | "Yes" to create community files, else "No" to not create. (Default)<br />This will create some files if missing, but not overwrite existing files.<br />See [VFPX Templates](./vfpx_templates.md) for the use of this. |
+| **Inculde_Thor** | "Yes" to create Thor files (Default), else "No" to not create.<br />This will create the content of the ThorUpdater folder and zip it, if enabled.|
+
+If both *Inculde_VFPX* and *Inculde_Thor* are disabled, [File substitution](#file-substitution) will be processed and FoxBin2prg may run. Also the optinal programs [BuildMe](#buildme) and [AfterBuild](#afterbuild) may run.
 
 ### Public variables
 Public variables read from the  BuildProcess\\ProjectSettings.txt file,
@@ -266,7 +279,7 @@ Start VFP, CD to the folder containing your project, and invoke the VFPX Deploym
 
 Edit *BuildProcess\\ProjectSettings.txt* to specify your project information (the case of these settings is unimportant):
 
-![](./Images/ProjectSettings.png)
+![ProjectSettings.txt](./Images/ProjectSettings.png "ProjectSettings.txt")
 
 See [Settings](#settings) for details.
 
@@ -274,11 +287,20 @@ See [Settings](#settings) for details.
 
 There are two ways to determine what to install
 - Copy all what you need to the [InstalledFiles](#installedfiles) folder.
-- Use the InstalledFiles.txt file to determine to files that should be copied to the InstalledFiles folder by the build process.   
+- Use the *BuildProcess\\InstalledFiles.txt* file to determine to files that should be copied to the InstalledFiles folder by the build process.   
 
 Edit InstalledFiles.txt and list each file to be copied to the InstalledFiles folder on a separate line. All paths should be relative to the project root folder.   
 
-![](./Images/InstalledFiles.png)
+![InstalledFiles.txt](./Images/InstalledFiles.png "InstalledFiles.txt")
+
+The file may contain
+- lines starting with # will be ignored
+- single files
+- file skeletons
+- directories If a directory is given in the form `SomeDirectory\` the **whole structure** including subdirectories will be copied.
+
+Each line may contain a target, if the folder / file in the InstalledFiles folder should be named different then the source.   
+The form is `Source||Target` 
 
 ### Customize the version template
 This is an optional task.
@@ -309,13 +331,29 @@ If no specific tasks are needed beyond what the VFPX Deployment process does, yo
 ### Customize documentation
 This is an optional task.
 
+All substitution will run before the files get copied to the [InstalledFiles](#installedfiles) folder.
+
+#### Templates substitution
 Some documentation files allow to be automatic substituted to deplyoment information using [Placeholders](#placeholders)
  on second run of VFPX Deployment or as soon as *Inculde_VFPX* is enabled. See [VFPX Templates](./vfpx_templates.md)
 
-On each run of VFPX Deployment, README.md will be processed. This is automatically active, if the file is created from template:
-
+#### File substitution
+On each run of VFPX Deployment, some files will be substituted in the following way:
 - All space between *\<!--VERNO--\>* and *\<!--/VERNO--\>* will be replaced with *pcFullVersion*.
-- All space between *\<!--DeploymentDate--\>* and *\<!--/DeploymentDate--\>* will be replaced with *pcVersionDate*
+- All space between *\<!--DeploymentDate--\>* and *\<!--/DeploymentDate--\>* will be replaced with *pcVersionDate*   
+This substitution will run independent of *Inculde_VFPX* and *Inculde_Thor* settings.   
+Example: Check the source of this file
+##### README.md
+On each run of VFPX Deployment, README.md will be processed. This is automatically active.
+
+##### Substitude.txt
+This is a list of files to substitude.   
+The file *BuildProcess\\Substitude.txt* is optional. The file may contain:
+- lines starting with # will be ignored
+- single files
+- file skeletons
+- directories If a directory is given in the form `SomeDirectory\` the **whole structure** including subdirectories will be processed.   
+On each run, all files defined by this list will be substituted like README.md from above. 
 
 ### VFPX Deployment process
 The VFPX Deployment process does the following:
@@ -408,6 +446,6 @@ A brief help is given in [VFPX Deployment](./vfpxdeployment.md)
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: 2023-05-16
+Last changed: <!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->
 
-![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif)
+![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
