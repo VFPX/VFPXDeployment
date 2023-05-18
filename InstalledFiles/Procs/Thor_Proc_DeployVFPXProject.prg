@@ -526,9 +526,10 @@ PROCEDURE Deploy
 * Update Thor_Update program.
 
   IF FILE(m.lcUpdateTemplateFile) AND NOT FILE(m.lcUpdateFile) THEN
+
    lcContent = FILETOSTR(m.lcUpdateTemplateFile)
 
-   lcContent = ReplacePlaceholders_Once(m.lcVersion)
+   lcContent = ReplacePlaceholders_Once(m.lcContent)
 
    lcContent = STRTRAN(m.lcContent, '{COMPONENT}', m.lcComponent, ;
      -1, -1, 1)

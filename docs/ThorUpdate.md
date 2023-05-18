@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.1.08537<!--/VerNo-->
+## Version <!--VERNO-->1.1.08538<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github (check if you use gitlab, it's more or less the same, except naming).
@@ -446,6 +446,6 @@ A brief help is given in [VFPX Deployment](./vfpxdeployment.md)
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->
+Last changed: <!--DeploymentDate-->2023-05-18<!--/DeploymentDate-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

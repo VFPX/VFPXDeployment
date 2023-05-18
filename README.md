@@ -22,12 +22,12 @@ See the [Documentation](./docs/ThorUpdate.md) for details on using VFPX Deployme
 
 ## Releases
 
-Latest release: <!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->,
-version <!--VERNO-->1.1.08537<!--/VerNo-->
+Latest release: <!--DeploymentDate-->2023-05-18<!--/DeploymentDate-->,
+version <!--VERNO-->1.1.08538<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
 
-### Highlights to version 1.1.*
+### Highlights to version 1.1.08538
 - A better sophisticated way to determine projects home folder.
 - Additional templates for VFPX community standards. See [VFPX Templates](./vfpx_templates.md).
 - Better control of work flow
@@ -35,11 +35,11 @@ See the [Release history](./docs/ChangeLog.md) for release information.
 ## External information
 See the great article [Anatomy of a VFPX Project](https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html) by Doug Hennig.
 It shows the setup of *VFPX related data* and *Thor* in two chapters.   
-Since version 1.1.08536 this tool merges both, but the article gives a good idea.
+Since version 1.1.08538 this tool merges both, but the article gives a good idea.
 
 ## Helping with this project
 
 See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->_   
+Last changed: _<!--DeploymentDate-->2023-05-18<!--/DeploymentDate-->_   
 ![powered by VFPX](./docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")

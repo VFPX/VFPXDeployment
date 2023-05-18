@@ -1,32 +1,34 @@
-lparameters toUpdateObject
-local lcRepositoryURL, ;
-	lcDownloadsURL, ;
-	lcVersionFileURL, ;
-	lcZIPFileURL, ;
-	lcRegisterWithThor
+lparameters;
+	toUpdateObject
+local;
+	lcRepositoryURL    as string, ;
+	lcDownloadsURL     as string, ;
+	lcVersionFileURL   as string, ;
+	lcZIPFileURL       as string, ;
+	lcRegisterWithThor as string
 
 * Get the URL for the version and ZIP files.
 
 lcRepositoryURL  = '{REPOSITORY}'
 	&& the URL for the project's repository
-lcDownloadsURL   = strtran(lcRepositoryURL, 'github.com', ;
+lcDownloadsURL   = strtran(m.lcRepositoryURL, 'github.com', ;
 	'raw.githubusercontent.com') + '/master/ThorUpdater/'
-lcVersionFileURL = lcDownloadsURL + '{APPID}Version.txt'
+lcVersionFileURL = m.lcDownloadsURL + '{APPID}Version.txt'
 	&& the URL for the file containing code to get the available version number
-lcZIPFileURL     = lcDownloadsURL + '{APPID}.zip'
+lcZIPFileURL     = m.lcDownloadsURL + '{APPID}.zip'
 	&& the URL for the zip file containing the project
 
 * Set the properties of the passed updater object.
 
-with toUpdateObject
+with m.toUpdateObject
 	.ApplicationName      = '{APPNAME}'
 	.VersionLocalFilename = '{APPID}VersionFile.txt'
-	.VersionFileURL       = lcVersionFileURL
-	.SourceFileUrl        = lcZIPFileURL
+	.VersionFileURL       = m.lcVersionFileURL
+	.SourceFileUrl        = m.lcZIPFileURL
 	.Component            = '{COMPONENT}'
-	.Link                 = lcRepositoryURL
+	.Link                 = m.lcRepositoryURL
 	.LinkPrompt           = '{APPNAME} Home Page'
 	.ProjectCreationDate  = {CURRDATE}
 endwith
 
-return toUpdateObject
+return m.toUpdateObject

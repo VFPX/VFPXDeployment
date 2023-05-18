@@ -1,7 +1,7 @@
 # Release History
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
-## 2023-05-17 Version 1.1.08537
+## 2023-05-18 Version 1.1.08538
 
 - Added support for VFPX community documentation (option)
   - create .gitattributes to fix issues with git
@@ -67,6 +67,6 @@
 - Initial release
 
 ----
-Last changed: <!--DeploymentDate-->2023-05-17<!--/DeploymentDate-->
+Last changed: <!--DeploymentDate-->2023-05-18<!--/DeploymentDate-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
