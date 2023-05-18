@@ -725,27 +725,27 @@ PROCEDURE ReplacePlaceholders_Once
 
  LOCAL;
   lcRemove AS STRING,;
-  lcText AS STRING,;
-  lnI   AS NUMBER
+  lcText   AS STRING,;
+  lnI      AS NUMBER
 
- tcText = STRTRAN(m.tcText, '{APPNAME}',     m.pcAppName,    -1, -1, 1)
- tcText = STRTRAN(m.tcText, '{APPID}',       m.pcAppID,      -1, -1, 1)
- lcText = STRTRAN(m.tcText, '{CURRDATE}',    m.pcThisDate,   -1, -1, 1)
- tcText = STRTRAN(m.tcText, '{VERSIONDATE}', m.pcDate,       -1, -1, 1)
- tcText = STRTRAN(m.tcText, '{CVERSIONDATE}',m.pcVersionDate,-1, -1, 1)
- tcText = STRTRAN(m.tcText, '{VERSION}',     m.pcVersion,    -1, -1, 1)
- tcText = STRTRAN(m.tcText, '{JULIAN}',      m.pcJulian,     -1, -1, 1)
- tcText = STRTRAN(m.tcText, '{REPOSITORY}',  m.pcRepository, -1, -1, 1)
- tcText = STRTRAN(m.tcText, '{CHANGELOG_F}', m.pcChangeLog, -1, -1, 1)
- tcText = TEXTMERGE(m.tcText)
+ lcText = STRTRAN(m.tcText, '{APPNAME}',     m.pcAppName,    -1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{APPID}',       m.pcAppID,      -1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{CURRDATE}',    m.pcThisDate,   -1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{VERSIONDATE}', m.pcDate,       -1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{CVERSIONDATE}',m.pcVersionDate,-1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{VERSION}',     m.pcVersion,    -1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{JULIAN}',      m.pcJulian,     -1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{REPOSITORY}',  m.pcRepository, -1, -1, 1)
+ lcText = STRTRAN(m.lcText, '{CHANGELOG_F}', m.pcChangeLog, -1, -1, 1)
+ lcText = TEXTMERGE(m.lcText)
 
- FOR lnI = OCCURS('@@@', m.tcText) TO 1 STEP -1
-  lcRemove = STREXTRACT(m.tcText, '@@@', '\\\', m.lnI, 4)
-  tcText   = STRTRAN(m.tcText, m.lcRemove)
+ FOR lnI = OCCURS('@@@', m.lcText) TO 1 STEP -1
+  lcRemove = STREXTRACT(m.lcText, '@@@', '\\\', m.lnI, 4)
+  lcText   = STRTRAN(m.lcText, m.lcRemove)
 
  NEXT &&lnI
 
- RETURN m.tcText
+ RETURN m.lcText
 ENDPROC &&ReplacePlaceholders_Once
 
 PROCEDURE ReplacePlaceholders_Run
