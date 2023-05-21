@@ -44,7 +44,7 @@ A brief idea how to give your project a standard look is discussed in [BestPract
     - [Templates substitution](#templates-substitution)
     - [File substitution](#file-substitution)
       - [README.md](#readmemd)
-      - [Substitude.txt](#substitudetxt)
+      - [Substitute.txt](#substitutetxt)
   - [VFPX Deployment process](#vfpx-deployment-process)
 - [Running the build process](#running-the-build-process)
 - [First time task to deploy](#first-time-task-to-deploy)
@@ -133,7 +133,7 @@ BuildProcess contains the files for the build process:
 This will be used to create the version file for the remote *ThorUpdater\{AppID}Version.txt* file
 - [BuildMe.prg:](#buildme) contains custom code you write to do whatever is necessary for the build process. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
 - [AfterBuild.prg:](#afterbuild) contains custom code you write to do whatever is necessary after the build process. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
-- [Substitude.txt](#substitudetxt) contains a list of files or folders that will be processed like [README.md](#readmemd) on each run to substitude Version and date. This file is optional.
+- [Substitute.txt](#substitutetxt) contains a list of files or folders that will be processed like [README.md](#readmemd) on each run to substitute Version and date. This file is optional.
 - Thor_Update_{AppID}.prg (where *AppID* is the value of the AppID setting in ProjectSettings.txt): the Thor CFU update program, which contains the URLs for Thor to use to download the version and ZIP files to install the tool. This file is created the [first time](#first-time-task) you use the VFPX Deployment process and then not updated again after that.
 - [InstalledFiles.txt](#specify-what-files-are-to-install-on-the-target-computer): contain the paths for the files to be installed by Thor CFU. This file is optional.
   - Files
@@ -251,7 +251,7 @@ or in the [AfterBuild.prg](#afterbuild) postprocess program.
 ### Placeholders
 Placeholders that will be substituted.  
 For Thor_Update_{AppID}.prg and VFPX documentation on first run, for {AppID}Version.txt on each run.
-| Placeholder | Substituded by | Usage |
+| Placeholder | Substituted by | Usage |
 | ------ | ------ | ------ |
 | **{APPNAME}** | pcAppName | substituted with the value of *pcAppName*. |
 | **{APPID}** | pcAppID | substituted with the value of *pcAppID*. |
@@ -369,9 +369,9 @@ Example: Check the source of this file
 ##### README.md
 On each run of VFPX Deployment, README.md will be processed. This is automatically active.
 
-##### Substitude.txt
-This is a list of files to substitude.   
-The file *BuildProcess\\Substitude.txt* is optional. The file may contain:
+##### Substitute.txt
+This is a list of files to substitute.   
+The file *BuildProcess\\Substitute.txt* is optional. The file may contain:
 - lines starting with # will be ignored
 - single files
 - file skeletons

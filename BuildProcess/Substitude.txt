@@ -1,3 +1,0 @@
-#a list of files to substitude on runtime
-docs\ThorUpdate.md
-docs\ChangeLog.md

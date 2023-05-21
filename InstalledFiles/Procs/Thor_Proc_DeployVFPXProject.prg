@@ -107,7 +107,7 @@ procedure Deploy
 		lcFoxBin2PRG         as string,;
 		lcInstalledFilesFolder as string,;
 		lcInstalledFilesListing as string,;
-		lcSubstitudeListing  as string,;
+		lcSubstituteListing  as string,;
 		lcLine               as string,;
 		lcName               as string,;
 		lcPJXFile            as string,;
@@ -126,8 +126,8 @@ procedure Deploy
 		lcVersionFileR       as string,;
 		lcVersionTemplateFile as string,;
 		lcZipFile            as string,;
-		llInculde_VFPX       as boolean,;
-		llInculde_Thor       as boolean,;
+		llInclude_VFPX       as boolean,;
+		llInclude_Thor       as boolean,;
 		llPrompt             as boolean,;
 		llRecompile          as boolean,;
 		lnBin2PRGFolders     as number,;
@@ -148,7 +148,7 @@ procedure Deploy
 
 	lcProjectFile           = m.tcCurrFolder + 'BuildProcess\ProjectSettings.txt'
 	lcInstalledFilesListing = m.tcCurrFolder + 'BuildProcess\InstalledFiles.txt'
-	lcSubstitudeListing     = m.tcCurrFolder + 'BuildProcess\Substitude.txt'
+	lcSubstituteListing     = m.tcCurrFolder + 'BuildProcess\Substitute.txt'
 	lcInstalledFilesFolder  = 'InstalledFiles'
 	lcBuildProgram          = m.tcCurrFolder + 'BuildProcess\BuildMe.prg'
 	lcAfterBuildProgram     = m.tcCurrFolder + 'BuildProcess\AfterBuild.prg'
@@ -195,8 +195,8 @@ procedure Deploy
 	lcAppFile             = ''
 	lcRepositoryRoot      = 'https://github.com/VFPX/'
 	pcRepository          = ''
-	llInculde_VFPX        = .f.
-	llInculde_Thor        = .t.
+	llInclude_VFPX        = .f.
+	llInclude_Thor        = .t.
 	lnSettings            = alines(laSettings, m.lcProjectSettings)
 
 	for lnI = 1 to m.lnSettings
@@ -239,10 +239,10 @@ procedure Deploy
 				plRun_Bin2Prg = upper(m.lcValue) = 'Y'
 			case m.lcUName == 'RUNGIT'
 				plRun_git = upper(m.lcValue) = 'Y'
-			case m.lcUName == 'INCULDE_VFPX'
-				llInculde_VFPX = upper(m.lcValue) = 'Y'
-			case m.lcUName == 'INCULDE_THOR'
-				llInculde_Thor = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'INCLUDE_VFPX'
+				llInclude_VFPX = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'INCLUDE_THOR'
+				llInclude_Thor = upper(m.lcValue) = 'Y'
 			case m.lcUName == 'VERSIONFILE_REMOTE'
 				lcVersionFileR = m.lcValue
 */SF 20230512
@@ -481,10 +481,10 @@ procedure Deploy
 
 	endif &&not empty(m.lcPJXFile) and file(m.lcErrFile)
 
-	SetDocumentation (m.tcCurrFolder, m.tcVFPXDeploymentFolder, m.llInculde_VFPX, m.lcSubstitudeListing)
+	SetDocumentation (m.tcCurrFolder, m.tcVFPXDeploymentFolder, m.llInclude_VFPX, m.lcSubstituteListing)
 
 *SF 20230514 the test is moved to a place above, so no processing is done
-	if m.llInculde_Thor then
+	if m.llInclude_Thor then
 		if file(m.lcInstalledFilesListing) then
 * If InstalledFiles.txt exists, copy the files listed in it to the
 * InstalledFiles folder (folders are created as necessary).
@@ -574,7 +574,7 @@ procedure Deploy
 				endif &&lower(justext(m.lcFile)) <> 'fxp'
 			next &&lnI
 		endif &&plRun_git
-	endif &&m.llInculde_Thor
+	endif &&m.llInclude_Thor
 
 * Execute AfterBuild.prg if it exists.
 
@@ -597,8 +597,8 @@ procedure SetDocumentation
 	lparameters;
 		tcCurrFolder,;
 		tcVFPXDeploymentFolder,;
-		tlInculde_VFPX,;
-		tcSubstitudeListing
+		tlInclude_VFPX,;
+		tcSubstituteListing
 
 *check for several VFPX defaults:
 	local;
@@ -611,13 +611,13 @@ procedure SetDocumentation
 		laFiles(1, 1)
 
 	if not file(m.tcCurrFolder + 'README.md') then
-		if m.tlInculde_VFPX then
+		if m.tlInclude_VFPX then
 			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\R_README.md')
 			lcText = ReplacePlaceholders_Once(m.lcText)
 			lcText = ReplacePlaceholders_Run (m.lcText)
 			strtofile(m.lcText, 'README.md')
 
-		endif &&m.tlInculde_VFPX
+		endif &&m.tlInclude_VFPX
 	else  &&not file(m.tcCurrFolder + 'README.md')
 		if file(m.tcCurrFolder + 'README.md') then
 			lcText = filetostr('README.md')
@@ -627,7 +627,7 @@ procedure SetDocumentation
 		endif &&file(m.tcCurrFolder + 'README.md')
 	endif &&not file(m.tcCurrFolder + 'README.md')
 
-	if m.tlInculde_VFPX then
+	if m.tlInclude_VFPX then
 		if not file(m.tcCurrFolder + 'BuildProcess\README.md') then
 			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\B_README.md')
 			lcText = ReplacePlaceholders_Once(m.lcText)
@@ -712,10 +712,10 @@ procedure SetDocumentation
 	endif
 
 
-	if file(m.tcSubstitudeListing) then
+	if file(m.tcSubstituteListing) then
 * If InstalledFiles.txt exists, copy the files listed in it to the
 * InstalledFiles folder (folders are created as necessary).
-		lcFiles = filetostr(m.tcSubstitudeListing)
+		lcFiles = filetostr(m.tcSubstituteListing)
 		lnFiles = alines(laFiles, m.lcFiles, 1 + 4)
 		for lnI = 1 to m.lnFiles
 			lcSource = laFiles[m.lnI]
