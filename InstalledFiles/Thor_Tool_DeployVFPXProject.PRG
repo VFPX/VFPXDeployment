@@ -53,10 +53,9 @@ procedure ToolCode
 
 	local;
 		lcPreviousFolder as string,;
-		lcProjectFolder as string,;
-		lcStartFolder as string
+		lcProjectFolder as string
 
-	lcStartFolder = fullpath('','')
+		addproperty(_screen, 'VFPX_DeployStartFolder', fullpath("", ""))
 
 * ================================================================================
 	lcPreviousFolder = nvl(execscript(_screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
@@ -71,7 +70,8 @@ procedure ToolCode
 	endif &&directory(m.lcProjectFolder)
 * ================================================================================
 
-	cd (m.lcStartFolder)
+	cd (_screen.VFPX_DeployStartFolder)
+	removeproperty(_screen, 'VFPX_DeployStartFolder')
 
 endproc &&ToolCode
 

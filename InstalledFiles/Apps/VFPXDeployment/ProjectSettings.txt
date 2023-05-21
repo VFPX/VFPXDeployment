@@ -1,5 +1,6 @@
 *ProjectSettings.txt to create Thor deployment
 *See https://github.com/VFPX/VFPXDeployment/blob/main/docs/ThorUpdate.md for help.
+*Paths relative are based on git toplevel folder
 
 *The name to show in Thor. Mandatory
 AppName   = MyApp
@@ -25,7 +26,7 @@ Component = No
 *ChangeLog = docs\ChangeLog.md
 
 *Create VFPX community folders and files. Will not overwrite existing files.
-Inculde_VFPX = Yes
+*Inculde_VFPX = Yes
 
 *Do not create Thor folders and files (uncomment to use):
 *Inculde_Thor = No
@@ -60,3 +61,7 @@ Inculde_VFPX = Yes
 
 *A different name for the staging folder.
 *InstalledFilesFolder = {MyInstallFolder}
+
+*A different name for version file used to publish info on the remote server.
+*A help with old projects using a different name for the version file
+*VersionFile_Remote = {AppID}Version.txt

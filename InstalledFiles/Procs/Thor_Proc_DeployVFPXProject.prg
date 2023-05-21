@@ -1,909 +1,927 @@
-#DEFINE CRLF CHR(13) + CHR(10)
+#define CRLF chr(13) + chr(10)
 
 * Parameter lcFolder is the home folder for the project
 *   and defaults to the current folder if not supplied
-LPARAMETERS;
- tcFolder
+lparameters;
+	tcFolder
 
-LOCAL;
- lcCurrFolder        AS STRING,;
- lcProjectName       AS STRING,;
- lcStartFolder       AS STRING,;
- lcVFPXDeploymentFolder AS STRING
+local;
+	lcCurrFolder        as string,;
+	lcProjectName       as string,;
+	lcVFPXDeploymentFolder as string
 
 * Get the project folder.
-lcStartFolder = FULLPATH("", "")
-tcFolder      = EVL(m.tcFolder, m.lcStartFolder)
-CD (m.tcFolder) && Project Home
+addproperty(_screen, 'VFPX_Deploy_StartFolder', fullpath("", ""))
+tcFolder      = evl(m.tcFolder, _screen.VFPX_Deploy_StartFolder)
+cd (m.tcFolder) && Project Home
 
 * Bug out if NoVFPXDeployment.txt exists.
 
-IF FILE('NoVFPXDeployment.txt') THEN
- MESSAGEBOX('VFPX Project Deployment will not run because NoVFPXDeployment.txt exists.', ;
-   16, 'VFPX Project Deployment')
- RETURN
-ENDIF &&file('NoVFPXDeployment.txt')
+if file('NoVFPXDeployment.txt') then
+	messagebox('VFPX Project Deployment will not run because NoVFPXDeployment.txt exists.', ;
+		16, 'VFPX Project Deployment')
+	return
+endif &&file('NoVFPXDeployment.txt')
 
 * Create the BuildProcess subdirectory of the project folder if necessary.
 
-lcCurrFolder = ADDBS(ADDBS(m.tcFolder) + 'BuildProcess') && BuildProcess
-IF NOT DIRECTORY(m.lcCurrFolder) THEN
+lcCurrFolder = addbs(addbs(m.tcFolder) + 'BuildProcess') && BuildProcess
+if not directory(m.lcCurrFolder) then
 *SF 20230512 we better check if this exists a different Thor
 *this is not fool-proof, since there are many ways to do Thor
 *but a very common one
- IF DIRECTORY(ADDBS(m.tcFolder) + 'ThorUpdater') THEN
-  MESSAGEBOX('There is allready a Thor folder.' + CRLF + CRLF + 'Stoped.', ;
-    16, 'VFPX Project Deployment')
-  RETURN
- ENDIF &&directory(addbs(m.tcFolder) + 'ThorUpdater')
- MD (m.lcCurrFolder)
-ENDIF &&not directory(m.lcCurrFolder)
+	if directory(addbs(m.tcFolder) + 'ThorUpdater') then
+		messagebox('There is allready a Thor folder.' + CRLF + CRLF + 'Stoped.', ;
+			16, 'VFPX Project Deployment')
+		return
+	endif &&directory(addbs(m.tcFolder) + 'ThorUpdater')
+	md (m.lcCurrFolder)
+endif &&not directory(m.lcCurrFolder)
 
 * If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt, and
 * BuildMe.prg, AfterBuild.prg from the VFPXDeployment folder.
 
-lcVFPXDeploymentFolder = _SCREEN.cThorFolder + 'Tools\Apps\VFPXDeployment\'
+lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
 
-IF NOT FILE(m.lcCurrFolder + 'ProjectSettings.txt') THEN
- COPY FILE (m.lcVFPXDeploymentFolder + 'ProjectSettings.txt') TO ;
-  (m.lcCurrFolder + 'ProjectSettings.txt')
- COPY FILE (m.lcVFPXDeploymentFolder + 'VersionTemplate.txt') TO ;
-  (m.lcCurrFolder + 'VersionTemplate.txt')
- COPY FILE (m.lcVFPXDeploymentFolder + 'BuildMe.prg') TO ;
-  (m.lcCurrFolder + 'BuildMe.prg')
- COPY FILE (m.lcVFPXDeploymentFolder + 'AfterBuild.prg') TO ;
-  (m.lcCurrFolder + 'AfterBuild.prg')
- MESSAGEBOX('Please edit ProjectSettings.txt and fill in the settings ' + ;
-   'for this project.' + CRLF + ;
-   'Also, edit InstalledFiles.txt and specify ' + ;
-   'which files should be installed.' + CRLF +  CRLF +;
-   'Then run VFPX Project Deployment again.', ;
-   16, 'VFPX Project Deployment')
- MODIFY FILE (m.lcCurrFolder + 'ProjectSettings.txt') NOWAIT
- MODIFY FILE (m.lcCurrFolder + 'InstalledFiles.txt') NOWAIT
- RETURN
-ENDIF &&not file(m.lcCurrFolder + 'ProjectSettings.txt')
+if not file(m.lcCurrFolder + 'ProjectSettings.txt') then
+	copy file (m.lcVFPXDeploymentFolder + 'ProjectSettings.txt') to ;
+		(m.lcCurrFolder + 'ProjectSettings.txt')
+	copy file (m.lcVFPXDeploymentFolder + 'VersionTemplate.txt') to ;
+		(m.lcCurrFolder + 'VersionTemplate.txt')
+	copy file (m.lcVFPXDeploymentFolder + 'BuildMe.prg') to ;
+		(m.lcCurrFolder + 'BuildMe.prg')
+	copy file (m.lcVFPXDeploymentFolder + 'AfterBuild.prg') to ;
+		(m.lcCurrFolder + 'AfterBuild.prg')
+	messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
+		'for this project.' + CRLF + ;
+		'Also, edit InstalledFiles.txt and specify ' + ;
+		'which files should be installed.' + CRLF +  CRLF +;
+		'Then run VFPX Project Deployment again.', ;
+		16, 'VFPX Project Deployment')
+	modify file (m.lcCurrFolder + 'ProjectSettings.txt') nowait
+	modify file (m.lcCurrFolder + 'InstalledFiles.txt') nowait
+	return
+endif &&not file(m.lcCurrFolder + 'ProjectSettings.txt')
 
-lcProjectName = GETWORDNUM(m.lcCurrFolder, GETWORDCOUNT(m.lcCurrFolder, '\') - 1, '\')
-Deploy(m.lcVFPXDeploymentFolder, m.lcProjectName, ADDBS(m.tcFolder))
+lcProjectName = getwordnum(m.lcCurrFolder, getwordcount(m.lcCurrFolder, '\') - 1, '\')
+
+Deploy(m.lcVFPXDeploymentFolder, m.lcProjectName, addbs(m.tcFolder))
 
 * Restore the former current directory.
 
-CD (m.lcStartFolder)
+cd (_screen.VFPX_Deploy_StartFolder)
 
-RETURN
+removeproperty(_screen, 'VFPX_Deploy_StartFolder')
+
+return
 
 
 * ================================================================================
 * ================================================================================
 * The work horse - put in separate Proc so that any the cd (lcStartFolder) is always run
 
-PROCEDURE Deploy
- LPARAMETERS;
-  tcVFPXDeploymentFolder,;
-  tcProjectName,;
-  tcCurrFolder
+procedure Deploy
+	lparameters;
+		tcVFPXDeploymentFolder,;
+		tcProjectName,;
+		tcCurrFolder
 
 
 * Put the paths for files we may use into variables.
 
- LOCAL;
-  lcAfterBuildProgram  AS STRING,;
-  lcAppFile            AS STRING,;
-  lcBin2PRGFolder      AS STRING,;
-  lcBin2PRGFolderSource AS STRING,;
-  lcBuildProgram       AS STRING,;
-  lcCategory           AS STRING,;
-  lcChange             AS STRING,;
-  lcCommand            AS STRING,;
-  lcComponent          AS STRING,;
-  lcContent            AS STRING,;
-  lcErrFile            AS STRING,;
-  lcFile               AS STRING,;
-  lcFiles              AS STRING,;
-  lcFolder             AS STRING,;
-  lcFoxBin2PRG         AS STRING,;
-  lcInstalledFilesFolder AS STRING,;
-  lcInstalledFilesListing AS STRING,;
-  lcSubstitudeListing  AS STRING,;
-  lcLine               AS STRING,;
-  lcName               AS STRING,;
-  lcPJXFile            AS STRING,;
-  lcProjectFile        AS STRING,;
-  lcProjectSettings    AS STRING,;
-  lcRecompile          AS STRING,;
-  lcRepositoryRoot     AS STRING,;
-  lcSource             AS STRING,;
-  lcTarget             AS STRING,;
-  lcUName              AS STRING,;
-  lcUpdateFile         AS STRING,;
-  lcUpdateTemplateFile AS STRING,;
-  lcValue              AS STRING,;
-  lcVersion            AS STRING,;
-  lcVersionFile        AS STRING,;
-  lcVersionTemplateFile AS STRING,;
-  lcZipFile            AS STRING,;
-  llInculde_VFPX       AS BOOLEAN,;
-  llInculde_Thor       AS BOOLEAN,;
-  llPrompt             AS BOOLEAN,;
-  llRecompile          AS BOOLEAN,;
-  lnBin2PRGFolders     AS NUMBER,;
-  lnFiles              AS NUMBER,;
-  lnI                  AS NUMBER,;
-  lnJulian             AS NUMBER,;
-  lnPos                AS NUMBER,;
-  lnProject            AS NUMBER,;
-  lnSettings           AS NUMBER
- LOCAL lnWords
+	local;
+		lcAfterBuildProgram  as string,;
+		lcAppFile            as string,;
+		lcBin2PRGFolder      as string,;
+		lcBin2PRGFolderSource as string,;
+		lcBuildProgram       as string,;
+		lcCategory           as string,;
+		lcChange             as string,;
+		lcCommand            as string,;
+		lcComponent          as string,;
+		lcContent            as string,;
+		lcErrFile            as string,;
+		lcFile               as string,;
+		lcFiles              as string,;
+		lcFolder             as string,;
+		lcFoxBin2PRG         as string,;
+		lcInstalledFilesFolder as string,;
+		lcInstalledFilesListing as string,;
+		lcSubstitudeListing  as string,;
+		lcLine               as string,;
+		lcName               as string,;
+		lcPJXFile            as string,;
+		lcProjectFile        as string,;
+		lcProjectSettings    as string,;
+		lcRecompile          as string,;
+		lcRepositoryRoot     as string,;
+		lcSource             as string,;
+		lcTarget             as string,;
+		lcUName              as string,;
+		lcUpdateFile         as string,;
+		lcUpdateTemplateFile as string,;
+		lcValue              as string,;
+		lcVersion            as string,;
+		lcVersionFile        as string,;
+		lcVersionFileR       as string,;
+		lcVersionTemplateFile as string,;
+		lcZipFile            as string,;
+		llInculde_VFPX       as boolean,;
+		llInculde_Thor       as boolean,;
+		llPrompt             as boolean,;
+		llRecompile          as boolean,;
+		lnBin2PRGFolders     as number,;
+		lnFiles              as number,;
+		lnI                  as number,;
+		lnJulian             as number,;
+		lnPos                as number,;
+		lnProject            as number,;
+		lnSettings           as number
+	local lnWords
 
 
- LOCAL ARRAY;
-  laBin2PRGFolders(1),;
-  laFiles(1,1),;
-  laWords(1,1),;
-  laSettings(1)
+	local array;
+		laBin2PRGFolders(1),;
+		laFiles(1,1),;
+		laWords(1,1),;
+		laSettings(1)
 
- lcProjectFile           = m.tcCurrFolder + 'BuildProcess\ProjectSettings.txt'
- lcInstalledFilesListing = m.tcCurrFolder + 'BuildProcess\InstalledFiles.txt'
- lcSubstitudeListing     = m.tcCurrFolder + 'BuildProcess\Substitude.txt'
- lcInstalledFilesFolder  = 'InstalledFiles'
- lcBuildProgram          = m.tcCurrFolder + 'BuildProcess\BuildMe.prg'
- lcAfterBuildProgram     = m.tcCurrFolder + 'BuildProcess\AfterBuild.prg'
- lcVersionTemplateFile   = m.tcCurrFolder + 'BuildProcess\VersionTemplate.txt'
- lcUpdateTemplateFile    = _SCREEN.cThorFolder + ;
-  'Tools\Apps\VFPXDeployment\Thor_Update_Template.txt'
+	lcProjectFile           = m.tcCurrFolder + 'BuildProcess\ProjectSettings.txt'
+	lcInstalledFilesListing = m.tcCurrFolder + 'BuildProcess\InstalledFiles.txt'
+	lcSubstitudeListing     = m.tcCurrFolder + 'BuildProcess\Substitude.txt'
+	lcInstalledFilesFolder  = 'InstalledFiles'
+	lcBuildProgram          = m.tcCurrFolder + 'BuildProcess\BuildMe.prg'
+	lcAfterBuildProgram     = m.tcCurrFolder + 'BuildProcess\AfterBuild.prg'
+	lcVersionTemplateFile   = m.tcCurrFolder + 'BuildProcess\VersionTemplate.txt'
+	lcUpdateTemplateFile    = _screen.cThorFolder + ;
+		'Tools\Apps\VFPXDeployment\Thor_Update_Template.txt'
 
 * Get the current project settings into public variables.
 
- lcProjectSettings = FILETOSTR(m.lcProjectFile)
- PUBLIC;
-  pcAppName     AS STRING,;
-  pcAppID       AS STRING,;
-  pcVersion     AS STRING,;
-  pdVersionDate AS DATE,;
-  pcVersionDate AS STRING,;
-  pcChangeLog   AS STRING,;
-  plContinue    AS BOOLEAN
+	lcProjectSettings = filetostr(m.lcProjectFile)
+	public;
+		pcAppName     as string,;
+		pcAppID       as string,;
+		pcVersion     as string,;
+		pdVersionDate as date,;
+		pcVersionDate as string,;
+		pcChangeLog   as string,;
+		plContinue    as boolean
 *SF 20230512: add new flags
- PUBLIC;
-  pcFullVersion AS STRING,;
-  pcDate        AS STRING,;
-  pcJulian      AS STRING,;
-  pcThisDate    AS STRING,;
-  pcRepository  AS STRING,;
-  plRun_Bin2Prg AS BOOLEAN,;
-  plRun_git     AS BOOLEAN
+	public;
+		pcFullVersion as string,;
+		pcDate        as string,;
+		pcJulian      as string,;
+		pcThisDate    as string,;
+		pcRepository  as string,;
+		plRun_Bin2Prg as boolean,;
+		plRun_git     as boolean
 
- pdVersionDate = DATE()
- pcVersion     = ''
- pcChangeLog   = ''
- plContinue    = .T.
+	pdVersionDate = date()
+	pcVersion     = ''
+	pcChangeLog   = ''
+	plContinue    = .t.
 *SF 20230512: add new flags
- pcFullVersion = ''		&& For autoset README.MD. Full version info. Either pcVersion or returned from BuilMe.prg
- plRun_Bin2Prg = .T.		&& Run FoxBin2Prg; from ProjectSettings.txt
- plRun_git     = .T.		&& Run git; from ProjectSettings.txt
+	pcFullVersion = ''		&& For autoset README.MD. Full version info. Either pcVersion or returned from BuilMe.prg
+	plRun_Bin2Prg = .t.		&& Run FoxBin2Prg; from ProjectSettings.txt
+	plRun_git     = .t.		&& Run git; from ProjectSettings.txt
 */SF 20230512
- llPrompt              = .T.
- lcBin2PRGFolderSource = ''
- lcComponent           = 'Yes'
- lcCategory            = 'Applications'
- lcPJXFile             = ''
- llRecompile           = .F.
- lcAppFile             = ''
- lcRepositoryRoot      = 'https://github.com/VFPX/'
- pcRepository          = ''
- llInculde_VFPX        = .F.
- llInculde_Thor        = .T.
- lnSettings            = ALINES(laSettings, m.lcProjectSettings)
- FOR lnI = 1 TO m.lnSettings
-  lcLine  = laSettings[m.lnI]
-  lnPos   = AT('=', m.lcLine)
-  lcName  = ALLTRIM(LEFT(m.lcLine, m.lnPos - 1))
-  lcValue = ALLTRIM(SUBSTR(m.lcLine, m.lnPos + 1))
-  lcUName = UPPER(m.lcName)
-  DO CASE
-   CASE m.lcUName = 'APPNAME'
-    pcAppName = m.lcValue
-   CASE m.lcUName = 'APPID'
-    pcAppID = m.lcValue
-   CASE m.lcUName = 'VERSION'
-    pcVersion = m.lcValue
-   CASE m.lcUName = 'VERSIONDATE'
-    pdVersionDate = EVALUATE('{^' + m.lcValue + '}')
-   CASE m.lcUName = 'PROMPT'
-    llPrompt = UPPER(m.lcValue) = 'Y'
-   CASE m.lcUName = 'CHANGELOG'
-    pcChangeLog = m.lcValue
-   CASE m.lcUName = 'BIN2PRGFOLDER'
-    lcBin2PRGFolderSource = m.lcValue
-   CASE m.lcUName = 'COMPONENT'
-    lcComponent = m.lcValue
-   CASE m.lcUName = 'CATEGORY'
-    lcCategory = m.lcValue
-   CASE m.lcUName = 'PJXFILE'
-    lcPJXFile = m.lcValue
-   CASE m.lcUName = 'RECOMPILE'
-    llRecompile = UPPER(m.lcValue) = 'Y'
-   CASE m.lcUName = 'APPFILE'
-    lcAppFile = m.lcValue
-   CASE m.lcUName = 'REPOSITORY'
-    pcRepository = m.lcValue
-   CASE m.lcUName = 'INSTALLEDFILESFOLDER'
-    lcInstalledFilesFolder = m.lcValue
+	llPrompt              = .t.
+	lcBin2PRGFolderSource = ''
+	lcComponent           = 'Yes'
+	lcCategory            = 'Applications'
+	lcPJXFile             = ''
+	llRecompile           = .f.
+	lcAppFile             = ''
+	lcRepositoryRoot      = 'https://github.com/VFPX/'
+	pcRepository          = ''
+	llInculde_VFPX        = .f.
+	llInculde_Thor        = .t.
+	lnSettings            = alines(laSettings, m.lcProjectSettings)
+
+	for lnI = 1 to m.lnSettings
+		lcLine  = laSettings[m.lnI]
+		lnPos   = at('=', m.lcLine)
+		lcName  = alltrim(left(m.lcLine, m.lnPos - 1))
+		lcValue = alltrim(substr(m.lcLine, m.lnPos + 1))
+		lcUName = upper(m.lcName)
+		do case
+			case m.lcUName == 'APPNAME'
+				pcAppName = m.lcValue
+			case m.lcUName == 'APPID'
+				pcAppID = m.lcValue
+			case m.lcUName == 'VERSION'
+				pcVersion = m.lcValue
+			case m.lcUName == 'VERSIONDATE'
+				pdVersionDate = evaluate('{^' + m.lcValue + '}')
+			case m.lcUName == 'PROMPT'
+				llPrompt = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'CHANGELOG'
+				pcChangeLog = m.lcValue
+			case m.lcUName == 'BIN2PRGFOLDER'
+				lcBin2PRGFolderSource = m.lcValue
+			case m.lcUName == 'COMPONENT'
+				lcComponent = m.lcValue
+			case m.lcUName == 'CATEGORY'
+				lcCategory = m.lcValue
+			case m.lcUName == 'PJXFILE'
+				lcPJXFile = m.lcValue
+			case m.lcUName == 'RECOMPILE'
+				llRecompile = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'APPFILE'
+				lcAppFile = m.lcValue
+			case m.lcUName == 'REPOSITORY'
+				pcRepository = m.lcValue
+			case m.lcUName == 'INSTALLEDFILESFOLDER'
+				lcInstalledFilesFolder = m.lcValue
 *SF 20230512: new flags
-   CASE m.lcUName = 'RUNBIN2PRG'
-    plRun_Bin2Prg = UPPER(m.lcValue) = 'Y'
-   CASE m.lcUName = 'RUNGIT'
-    plRun_git = UPPER(m.lcValue) = 'Y'
-   CASE m.lcUName = 'INCULDE_VFPX'
-    llInculde_VFPX = UPPER(m.lcValue) = 'Y'
-   CASE m.lcUName = 'INCULDE_THOR'
-    llInculde_Thor = UPPER(m.lcValue) = 'Y'
+			case m.lcUName == 'RUNBIN2PRG'
+				plRun_Bin2Prg = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'RUNGIT'
+				plRun_git = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'INCULDE_VFPX'
+				llInculde_VFPX = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'INCULDE_THOR'
+				llInculde_Thor = upper(m.lcValue) = 'Y'
+			case m.lcUName == 'VERSIONFILE_REMOTE'
+				lcVersionFileR = m.lcValue
 */SF 20230512
-  ENDCASE
- NEXT &&lnI
+		endcase
+	next &&lnI
 
 *SF 20230512, get pjx version
- IF UPPER(m.pcVersion)=='PJX' THEN
-  pcVersion = ''
-  IF EMPTY(m.lcPJXFile) THEN
+	if upper(m.pcVersion)=='PJX' then
+		pcVersion = ''
+		if empty(m.lcPJXFile) then
 *use the active pjx, since no pjx is defined
-   IF TYPE("_VFP.ActiveProject")='O' THEN
-    pcVersion = _VFP.ACTIVEPROJECT.VERSIONNUMBER
+			if type("_VFP.ActiveProject")='O' then
+				pcVersion = _vfp.activeproject.versionnumber
 
-   ENDIF &&type("_VFP.ActiveProject")='O'
-  ELSE  &&empty(m.lcPJXFile)
+			endif &&type("_VFP.ActiveProject")='O'
+		else  &&empty(m.lcPJXFile)
 *use pjx defined
 *bit more work
 *see if the project is open
-   FOR lnProject = 1 TO _VFP.PROJECTS.COUNT
-    IF UPPER(FULLPATH(m.lcPJXFile))==UPPER(_VFP.PROJECTS(m.lnProject).NAME) THEN
-     pcVersion = _VFP.PROJECTS(m.lnProject).VERSIONNUMBER
-     EXIT
+			for lnProject = 1 to _vfp.projects.count
+				if upper(fullpath(m.lcPJXFile))==upper(_vfp.projects(m.lnProject).name) then
+					pcVersion = _vfp.projects(m.lnProject).versionnumber
+					exit
 
-    ENDIF &&upper(fullpath(m.lcPJXFile))==upper(_vfp.projects(m.lnProject).name)
-   ENDFOR &&lnProject
+				endif &&upper(fullpath(m.lcPJXFile))==upper(_vfp.projects(m.lnProject).name)
+			endfor &&lnProject
 
-   IF EMPTY(m.pcVersion);
-     AND FILE(FULLPATH(m.lcPJXFile)) THEN
-    MODIFY PROJECT (FULLPATH(m.lcPJXFile)) NOWAIT NOSHOW NOPROJECTHOOK
-    pcVersion = _VFP.PROJECTS(m.lnProject).VERSIONNUMBER
-    _VFP.ACTIVEPROJECT.CLOSE
+			if empty(m.pcVersion);
+					and file(fullpath(m.lcPJXFile)) then
+				modify project (fullpath(m.lcPJXFile)) nowait noshow noprojecthook
+				pcVersion = _vfp.projects(m.lnProject).versionnumber
+				_vfp.activeproject.close
 
-   ENDIF &&empty(m.pcVersion) and file(fullpath(m.lcPJXFile))
-  ENDIF &&empty(m.lcPJXFile)
+			endif &&empty(m.pcVersion) and file(fullpath(m.lcPJXFile))
+		endif &&empty(m.lcPJXFile)
 
-  IF EMPTY(m.pcVersion) THEN
-   MESSAGEBOX('No project to get version number from found.', 16, ;
-     'VFPX Project Deployment')
-   ReleaseThis()
-   RETURN
+		if empty(m.pcVersion) then
+			messagebox('No project to get version number from found.', 16, ;
+				'VFPX Project Deployment')
+			ReleaseThis()
+			return
 
-  ENDIF &&empty(m.pcVersion)
- ENDIF &&upper(m.pcVersion)=='PJX'
+		endif &&empty(m.pcVersion)
+	endif &&upper(m.pcVersion)=='PJX'
 * Ensure we have valid pcAppName and pcAppID values.
 
- IF EMPTY(m.pcAppName) THEN
-  MESSAGEBOX('The appName setting was not specified.', 16, ;
-    'VFPX Project Deployment')
-  ReleaseThis()
-  RETURN
- ENDIF &&empty(m.pcAppName)
+	if empty(m.pcAppName) then
+		messagebox('The appName setting was not specified.', 16, ;
+			'VFPX Project Deployment')
+		ReleaseThis()
+		return
+	endif &&empty(m.pcAppName)
 
- IF EMPTY(m.pcAppID) THEN
-  MESSAGEBOX('The appID setting was not specified.', 16, ;
-    'VFPX Project Deployment')
-  ReleaseThis()
-  RETURN
- ENDIF &&empty(m.pcAppID)
+	if empty(m.pcAppID) then
+		messagebox('The appID setting was not specified.', 16, ;
+			'VFPX Project Deployment')
+		ReleaseThis()
+		return
+	endif &&empty(m.pcAppID)
 
- IF ' ' $ m.pcAppID OR '	' $ m.pcAppID THEN
-  MESSAGEBOX('The appID setting cannot have spaces or tabs.', 16, ;
-    'VFPX Project Deployment')
-  ReleaseThis()
-  RETURN
- ENDIF &&' ' $ m.pcAppID or '	' $ m.pcAppID
+	if ' ' $ m.pcAppID or '	' $ m.pcAppID then
+		messagebox('The appID setting cannot have spaces or tabs.', 16, ;
+			'VFPX Project Deployment')
+		ReleaseThis()
+		return
+	endif &&' ' $ m.pcAppID or '	' $ m.pcAppID
 
 * If we're supposed to build an APP or EXE, ensure we have both settings
 * and we're running VFP 9 and not VFP Advanced since the APP/EXE structure
 * is different. If AppFile is omitted, use the same folder and name as the
 * PJX file.
 
- IF NOT EMPTY(m.lcPJXFile) AND EMPTY(m.lcAppFile) THEN
-  lcAppFile = FORCEEXT(m.lcPJXFile, 'app')
- ENDIF &&not empty(m.lcPJXFile) and empty(m.lcAppFile)
+	if not empty(m.lcPJXFile) and empty(m.lcAppFile) then
+		lcAppFile = forceext(m.lcPJXFile, 'app')
+	endif &&not empty(m.lcPJXFile) and empty(m.lcAppFile)
 
- IF (EMPTY(m.lcPJXFile) AND NOT EMPTY(m.lcAppFile)) OR ;
-   (EMPTY(m.lcAppFile) AND NOT EMPTY(m.lcPJXFile)) THEN
-  MESSAGEBOX('If you specify one of them, you have to specify both ' + ;
-    'PJXFile and AppFile.', 16, 'VFPX Project Deployment')
-  ReleaseThis()
-  RETURN
- ENDIF &&(empty(m.lcPJXFile) and not empty(m.lcAppFile)) or (empty(m.lcAppFile) and not empty(m.lcPJXFile))
+	if (empty(m.lcPJXFile) and not empty(m.lcAppFile)) or ;
+			(empty(m.lcAppFile) and not empty(m.lcPJXFile)) then
+		messagebox('If you specify one of them, you have to specify both ' + ;
+			'PJXFile and AppFile.', 16, 'VFPX Project Deployment')
+		ReleaseThis()
+		return
+	endif &&(empty(m.lcPJXFile) and not empty(m.lcAppFile)) or (empty(m.lcAppFile) and not empty(m.lcPJXFile))
 
- IF NOT EMPTY(m.lcPJXFile) AND VAL(VERSION(4)) > 9 THEN
-  MESSAGEBOX('You must run VFPX Project Deployment using VFP 9 not VFP Advanced.', ;
-    16, 'VFPX Project Deployment')
-  ReleaseThis()
-  RETURN
- ENDIF &&not empty(m.lcPJXFile) and val(version(4)) > 9
+	if not empty(m.lcPJXFile) and val(version(4)) > 9 then
+		messagebox('You must run VFPX Project Deployment using VFP 9 not VFP Advanced.', ;
+			16, 'VFPX Project Deployment')
+		ReleaseThis()
+		return
+	endif &&not empty(m.lcPJXFile) and val(version(4)) > 9
+
+	if empty(m.lcVersionFileR) then
+		lcVersionFileR = m.pcAppID + 'Version.txt'
+	endif &&EMPTY(lcVersionFileR)
 
 * If Bin2PRGFolderSource or PJXFile was supplied, find FoxBin2PRG.EXE.
 
- lcBin2PRGFolder = ''
- lcFoxBin2PRG    = ''
- IF m.plRun_Bin2Prg AND (NOT EMPTY(m.lcBin2PRGFolderSource) OR NOT EMPTY(m.lcPJXFile)) THEN
-  lcFoxBin2PRG = EXECSCRIPT(_SCREEN.cThorDispatcher, 'Thor_Proc_GetFoxBin2PrgFolder') + ;
-   'FoxBin2Prg.exe'
+	lcBin2PRGFolder = ''
+	lcFoxBin2PRG    = ''
+	if m.plRun_Bin2Prg and (not empty(m.lcBin2PRGFolderSource) or not empty(m.lcPJXFile)) then
+		lcFoxBin2PRG = execscript(_screen.cThorDispatcher, 'Thor_Proc_GetFoxBin2PrgFolder') + ;
+			'FoxBin2Prg.exe'
 
-  DO CASE
-   CASE NOT FILE(m.lcFoxBin2PRG)
-    MESSAGEBOX('FoxBin2PRG.EXE not found.', 16, ;
-      'VFPX Project Deployment')
-    ReleaseThis()
-    RETURN
+		do case
+			case not file(m.lcFoxBin2PRG)
+				messagebox('FoxBin2PRG.EXE not found.', 16, ;
+					'VFPX Project Deployment')
+				ReleaseThis()
+				return
 * &&not file(m.lcFoxBin2PRG)
 
-   CASE NOT EMPTY(m.lcBin2PRGFolderSource)
-    lnBin2PRGFolders = ALINES(laBin2PRGFolders, m.lcBin2PRGFolderSource, 4, ',')
-    FOR lnI = 1 TO m.lnBin2PRGFolders
-     lcFolder                = laBin2PRGFolders[m.lnI]
-     laBin2PRGFolders[m.lnI] = FULLPATH(m.tcCurrFolder + m.lcFolder)
-     IF NOT DIRECTORY(laBin2PRGFolders[m.lnI]) THEN
-      MESSAGEBOX('Folder "' + m.lcFolder + '" not found.', 16,	;
-        'VFPX Project Deployment')
-      ReleaseThis()
-      RETURN
+			case not empty(m.lcBin2PRGFolderSource)
+				lnBin2PRGFolders = alines(laBin2PRGFolders, m.lcBin2PRGFolderSource, 4, ',')
+				for lnI = 1 to m.lnBin2PRGFolders
+					lcFolder                = laBin2PRGFolders[m.lnI]
+					laBin2PRGFolders[m.lnI] = fullpath(m.tcCurrFolder + m.lcFolder)
+					if not directory(laBin2PRGFolders[m.lnI]) then
+						messagebox('Folder "' + m.lcFolder + '" not found.', 16,	;
+							'VFPX Project Deployment')
+						ReleaseThis()
+						return
 
-     ENDIF &&not directory(laBin2PRGFolders[m.lnI])
-    NEXT &&lnI
+					endif &&not directory(laBin2PRGFolders[m.lnI])
+				next &&lnI
 * &&not empty(m.lcBin2PRGFolderSource)
 
-  ENDCASE
- ENDIF &&m.plRun_Bin2Prg and (not empty(m.lcBin2PRGFolderSource) or not empty(m.lcPJXFile))
+		endcase
+	endif &&m.plRun_Bin2Prg and (not empty(m.lcBin2PRGFolderSource) or not empty(m.lcPJXFile))
 
 * Get the names of the zip, Thor CFU version, and Thor updaters files and set pcVersionDate to
 * a string version of the release date.
 
- lcZipFile     = 'ThorUpdater\' + m.pcAppID + '.zip'
- lcVersionFile = 'ThorUpdater\' + m.pcAppID + 'Version.txt'
- lcUpdateFile  = m.tcCurrFolder + 'BuildProcess\Thor_Update_' + m.pcAppID + '.prg'
- pcDate        = DTOC(m.pdVersionDate, 1)
- pcVersionDate = STUFF(STUFF(m.pcDate, 7, 0, '-'), 5, 0, '-')
+	lcZipFile     = 'ThorUpdater\' + m.pcAppID + '.zip'
+	lcVersionFile = 'ThorUpdater\' + m.lcVersionFileR
+	lcUpdateFile  = m.tcCurrFolder + 'BuildProcess\Thor_Update_' + m.pcAppID + '.prg'
+	pcDate        = dtoc(m.pdVersionDate, 1)
+	pcVersionDate = stuff(stuff(m.pcDate, 7, 0, '-'), 5, 0, '-')
 
- lnJulian = m.pdVersionDate - {^2000-01-01}
- pcJulian = PADL(m.lnJulian, 5, '0')
+	lnJulian = m.pdVersionDate - {^2000-01-01}
+	pcJulian = padl(m.lnJulian, 5, '0')
 
- pcThisDate = 'date(' + TRANSFORM(YEAR(DATE())) + ', ' + ;
-  TRANSFORM(MONTH(DATE())) + ', ' + TRANSFORM(DAY(DATE())) + ')'
+	pcThisDate = 'date(' + transform(year(date())) + ', ' + ;
+		transform(month(date())) + ', ' + transform(day(date())) + ')'
 
 * Get the repository to use if it wasn't specified.
 
- IF EMPTY(m.pcRepository) THEN
-  pcRepository = m.lcRepositoryRoot + m.pcAppID
- ENDIF &&empty(m.pcRepository)
+	if empty(m.pcRepository) then
+		pcRepository = m.lcRepositoryRoot + m.pcAppID
+	endif &&empty(m.pcRepository)
 
 * Get the version number if it wasn't specified and we're supposed to.
 
- IF EMPTY(m.pcVersion) AND m.llPrompt THEN
-  lcValue = INPUTBOX('Version', 'VFPX Project Deployment', '')
-  IF EMPTY(m.lcValue) THEN
-   ReleaseThis()
-   RETURN
-  ENDIF &&empty(m.lcValue)
-  pcVersion = m.lcValue
+	if empty(m.pcVersion) and m.llPrompt then
+		lcValue = inputbox('Version', 'VFPX Project Deployment', '')
+		if empty(m.lcValue) then
+			ReleaseThis()
+			return
+		endif &&empty(m.lcValue)
+		pcVersion = m.lcValue
 
- ENDIF &&empty(m.pcVersion) and m.llPrompt
+	endif &&empty(m.pcVersion) and m.llPrompt
 
 *SF 20230514 the test for the copy process here, we don't need to proceed if this is not here
- IF !FILE(m.lcInstalledFilesListing) AND !DIRECTORY(m.lcInstalledFilesFolder) THEN
+	if (!file(m.lcInstalledFilesListing) and !directory(m.lcInstalledFilesFolder));
+			or (file(m.lcInstalledFilesListing)) and empty(filetostr(m.lcInstalledFilesListing)) then
 * If no InstalledFiles.txt exists, and no InstalledFiles folder, break
-  MESSAGEBOX('Please either create InstalledFiles.txt in the ' + ;
-    'BuildProcess folder with each file to be installed by Thor ' + ;
-    'listed on a separate line, or create a subdirectory of ' + ;
-    'the project folder named InstalledFiles and copy the ' + ;
-    'files Thor should install to it.', ;
-    16, 'VFPX Project Deployment')
-  ReleaseThis()
-  RETURN
+		messagebox('Please either create InstalledFiles.txt in the ' + ;
+			'BuildProcess folder with each file to be installed by Thor ' + ;
+			'listed on a separate line, or create a subdirectory of ' + ;
+			'the project folder named InstalledFiles and copy the ' + ;
+			'files Thor should install to it.', ;
+			16, 'VFPX Project Deployment')
+		ReleaseThis()
+		return
 
- ENDIF &&!file(m.lcInstalledFilesListing) and !directory(m.lcInstalledFilesFolder)
+	endif &&(!file(m.lcInstalledFilesListing) and !directory(m.lcInstalledFilesFolder)) or ...
 
- pcFullVersion = m.pcVersion
+	pcFullVersion = m.pcVersion
 
 * Execute BuildMe.prg if it exists. If it sets plContinue to .F., exit.
 
- IF FILE(m.lcBuildProgram) THEN
-  DO (m.lcBuildProgram)
-  IF NOT m.plContinue
-   ReleaseThis()
-   RETURN
+	if file(m.lcBuildProgram) then
+		do (m.lcBuildProgram)
+		if not m.plContinue
+			ReleaseThis()
+			return
 
-  ENDIF &&not m.plContinue
- ENDIF &&file(m.lcBuildProgram)
+		endif &&not m.plContinue
+	endif &&file(m.lcBuildProgram)
 
- IF EMPTY(m.pcVersion) THEN
-  MESSAGEBOX('The version setting was not specified.', 16, ;
-    'VFPX Project Deployment')
-  ReleaseThis()
-  RETURN
- ENDIF &&empty(m.pcVersion)
+	if empty(m.pcVersion) then
+		messagebox('The version setting was not specified.', 16, ;
+			'VFPX Project Deployment')
+		ReleaseThis()
+		return
+	endif &&empty(m.pcVersion)
 
 *** JRN 2023-01-10 : Call FoxBin2PRG, if applicable
 *SF 20230512: flag to disable FoxBin2PRG
- IF m.plRun_Bin2Prg AND NOT EMPTY(m.lcFoxBin2PRG) THEN
-  IF NOT EMPTY(m.lcPJXFile)
-   DO (m.lcFoxBin2PRG) WITH FULLPATH(m.lcPJXFile), '*'
-  ENDIF &&not empty(m.lcPJXFile)
+	if m.plRun_Bin2Prg and not empty(m.lcFoxBin2PRG) then
+		if not empty(m.lcPJXFile)
+			do (m.lcFoxBin2PRG) with fullpath(m.lcPJXFile), '*'
+		endif &&not empty(m.lcPJXFile)
 
-  IF NOT EMPTY(m.lcBin2PRGFolderSource) THEN
+		if not empty(m.lcBin2PRGFolderSource) then
 *** JRN 2023-01-29 : BIN2PRG for folder and sub-folders
-   FOR lnI = 1 TO m.lnBin2PRGFolders
-    lcFolder = laBin2PRGFolders[m.lnI]
-    DO (m.lcFoxBin2PRG) WITH 'BIN2PRG', m.lcFolder && + '\*.*'
+			for lnI = 1 to m.lnBin2PRGFolders
+				lcFolder = laBin2PRGFolders[m.lnI]
+				do (m.lcFoxBin2PRG) with 'BIN2PRG', m.lcFolder && + '\*.*'
 
-   NEXT &&lnI
-  ENDIF &&not empty(m.lcBin2PRGFolderSource)
- ENDIF &&m.plRun_Bin2Prg and not empty(m.lcFoxBin2PRG)
+			next &&lnI
+		endif &&not empty(m.lcBin2PRGFolderSource)
+	endif &&m.plRun_Bin2Prg and not empty(m.lcFoxBin2PRG)
 
 * Ensure we have a version number (Build.prg may have set it).
 
 * Create an APP/EXE if we're supposed to.
 
- lcRecompile = IIF(m.llRecompile, 'recompile', '')
- DO CASE
-  CASE EMPTY(m.lcPJXFile)
-  CASE UPPER(JUSTEXT(m.lcAppFile)) = 'EXE'
-   BUILD EXE (m.lcAppFile) FROM (m.lcPJXFile) &lcRecompile
-  OTHERWISE
-   BUILD APP (m.lcAppFile) FROM (m.lcPJXFile) &lcRecompile
- ENDCASE
+	lcRecompile = iif(m.llRecompile, 'recompile', '')
+	do case
+		case empty(m.lcPJXFile)
+		case upper(justext(m.lcAppFile)) = 'EXE'
+			build exe (m.lcAppFile) from (m.lcPJXFile) &lcRecompile
+		otherwise
+			build app (m.lcAppFile) from (m.lcPJXFile) &lcRecompile
+	endcase
 
- lcErrFile = FORCEEXT(m.lcAppFile, 'err')
+	lcErrFile = forceext(m.lcAppFile, 'err')
 
- IF NOT EMPTY(m.lcPJXFile) AND FILE(m.lcErrFile) THEN
-  MESSAGEBOX('An error occurred building the project.' + CRLF +;
-    ' Please see the ERR file for details.', 16, 'VFPX Project Deployment')
-  MODIFY FILE (m.lcErrFile) NOWAIT
-  ReleaseThis()
-  RETURN
+	if not empty(m.lcPJXFile) and file(m.lcErrFile) then
+		messagebox('An error occurred building the project.' + CRLF +;
+			' Please see the ERR file for details.', 16, 'VFPX Project Deployment')
+		modify file (m.lcErrFile) nowait
+		ReleaseThis()
+		return
 
- ENDIF &&not empty(m.lcPJXFile) and file(m.lcErrFile)
+	endif &&not empty(m.lcPJXFile) and file(m.lcErrFile)
 
- SetDocumentation (m.tcCurrFolder, m.tcVFPXDeploymentFolder, m.llInculde_VFPX, m.lcSubstitudeListing)
+	SetDocumentation (m.tcCurrFolder, m.tcVFPXDeploymentFolder, m.llInculde_VFPX, m.lcSubstitudeListing)
 
 *SF 20230514 the test is moved to a place above, so no processing is done
- IF m.llInculde_Thor THEN
-  IF FILE(m.lcInstalledFilesListing) THEN
+	if m.llInculde_Thor then
+		if file(m.lcInstalledFilesListing) then
 * If InstalledFiles.txt exists, copy the files listed in it to the
 * InstalledFiles folder (folders are created as necessary).
-   lcFiles = FILETOSTR(m.lcInstalledFilesListing)
-   lnFiles = ALINES(laFiles, m.lcFiles, 1 + 4)
-   FOR lnI = 1 TO m.lnFiles
-    IF LEFT(LTRIM(laFiles[m.lnI]), 1) == '#' THEN
-     LOOP
-    ENDIF &&LEFT(LTRIM(laFiles[m.lnI]e), 1) == '#'
-    lnWords  = ALINES(laWords, STRTRAN(laFiles[m.lnI], '||', 0h00), 1 + 4,0h00)
-    lcSource = laWords[1]
-    lcTarget = IIF(m.lnWords=1, laWords[1],  laWords[2])
-    IF RIGHT(m.lcSource, 1) == '\' THEN
+			lcFiles = filetostr(m.lcInstalledFilesListing)
+			lnFiles = alines(laFiles, m.lcFiles, 1 + 4)
+			for lnI = 1 to m.lnFiles
+				if left(ltrim(laFiles[m.lnI]), 1) == '#' then
+					loop
+				endif &&LEFT(LTRIM(laFiles[m.lnI]e), 1) == '#'
+				lnWords  = alines(laWords, strtran(laFiles[m.lnI], '||', 0h00), 1 + 4,0h00)
+				lcSource = laWords[1]
+				lcTarget = iif(m.lnWords=1, laWords[1],  laWords[2])
+				if right(m.lcSource, 1) == '\' then
 * just with subfolders
-     ScanDir_InstFiles(m.tcCurrFolder + m.lcSource, ADDBS(FULLPATH(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget)
-    ELSE
+					ScanDir_InstFiles(m.tcCurrFolder + m.lcSource, addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget)
+				else
 * just file / skeleton
-     Copy_InstallFile(m.tcCurrFolder + m.lcSource, ADDBS(FULLPATH(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget)
-    ENDIF
+					Copy_InstallFile(m.tcCurrFolder + m.lcSource, addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget)
+				endif
 
-   NEXT &&lnI
-  ENDIF &&file(m.lcInstalledFilesListing)
+			next &&lnI
+		endif &&file(m.lcInstalledFilesListing)
 
 * Create the ThorUpdater folder if necessary.
 
-  IF NOT DIRECTORY('ThorUpdater') THEN
-   MD ThorUpdater
-  ENDIF &&not directory('ThorUpdater')
+		if not directory('ThorUpdater') then
+			md ThorUpdater
+		endif &&not directory('ThorUpdater')
 
 * Update Version.txt.
-  lcVersion = FILETOSTR(m.lcVersionTemplateFile)
+		lcVersion = filetostr(m.lcVersionTemplateFile)
 
-  lcChange  = IIF(FILE(m.pcChangeLog), FILETOSTR(m.pcChangeLog), '')
-  lcVersion = STRTRAN(m.lcVersion, '{CHANGELOG}', m.lcChange,     -1, -1, 1)
-  lcVersion = STRTRAN(m.lcVersion, '{COMPONENT}', m.lcComponent,  -1, -1, 1)
-  lcVersion = STRTRAN(m.lcVersion, '{CATEGORY}',  m.lcCategory,   -1, -1, 1)
+		lcChange  = iif(file(m.pcChangeLog), filetostr(m.pcChangeLog), '')
+		lcVersion = strtran(m.lcVersion, '{CHANGELOG}', m.lcChange,     -1, -1, 1)
+		lcVersion = strtran(m.lcVersion, '{COMPONENT}', m.lcComponent,  -1, -1, 1)
+		lcVersion = strtran(m.lcVersion, '{CATEGORY}',  m.lcCategory,   -1, -1, 1)
 
-  lcVersion = ReplacePlaceholders_Once(m.lcVersion)
+		lcVersion = ReplacePlaceholders_Once(m.lcVersion)
 
-  STRTOFILE(m.lcVersion, m.lcVersionFile)
+		strtofile(m.lcVersion, m.lcVersionFile)
 
 * check proposed version file for errors
-  IF CheckVersionFile(m.lcVersionFile) = .F. THEN
-   ReleaseThis()
-   RETURN
+		if CheckVersionFile(m.lcVersionFile) = .f. then
+			ReleaseThis()
+			return
 
-  ENDIF &&CheckVersionFile(m.lcVersionFile) = .f.
-  ERASE (FORCEEXT(m.lcVersionFile, 'fxp'))
+		endif &&CheckVersionFile(m.lcVersionFile) = .f.
+		erase (forceext(m.lcVersionFile, 'fxp'))
 
 * Update Thor_Update program.
 
-  IF FILE(m.lcUpdateTemplateFile) AND NOT FILE(m.lcUpdateFile) THEN
+		if file(m.lcUpdateTemplateFile) and not file(m.lcUpdateFile) then
 
-   lcContent = FILETOSTR(m.lcUpdateTemplateFile)
+			lcContent = filetostr(m.lcUpdateTemplateFile)
 
-   lcContent = ReplacePlaceholders_Once(m.lcContent)
+			lcContent = ReplacePlaceholders_Once(m.lcContent)
 
-   lcContent = STRTRAN(m.lcContent, '{COMPONENT}', m.lcComponent, ;
-     -1, -1, 1)
-   STRTOFILE(m.lcContent, m.lcUpdateFile)
+			lcContent = strtran(m.lcContent, '{COMPONENT}', m.lcComponent, ;
+				-1, -1, 1)
+			lcContent = strtran(m.lcContent, '{VERSIONFILE}', m.lcVersionFileR, ;
+				-1, -1, 1)
+			strtofile(m.lcContent, m.lcUpdateFile)
 
-  ENDIF &&file(m.lcUpdateTemplateFile) and not file(m.lcUpdateFile)
+		endif &&file(m.lcUpdateTemplateFile) and not file(m.lcUpdateFile)
 
 * Zip the source files.
 
-  EXECSCRIPT(_SCREEN.cThorDispatcher, 'Thor_Proc_ZipFolder', m.lcInstalledFilesFolder, m.lcZipFile)
+		execscript(_screen.cThorDispatcher, 'Thor_Proc_ZipFolder', m.lcInstalledFilesFolder, m.lcZipFile)
 
 * Add AppID.zip and AppIDVersion.txt to the repository.
 
 *SF 20230512: flag to disable git
-  IF m.plRun_git THEN
-   lcCommand = 'git add ' + m.lcZipFile + ' -f'
-   RUN &lcCommand
-   lcCommand = 'git add ' + m.lcVersionFile
-   RUN &lcCommand
+		if m.plRun_git then
+			lcCommand = 'git add ' + m.lcZipFile + ' -f'
+			run &lcCommand
+			lcCommand = 'git add ' + m.lcVersionFile
+			run &lcCommand
 
 * Add the BuildProcess files to the repository.
 
-   FOR lnI = 1 TO ADIR(laFiles, 'BuildProcess\*.*', '', 1)
-    lcFile = laFiles[m.lnI, 1]
-    IF LOWER(JUSTEXT(m.lcFile)) <> 'fxp' THEN
-     lcCommand = 'git add BuildProcess\' + m.lcFile
-     RUN &lcCommand
+			for lnI = 1 to adir(laFiles, 'BuildProcess\*.*', '', 1)
+				lcFile = laFiles[m.lnI, 1]
+				if lower(justext(m.lcFile)) <> 'fxp' then
+					lcCommand = 'git add BuildProcess\' + m.lcFile
+					run &lcCommand
 
-    ENDIF &&lower(justext(m.lcFile)) <> 'fxp'
-   NEXT &&lnI
-  ENDIF &&plRun_git
- ENDIF &&m.llInculde_Thor
+				endif &&lower(justext(m.lcFile)) <> 'fxp'
+			next &&lnI
+		endif &&plRun_git
+	endif &&m.llInculde_Thor
 
 * Execute AfterBuild.prg if it exists.
 
- IF FILE(m.lcAfterBuildProgram) THEN
-  DO (m.lcAfterBuildProgram)
- ENDIF &&file(m.lcAfterBuildProgram)
+*preserve tcProjectName
+	addproperty(_screen, 'VFPX_Deploy_ProjectName', m.tcProjectName)
 
- ReleaseThis()
+	if file(m.lcAfterBuildProgram) then
+		do (m.lcAfterBuildProgram)
+	endif &&file(m.lcAfterBuildProgram)
 
- MESSAGEBOX('Deployment for ' + m.tcProjectName + ' complete.' +  CRLF +  CRLF + 'All done', 64, 'VFPX Project Deployment', 5000)
+	ReleaseThis()
 
-ENDPROC &&Deploy
+	messagebox('Deployment for ' + _screen.VFPX_Deploy_ProjectName + ' complete.' +  CRLF +  CRLF + 'All done', 64, 'VFPX Project Deployment', 5000)
 
-PROCEDURE SetDocumentation
- LPARAMETERS;
-  tcCurrFolder,;
-  tcVFPXDeploymentFolder,;
-  tlInculde_VFPX,;
-  tcSubstitudeListing
+	removeproperty(_screen, 'VFPX_Deploy_ProjectName')
+
+endproc &&Deploy
+
+procedure SetDocumentation
+	lparameters;
+		tcCurrFolder,;
+		tcVFPXDeploymentFolder,;
+		tlInculde_VFPX,;
+		tcSubstitudeListing
 
 *check for several VFPX defaults:
- LOCAL;
-  lcText AS STRING,;
-  lnFile AS NUMBER
- LOCAL lcFiles,lcSource,lnFiles,lnI
+	local;
+		lcText as string,;
+		lnFile as number
+	local lcFiles,lcSource,lnFiles,lnI
 
 
- LOCAL ARRAY;
-  laFiles(1, 1)
+	local array;
+		laFiles(1, 1)
 
- IF NOT FILE(m.tcCurrFolder + 'README.md') THEN
-  IF m.tlInculde_VFPX THEN
-   lcText = FILETOSTR(m.tcVFPXDeploymentFolder + 'VFPXTemplate\R_README.md')
-   lcText = ReplacePlaceholders_Once(m.lcText)
-   lcText = ReplacePlaceholders_Run (m.lcText)
-   STRTOFILE(m.lcText, 'README.md')
+	if not file(m.tcCurrFolder + 'README.md') then
+		if m.tlInculde_VFPX then
+			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\R_README.md')
+			lcText = ReplacePlaceholders_Once(m.lcText)
+			lcText = ReplacePlaceholders_Run (m.lcText)
+			strtofile(m.lcText, 'README.md')
 
-  ENDIF &&m.tlInculde_VFPX
- ELSE  &&not file(m.tcCurrFolder + 'README.md')
-  IF FILE(m.tcCurrFolder + 'README.md') THEN
-   lcText = FILETOSTR('README.md')
-   lcText = ReplacePlaceholders_Run (m.lcText)
-   STRTOFILE(m.lcText, 'README.md')
+		endif &&m.tlInculde_VFPX
+	else  &&not file(m.tcCurrFolder + 'README.md')
+		if file(m.tcCurrFolder + 'README.md') then
+			lcText = filetostr('README.md')
+			lcText = ReplacePlaceholders_Run (m.lcText)
+			strtofile(m.lcText, 'README.md')
 
-  ENDIF &&file(m.tcCurrFolder + 'README.md')
- ENDIF &&not file(m.tcCurrFolder + 'README.md')
+		endif &&file(m.tcCurrFolder + 'README.md')
+	endif &&not file(m.tcCurrFolder + 'README.md')
 
- IF m.tlInculde_VFPX THEN
-  IF NOT FILE(m.tcCurrFolder + 'BuildProcess\README.md') THEN
-   lcText = FILETOSTR(m.tcVFPXDeploymentFolder + 'VFPXTemplate\B_README.md')
-   lcText = ReplacePlaceholders_Once(m.lcText)
-   lcText = ReplacePlaceholders_Run (m.lcText)
-   STRTOFILE(m.lcText, 'BuildProcess\README.md')
-  ENDIF &&not file(m.tcCurrFolder + 'BuildProcess\README.md')
+	if m.tlInculde_VFPX then
+		if not file(m.tcCurrFolder + 'BuildProcess\README.md') then
+			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\B_README.md')
+			lcText = ReplacePlaceholders_Once(m.lcText)
+			lcText = ReplacePlaceholders_Run (m.lcText)
+			strtofile(m.lcText, 'BuildProcess\README.md')
+		endif &&not file(m.tcCurrFolder + 'BuildProcess\README.md')
 
-  IF NOT FILE(m.tcCurrFolder + 'BuildProcess\.gitignore') THEN
-   lcText = FILETOSTR(m.tcVFPXDeploymentFolder + 'VFPXTemplate\B.gitignore')
-   lcText = ReplacePlaceholders_Once(m.lcText)
-   STRTOFILE(m.lcText, 'BuildProcess\.gitignore')
-  ENDIF &&not file(m.tcCurrFolder + 'BuildProcess\README.md')
+		if not file(m.tcCurrFolder + 'BuildProcess\.gitignore') then
+			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\B.gitignore')
+			lcText = ReplacePlaceholders_Once(m.lcText)
+			strtofile(m.lcText, 'BuildProcess\.gitignore')
+		endif &&not file(m.tcCurrFolder + 'BuildProcess\README.md')
 
-  IF NOT FILE(m.tcCurrFolder + 'ThorUpdater\README.md') THEN
-   lcText = FILETOSTR(m.tcVFPXDeploymentFolder + 'VFPXTemplate\T_README.md')
-   lcText = ReplacePlaceholders_Once(m.lcText)
-   lcText = ReplacePlaceholders_Run (m.lcText)
-   STRTOFILE(m.lcText, 'ThorUpdater\README.md')
-  ENDIF &&not file(m.tcCurrFolder + 'ThorUpdater\README.md')
+		if not file(m.tcCurrFolder + 'ThorUpdater\README.md') then
+			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\T_README.md')
+			lcText = ReplacePlaceholders_Once(m.lcText)
+			lcText = ReplacePlaceholders_Run (m.lcText)
+			strtofile(m.lcText, 'ThorUpdater\README.md')
+		endif &&not file(m.tcCurrFolder + 'ThorUpdater\README.md')
 
-  IF NOT FILE(m.tcCurrFolder + 'ThorUpdater\.gitignore') THEN
-   lcText = FILETOSTR(m.tcVFPXDeploymentFolder + 'VFPXTemplate\T.gitignore')
-   lcText = ReplacePlaceholders_Once(m.lcText)
-   STRTOFILE(m.lcText, 'ThorUpdater\.gitignore')
-  ENDIF &&not file(m.tcCurrFolder + 'ThorUpdater\README.md')
+		if not file(m.tcCurrFolder + 'ThorUpdater\.gitignore') then
+			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\T.gitignore')
+			lcText = ReplacePlaceholders_Once(m.lcText)
+			strtofile(m.lcText, 'ThorUpdater\.gitignore')
+		endif &&not file(m.tcCurrFolder + 'ThorUpdater\README.md')
 
-  IF NOT FILE(m.tcCurrFolder + '.gitignore') THEN
-   lcText = FILETOSTR(m.tcVFPXDeploymentFolder + 'VFPXTemplate\C.gitignore')
-   lcText = ReplacePlaceholders_Once(m.lcText)
-   STRTOFILE(m.lcText, '.gitignore')
-  ENDIF &&not file(m.tcCurrFolder + '.gitignore')
+		if not file(m.tcCurrFolder + '.gitignore') then
+			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\C.gitignore')
+			lcText = ReplacePlaceholders_Once(m.lcText)
+			strtofile(m.lcText, '.gitignore')
+		endif &&not file(m.tcCurrFolder + '.gitignore')
 
-  IF NOT FILE(m.tcCurrFolder + '.gitattributes') THEN
-   lcText = FILETOSTR(m.tcVFPXDeploymentFolder + 'VFPXTemplate\R.gitattributes')
-   lcText = ReplacePlaceholders_Once(m.lcText)
-   STRTOFILE(m.lcText, '.gitattributes')
-  ENDIF &&not file(m.tcCurrFolder + '.gitattributes')
+		if not file(m.tcCurrFolder + '.gitattributes') then
+			lcText = filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\R.gitattributes')
+			lcText = ReplacePlaceholders_Once(m.lcText)
+			strtofile(m.lcText, '.gitattributes')
+		endif &&not file(m.tcCurrFolder + '.gitattributes')
 
-  IF NOT DIRECTORY(m.tcCurrFolder + '.github') THEN
-   MKDIR .github
-   COPY FILE (m.tcVFPXDeploymentFolder + 'VFPXTemplate\.github\*.*') TO ;
-    .github\*.*
+		if not directory(m.tcCurrFolder + '.github') then
+			mkdir .github
+			copy file (m.tcVFPXDeploymentFolder + 'VFPXTemplate\.github\*.*') to ;
+				.github\*.*
 
-   FOR lnFile = 1 TO ADIR(laFiles,'.github\*.*')
-    lcText = FILETOSTR('.github\' + laFiles(m.lnFile, 1))
-    lcText = ReplacePlaceholders_Once(m.lcText)
-    STRTOFILE(m.lcText, '.github\' + FORCEEXT(laFiles(m.lnFile, 1),LOWER(JUSTEXT(laFiles(m.lnFile, 1)))))
+			for lnFile = 1 to adir(laFiles,'.github\*.*')
+				lcText = filetostr('.github\' + laFiles(m.lnFile, 1))
+				lcText = ReplacePlaceholders_Once(m.lcText)
+				strtofile(m.lcText, '.github\' + forceext(laFiles(m.lnFile, 1),lower(justext(laFiles(m.lnFile, 1)))))
 
-   ENDFOR &&lnFile
+			endfor &&lnFile
 
-   MKDIR .github\ISSUE_TEMPLATE
-   COPY FILE (m.tcVFPXDeploymentFolder + 'VFPXTemplate\.github\ISSUE_TEMPLATE\*.*') TO ;
-    .github\ISSUE_TEMPLATE\*.*
+			mkdir .github\ISSUE_TEMPLATE
+			copy file (m.tcVFPXDeploymentFolder + 'VFPXTemplate\.github\ISSUE_TEMPLATE\*.*') to ;
+				.github\ISSUE_TEMPLATE\*.*
 
-   FOR lnFile = 1 TO ADIR(laFiles,'.github\ISSUE_TEMPLATE\*.*')
-    lcText = FILETOSTR('.github\ISSUE_TEMPLATE\' + laFiles(m.lnFile, 1))
-    lcText = ReplacePlaceholders_Once(m.lcText)
-    STRTOFILE(m.lcText, '.github\ISSUE_TEMPLATE\' + LOWER(laFiles(m.lnFile, 1)))
+			for lnFile = 1 to adir(laFiles,'.github\ISSUE_TEMPLATE\*.*')
+				lcText = filetostr('.github\ISSUE_TEMPLATE\' + laFiles(m.lnFile, 1))
+				lcText = ReplacePlaceholders_Once(m.lcText)
+				strtofile(m.lcText, '.github\ISSUE_TEMPLATE\' + lower(laFiles(m.lnFile, 1)))
 
-   ENDFOR &&lnFile
+			endfor &&lnFile
 
-  ENDIF &&not directory(m.tcCurrFolder + '.github')
+		endif &&not directory(m.tcCurrFolder + '.github')
 
-  IF NOT DIRECTORY(m.tcCurrFolder + 'docs') THEN
-   MKDIR docs
-   COPY FILE (m.tcVFPXDeploymentFolder + 'VFPXTemplate\docs\*.*') TO ;
-    docs\*.*
+		if not directory(m.tcCurrFolder + 'docs') then
+			mkdir docs
+			copy file (m.tcVFPXDeploymentFolder + 'VFPXTemplate\docs\*.*') to ;
+				docs\*.*
 
-   FOR lnFile = 1 TO ADIR(laFiles,'docs\*.*')
-    lcText = FILETOSTR('docs\' + laFiles(m.lnFile, 1))
-    lcText = ReplacePlaceholders_Once(m.lcText)
-    STRTOFILE(m.lcText, 'docs\' + laFiles(m.lnFile, 1))
+			for lnFile = 1 to adir(laFiles,'docs\*.*')
+				lcText = filetostr('docs\' + laFiles(m.lnFile, 1))
+				lcText = ReplacePlaceholders_Once(m.lcText)
+				strtofile(m.lcText, 'docs\' + laFiles(m.lnFile, 1))
 
-   ENDFOR &&lnFile
-  ENDIF &&not directory(m.tcCurrFolder + 'docs')
+			endfor &&lnFile
+		endif &&not directory(m.tcCurrFolder + 'docs')
 
-  IF NOT DIRECTORY(m.tcCurrFolder + 'docs\images') THEN
-   MKDIR docs\images
-   COPY FILE (m.tcVFPXDeploymentFolder + 'VFPXTemplate\docs\images\*.*') TO ;
-    docs\images\*.*
-  ENDIF &&not directory(m.tcCurrFolder + 'docs\images')
- ENDIF
+		if not directory(m.tcCurrFolder + 'docs\images') then
+			mkdir docs\images
+			copy file (m.tcVFPXDeploymentFolder + 'VFPXTemplate\docs\images\*.*') to ;
+				docs\images\*.*
+		endif &&not directory(m.tcCurrFolder + 'docs\images')
+	endif
 
 
- IF FILE(m.tcSubstitudeListing) THEN
+	if file(m.tcSubstitudeListing) then
 * If InstalledFiles.txt exists, copy the files listed in it to the
 * InstalledFiles folder (folders are created as necessary).
-  lcFiles = FILETOSTR(m.tcSubstitudeListing)
-  lnFiles = ALINES(laFiles, m.lcFiles, 1 + 4)
-  FOR lnI = 1 TO m.lnFiles
-   lcSource = laFiles[m.lnI]
-   IF LEFT(LTRIM(m.lcSource), 1) == '#' THEN
-    LOOP
-   ENDIF &&LEFT(LTRIM(m.lcSource), 1) == '#'
-   IF RIGHT(m.lcSource, 1) == '\' THEN
+		lcFiles = filetostr(m.tcSubstitudeListing)
+		lnFiles = alines(laFiles, m.lcFiles, 1 + 4)
+		for lnI = 1 to m.lnFiles
+			lcSource = laFiles[m.lnI]
+			if left(ltrim(m.lcSource), 1) == '#' then
+				loop
+			endif &&LEFT(LTRIM(m.lcSource), 1) == '#'
+			if right(m.lcSource, 1) == '\' then
 * just with subfolders
-    ScanDir_Templates(m.tcCurrFolder + m.lcSource)
-   ELSE
+				ScanDir_Templates(m.tcCurrFolder + m.lcSource)
+			else
 * just file / skeleton
-    lcText = FILETOSTR(m.tcCurrFolder + laFiles[m.lnI])
-    lcText = ReplacePlaceholders_Run (m.lcText)
-    STRTOFILE(m.lcText,m.tcCurrFolder + laFiles[m.lnI])
-   ENDIF
+				lcText = filetostr(m.tcCurrFolder + laFiles[m.lnI])
+				lcText = ReplacePlaceholders_Run (m.lcText)
+				strtofile(m.lcText,m.tcCurrFolder + laFiles[m.lnI])
+			endif
 
-  NEXT &&lnI
- ENDIF &&file(m.lcInstalledFilesListing)
+		next &&lnI
+	endif &&file(m.lcInstalledFilesListing)
 
-ENDPROC &&SetDocumentation
+endproc &&SetDocumentation
 
-PROCEDURE ReplacePlaceholders_Once
- LPARAMETERS;
-  tcText
+procedure ReplacePlaceholders_Once
+	lparameters;
+		tcText
 
- LOCAL;
-  lcRemove AS STRING,;
-  lcText   AS STRING,;
-  lnI      AS NUMBER
+	local;
+		lcRemove as string,;
+		lcText   as string,;
+		lnI      as number
 
- lcText = STRTRAN(m.tcText, '{APPNAME}',     m.pcAppName,    -1, -1, 1)
- lcText = STRTRAN(m.lcText, '{APPID}',       m.pcAppID,      -1, -1, 1)
- lcText = STRTRAN(m.lcText, '{CURRDATE}',    m.pcThisDate,   -1, -1, 1)
- lcText = STRTRAN(m.lcText, '{VERSIONDATE}', m.pcDate,       -1, -1, 1)
- lcText = STRTRAN(m.lcText, '{CVERSIONDATE}',m.pcVersionDate,-1, -1, 1)
- lcText = STRTRAN(m.lcText, '{VERSION}',     m.pcVersion,    -1, -1, 1)
- lcText = STRTRAN(m.lcText, '{JULIAN}',      m.pcJulian,     -1, -1, 1)
- lcText = STRTRAN(m.lcText, '{REPOSITORY}',  m.pcRepository, -1, -1, 1)
- lcText = STRTRAN(m.lcText, '{CHANGELOG_F}', m.pcChangeLog, -1, -1, 1)
- lcText = TEXTMERGE(m.lcText)
+	lcText = strtran(m.tcText, '{APPNAME}',     m.pcAppName,    -1, -1, 1)
+	lcText = strtran(m.lcText, '{APPID}',       m.pcAppID,      -1, -1, 1)
+	lcText = strtran(m.lcText, '{CURRDATE}',    m.pcThisDate,   -1, -1, 1)
+	lcText = strtran(m.lcText, '{VERSIONDATE}', m.pcDate,       -1, -1, 1)
+	lcText = strtran(m.lcText, '{CVERSIONDATE}',m.pcVersionDate,-1, -1, 1)
+	lcText = strtran(m.lcText, '{VERSION}',     m.pcVersion,    -1, -1, 1)
+	lcText = strtran(m.lcText, '{JULIAN}',      m.pcJulian,     -1, -1, 1)
+	lcText = strtran(m.lcText, '{REPOSITORY}',  m.pcRepository, -1, -1, 1)
+	lcText = strtran(m.lcText, '{CHANGELOG_F}', m.pcChangeLog, -1, -1, 1)
+	lcText = textmerge(m.lcText)
 
- FOR lnI = OCCURS('@@@', m.lcText) TO 1 STEP -1
-  lcRemove = STREXTRACT(m.lcText, '@@@', '\\\', m.lnI, 4)
-  lcText   = STRTRAN(m.lcText, m.lcRemove)
+	for lnI = occurs('@@@', m.lcText) to 1 step -1
+		lcRemove = strextract(m.lcText, '@@@', '\\\', m.lnI, 4)
+		lcText   = strtran(m.lcText, m.lcRemove)
 
- NEXT &&lnI
+	next &&lnI
 
- RETURN m.lcText
-ENDPROC &&ReplacePlaceholders_Once
+	return m.lcText
+endproc &&ReplacePlaceholders_Once
 
-PROCEDURE ReplacePlaceholders_Run
- LPARAMETERS;
-  tcText
+procedure ReplacePlaceholders_Run
+	lparameters;
+		tcText
 
- LOCAL;
-  lnLen    AS NUMBER,;
-  lnOccurence AS NUMBER,;
-  lnStart  AS NUMBER
+	local;
+		lnLen    as number,;
+		lnOccurence as number,;
+		lnStart  as number
 
- FOR lnOccurence = 1 TO OCCURS('<!--VERNO-->', UPPER(m.tcText))
-  lnStart = ATC('<!--VerNo-->', m.tcText, m.lnOccurence)
-  lnLen   = ATC('<!--/VerNo-->', SUBSTR(m.tcText,m.lnStart))
+	for lnOccurence = 1 to occurs('<!--VERNO-->', upper(m.tcText))
+		lnStart = atc('<!--VerNo-->', m.tcText, m.lnOccurence)
+		lnLen   = atc('<!--/VerNo-->', substr(m.tcText,m.lnStart))
 *	 tcText  = stuff(tcText, lnStart, lnLen, '<!--VerNo-->' + pcFullVersion)
-  IF m.lnLen>0 THEN
-   tcText  = STUFF(m.tcText, m.lnStart, m.lnLen - 1, '<!--VERNO-->' + pcFullVersion)
+		if m.lnLen>0 then
+			tcText  = stuff(m.tcText, m.lnStart, m.lnLen - 1, '<!--VERNO-->' + pcFullVersion)
 
-  ENDIF &&m.lnLen>0
- NEXT &&lnOccurence
+		endif &&m.lnLen>0
+	next &&lnOccurence
 
- FOR lnOccurence = 1 TO OCCURS('<!--DEPLOYMENTDATE-->', UPPER(m.tcText))
-  lnStart = ATC('<!--DeploymentDate-->', m.tcText, m.lnOccurence)
-  lnLen   = ATC('<!--/DeploymentDate-->', SUBSTR(m.tcText,m.lnStart))
+	for lnOccurence = 1 to occurs('<!--DEPLOYMENTDATE-->', upper(m.tcText))
+		lnStart = atc('<!--DeploymentDate-->', m.tcText, m.lnOccurence)
+		lnLen   = atc('<!--/DeploymentDate-->', substr(m.tcText,m.lnStart))
 *	 tcText  = stuff(tcText, lnStart, lnLen, '<!--DeploymentDate-->' + tcVersionDateD)
-  IF m.lnLen>0 THEN
-   tcText  = STUFF(m.tcText, m.lnStart, m.lnLen - 1, '<!--DeploymentDate-->' + pcVersionDate)
+		if m.lnLen>0 then
+			tcText  = stuff(m.tcText, m.lnStart, m.lnLen - 1, '<!--DeploymentDate-->' + pcVersionDate)
 
-  ENDIF &&m.lnLen>0
- NEXT &&lnOccurence
+		endif &&m.lnLen>0
+	next &&lnOccurence
 
- RETURN m.tcText
-ENDPROC &&ReplacePlaceholders_Run
+	return m.tcText
+endproc &&ReplacePlaceholders_Run
 
-PROCEDURE CheckVersionFile
- LPARAMETERS;
-  tcVersionFile
+procedure CheckVersionFile
+	lparameters;
+		tcVersionFile
 
- LOCAL;
-  lcErrorMsg AS STRING,;
-  llSuccess AS BOOLEAN,;
-  loException AS OBJECT,;
-  loUpdater AS OBJECT
+	local;
+		lcErrorMsg as string,;
+		llSuccess as boolean,;
+		loException as object,;
+		loUpdater as object
 
- loUpdater  = EXECSCRIPT (_SCREEN.cThorDispatcher, 'Thor_Proc_GetUpdaterObject2')
- TRY
-   DO (m.tcVersionFile) WITH m.loUpdater
-   llSuccess = .T.
-  CATCH TO m.loException
-   llSuccess = .F.
- ENDTRY
+	loUpdater  = execscript (_screen.cThorDispatcher, 'Thor_Proc_GetUpdaterObject2')
+	try
+			do (m.tcVersionFile) with m.loUpdater
+			llSuccess = .t.
+		catch to m.loException
+			llSuccess = .f.
+	endtry
 
- IF !m.llSuccess THEN
-  lcErrorMsg = 'Error in Version file:' 		+ CRLF + 			;
-   'Msg:   ' + m.loException.MESSAGE 		+ CRLF +			;
-   'Code:  ' + m.loException.LINECONTENTS
-  MESSAGEBOX(m.lcErrorMsg + CRLF +  CRLF + 'ABORTING', 16, 'VFPX Project Deployment')
- ENDIF &&!m.llSuccess
+	if !m.llSuccess then
+		lcErrorMsg = 'Error in Version file:' 		+ CRLF + 			;
+			'Msg:   ' + m.loException.message 		+ CRLF +			;
+			'Code:  ' + m.loException.linecontents
+		messagebox(m.lcErrorMsg + CRLF +  CRLF + 'ABORTING', 16, 'VFPX Project Deployment')
+	endif &&!m.llSuccess
 
- RETURN m.llSuccess
+	return m.llSuccess
 
-ENDPROC &&CheckVersionFile
+endproc &&CheckVersionFile
 
-PROCEDURE ScanDir_Templates
- LPARAMETERS;
-  tcSource
+procedure ScanDir_Templates
+	lparameters;
+		tcSource
 
- LOCAL;
-  lcOldDir,;
-  lcText,;
-  lnLoop1
+	local;
+		lcOldDir,;
+		lcText,;
+		lnLoop1
 
- LOCAL ARRAY;
-  laDir(1)
+	local array;
+		laDir(1)
 
- lcOldDir = FULLPATH("", "")
- CD (m.tcSource)
- FOR lnLoop1 = 1 TO ADIR(m.laDir, '', 'D')
-  IF INLIST(laDir(m.lnLoop1, 1), '.', '..') THEN
-   LOOP
-  ENDIF &&INLIST(laDir(m.lnLoop1,1), '.', '..')
+	lcOldDir = fullpath("", "")
+	cd (m.tcSource)
+	for lnLoop1 = 1 to adir(m.laDir, '', 'D')
+		if inlist(laDir(m.lnLoop1, 1), '.', '..') then
+			loop
+		endif &&INLIST(laDir(m.lnLoop1,1), '.', '..')
 
-  ScanDir_ScanDir_Templates(ADDBS(m.tcSource + laDir(m.lnLoop1, 1)))
- ENDFOR &&lnLoop1
+		ScanDir_ScanDir_Templates(addbs(m.tcSource + laDir(m.lnLoop1, 1)))
+	endfor &&lnLoop1
 
- FOR lnLoop1  = 1 TO ADIR(laFiles, m.tcSource + '*.*', '', 1)
-  lcText = FILETOSTR(m.tcSource + laFiles[m.lnI])
-  lcText = ReplacePlaceholders_Run (m.lcText)
-  STRTOFILE(m.lcText,m.tcSource + laFiles[m.lnI])
- ENDFOR &&lnLoop1
+	for lnLoop1  = 1 to adir(laFiles, m.tcSource + '*.*', '', 1)
+		lcText = filetostr(m.tcSource + laFiles[m.lnI])
+		lcText = ReplacePlaceholders_Run (m.lcText)
+		strtofile(m.lcText,m.tcSource + laFiles[m.lnI])
+	endfor &&lnLoop1
 
- CD (m.lcOldDir)
+	cd (m.lcOldDir)
 
-ENDPROC &&ScanDir_Templates
+endproc &&ScanDir_Templates
 
-PROCEDURE ScanDir_InstFiles
- LPARAMETERS;
-  tcSourceDir,;
-  tcTargetDir
+procedure ScanDir_InstFiles
+	lparameters;
+		tcSourceDir,;
+		tcTargetDir
 
- LOCAL;
-  lcOldDir,;
-  lnLoop1
+	local;
+		lcOldDir,;
+		lnLoop1
 
- LOCAL ARRAY;
-  laDir(1)
+	local array;
+		laDir(1)
 
- lcOldDir = FULLPATH("", "")
- CD (m.tcSourceDir)
- FOR lnLoop1 = 1 TO ADIR(m.laDir, '', 'D')
-  IF INLIST(laDir(m.lnLoop1, 1), '.', '..') THEN
-   LOOP
-  ENDIF &&INLIST(laDir(m.lnLoop1,1), '.', '..')
-  ScanDir_InstFiles(ADDBS(m.tcSourceDir + laDir(m.lnLoop1, 1)), ADDBS(m.tcTargetDir + laDir(m.lnLoop1, 1)))
+	lcOldDir = fullpath("", "")
+	cd (m.tcSourceDir)
+	for lnLoop1 = 1 to adir(m.laDir, '', 'D')
+		if inlist(laDir(m.lnLoop1, 1), '.', '..') then
+			loop
+		endif &&INLIST(laDir(m.lnLoop1,1), '.', '..')
+		ScanDir_InstFiles(addbs(m.tcSourceDir + laDir(m.lnLoop1, 1)), addbs(m.tcTargetDir + laDir(m.lnLoop1, 1)))
 
- ENDFOR &&lnLoop1
- Copy_InstallFile(ADDBS(m.tcSourceDir) + '*.*', ADDBS(m.tcTargetDir) + '*.*')
- CD (m.lcOldDir)
+	endfor &&lnLoop1
+	Copy_InstallFile(addbs(m.tcSourceDir) + '*.*', addbs(m.tcTargetDir) + '*.*')
+	cd (m.lcOldDir)
 
-ENDPROC &&ScanDir_InstFiles
+endproc &&ScanDir_InstFiles
 
-PROCEDURE Copy_InstallFile
- LPARAMETERS;
-  tcSource,;
-  tcTarget
+procedure Copy_InstallFile
+	lparameters;
+		tcSource,;
+		tcTarget
 
- LOCAL;
-  lcFolder
+	local;
+		lcFolder
 
- LOCAL ARRAY;
-  laDir(1)
+	local array;
+		laDir(1)
 
- lcFolder = JUSTPATH(m.tcTarget)
- IF NOT DIRECTORY(m.lcFolder) THEN
-  MD (m.lcFolder)
- ENDIF &&not directory(m.tcFolder)
+	lcFolder = justpath(m.tcTarget)
+	if not directory(m.lcFolder) then
+		md (m.lcFolder)
+	endif &&not directory(m.tcFolder)
 
- IF !EMPTY(ADIR(m.laDir, m.tcSource)) THEN
-  COPY FILE (m.tcSource) TO (m.tcTarget)
- ENDIF &&!empty(ADIR(m.laDir, m.tcSource))
+	if !empty(adir(m.laDir, m.tcSource)) then
+		copy file (m.tcSource) to (m.tcTarget)
+	endif &&!empty(ADIR(m.laDir, m.tcSource))
 
-ENDPROC &&Copy_InstallFile
+endproc &&Copy_InstallFile
 
-PROCEDURE ReleaseThis
- RELEASE;
-  pcAppName,;
-  pcAppID,;
-  pcVersion,;
-  pdVersionDate,;
-  pcVersionDate,;
-  pcChangeLog,;
-  plContinue,;
-  pcFullVersion,;
-  plRun_Bin2Prg,;
-  plRun_git,;
-  pcDate,;
-  pcJulian,;
-  pcThisDate,;
-  pcRepository
+procedure ReleaseThis
+	release;
+		pcAppName,;
+		pcAppID,;
+		pcVersion,;
+		pdVersionDate,;
+		pcVersionDate,;
+		pcChangeLog,;
+		plContinue,;
+		pcFullVersion,;
+		plRun_Bin2Prg,;
+		plRun_git,;
+		pcDate,;
+		pcJulian,;
+		pcThisDate,;
+		pcRepository
 
-ENDPROC &&ReleaseThis
+endproc &&ReleaseThis

@@ -1,6 +1,6 @@
 # VFPX Templates in VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version 1.1.08538
+## Version  1.2.08541
 
 There is a common way to give documentation to projects that are published for common use. A brief idea how to give your project a standard look is discussed in [BestPractice.md](./BestPractice.md).
 
@@ -58,6 +58,6 @@ Here this controls if a code snippet will be include by setting the template com
 4. Remove templates comments, that is anything like `@@@ Comments \\\`.
 
 ----
-Last changed: 2023-05-18
+Last changed: 2023-05-21
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
