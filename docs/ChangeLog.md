@@ -1,29 +1,9 @@
-Lparameters toUpdateObject
-Local lcDate, ldDate
-
-lcDate = '20230521'
-
-With m.toUpdateObject
-	.VersionNumber    = '1.2 - ' + lcDate
-	.AvailableVersion = 'VFPX Deployment-1.2-08541-' + lcDate
-	.Notes            = GetReleaseNotes()
-Endwith
-
-Return m.toUpdateObject
-
-
-* ================================================================================
-* ================================================================================
-
-Procedure GetReleaseNotes
-
-Text to lcNote NoShow
 # Release History
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
-## 2023-05-21 Version 1.2.xxx
+## 2023-05-21 Version  1.2.08541
 - Added support for special remote version file (VersionFile_Remote)
-- Check, if InstalledFiles.txt containes text
+- Check if InstalledFiles.txt containes text
 - Allow CLEAR ALL in AfterBuild.prg
 
 ## 2023-05-18 Version 1.1.08538
@@ -95,9 +75,3 @@ Text to lcNote NoShow
 Last changed: <!--DeploymentDate-->2023-05-21<!--/DeploymentDate-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
-
-EndText
-
-Return lcNote
-
-EndProc

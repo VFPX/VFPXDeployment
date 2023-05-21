@@ -1,109 +1,156 @@
-Lparameters lxParam1
+lparameters;
+ lxParam1
 
 ****************************************************************
 ****************************************************************
 * Standard prefix for all tools for Thor, allowing this tool to
 *   tell Thor about itself.
 
-If Pcount() = 1								;
-		And 'O' = Vartype (m.lxParam1)		;
-		And 'thorinfo' == Lower (m.lxParam1.Class)
+if pcount() = 1								;
+		and 'O' = vartype (m.lxParam1)		;
+		and 'thorinfo' == lower (m.lxParam1.class) THEN 
 
-	With m.lxParam1
+	with m.lxParam1   
 
-		* Required
-		.Prompt		   = 'VFPX Project Deployment' && used in menus
+* Required
+		.prompt		   = 'VFPX Project Deployment' && used in menus
 
-		Text To .Description Noshow
+		text To .Description NOSHOW  
 Deploy VFPX Project
-		Endtext
+		ENDTEXT
+		
 		.Category = 'Applications'
-		.Link     = 'https://github.com/VFPX/VFPXDeployment/blob/main/README.md'
-		.Author	  = 'JRN'
-	Endwith
+		.link     = 'https://github.com/VFPX/VFPXDeployment/blob/main/README.md'
+		.Author   = 'JRN'
+	endwith &&m.lxParam1
 
-	Return m.lxParam1
-Endif
+	return m.lxParam1
 
-If Pcount() = 0
-	Do ToolCode
-Else
-	Do ToolCode With m.lxParam1
-Endif
+endif &&pcount() = 1 and 'O' = vartype (m.lxParam1) and 'thorinfo' == lower (m.lxParam1.class)
 
-Return
+if pcount() = 0 THEN 
+	do ToolCode
+else &&pcount() = 0
+	do ToolCode with m.lxParam1
+endif &&pcount() = 0
 
-#Define ccTab  	Chr(9)
-#Define ccLF	Chr(10)
-#Define ccCR	Chr(13)
-#Define ccCRLF	Chr(13) + Chr(10)
+return
 
-#Define ccKey	'DeployVFPXProject'
-#Define ccTool	'HomeFolder'
+#define ccTab  	chr(9)
+#define ccLF	chr(10)
+#define ccCR	chr(13)
+#define ccCRLF	chr(13) + chr(10)
+
+#define ccKey	'DeployVFPXProject'
+#define ccTool	'HomeFolder'
 
 ****************************************************************
 ****************************************************************
-* Normal processing for this tool begins here.                  
-Procedure ToolCode
-	Lparameters lxParam1
+* Normal processing for this tool begins here.
+procedure ToolCode   
+	lparameters;
+		lxParam1
 
-	Local lcPreviousFolder, lcProjectFolder, lcStartFolder
+	local;
+		lcPreviousFolder as string,;
+		lcProjectFolder as string
 
-	lcStartFolder = Curdir()
+		addproperty(_screen, 'VFPX_DeployStartFolder', fullpath("", ""))
 
-	* ================================================================================ 
-	lcPreviousFolder = Nvl(Execscript(_Screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
+* ================================================================================
+	lcPreviousFolder = nvl(execscript(_screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
 
 	lcProjectFolder	 = GetProjectFolder(m.lcPreviousFolder)
 
-	If Directory(m.lcProjectFolder)
+	if directory(m.lcProjectFolder) THEN 
 
-		Execscript(_Screen.cThorDispatcher, 'Set Option=', ccKey, ccTool, m.lcProjectFolder)
+		execscript(_screen.cThorDispatcher, 'Set Option=', ccKey, ccTool, m.lcProjectFolder)
 
-		Execscript(_Screen.cThorDispatcher, 'Thor_Proc_DeployVFPXProject', m.lcProjectFolder)
-	Endif
-	* ================================================================================ 
+		execscript(_screen.cThorDispatcher, 'Thor_Proc_DeployVFPXProject', m.lcProjectFolder)
+	endif &&directory(m.lcProjectFolder)
+* ================================================================================
 
-	Cd (m.lcStartFolder)
+	cd (_screen.VFPX_DeployStartFolder)
+	removeproperty(_screen, 'VFPX_DeployStartFolder')
 
-Endproc
+endproc &&ToolCode
 
+procedure GetProjectFolder   
+	lparameters;
+		tcPreviousFolder
+		
+	local;
+		lcFolder   as string,;
+		lcValidFolder as string
 
-Procedure GetProjectFolder(lcPreviousFolder)
+* try if active folder is in a git repository
+	lcValidFolder = validate(fullpath('',''))
+	if not empty(m.lcValidFolder) THEN 
+		return m.lcValidFolder
+	endif &&not empty(m.lcValidFolder)
 
-	Local lcFolder, lcValidFolder
+* SF 20230512, try active project next
+*in case we have a structure where we sit in a base with many scatterd projects
+*we try if the Active Project is the one
+	if type("_VFP.ActiveProject")='O' THEN 
+		if messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"' + ;
+				 _vfp.activeproject.name + '" ?', 36, 'VFPX Project Deployment') = 6 THEN 
+			lcValidFolder = justpath(_vfp.activeproject.name)
+			if not empty(m.lcValidFolder) THEN 
+				return m.lcValidFolder
 
-	lcValidFolder = Validate(Curdir())
-	If Not Empty(m.lcValidFolder)
-		Return m.lcValidFolder
-	Endif
+			endif &&not empty(m.lcValidFolder)
+		endif &&messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"' _vfp.activeproject.name + ...
+	endif &&type("_VFP.ActiveProject")='O'
 
-	Do While .T.
-		lcFolder = getdir(m.lcPreviousFolder, 'Project Home Folder', 'Home Path')
-		If Empty(m.lcFolder)
-			Return ''
-		Endif
+*try to get a folder
+	do while .t.   
+		lcFolder = getdir(m.tcPreviousFolder, 'Project Home Folder', 'Home Path')
+		if empty(m.lcFolder) THEN 
+			return ''
+		endif &&empty(m.lcFolder)
 
-		lcValidFolder = Validate(m.lcFolder)
-		If Empty(m.lcValidFolder)
-			Messagebox('Home Folder not found', 16)
-		Else
-			Return m.lcValidFolder
-		Endif
-	Enddo
+		lcValidFolder = validate(m.lcFolder)
+		if empty(m.lcValidFolder) THEN 
+			messagebox('Home Folder not found, not a git repository.', 16, 'VFPX Project Deployment')
+		else &&empty(m.lcValidFolder)
+			return m.lcValidFolder
+		endif &&empty(m.lcValidFolder)
 
-Endproc
+	enddo &&.t.
 
+endproc &&GetProjectFolder
 
-Procedure Validate(lcFolder)
+procedure validate   
+	lparameters;
+		tcFolder
 
-	* already in the Project Home Folder?	
-	Local lcHomeFolder
+* SF 20230512
+*we test if this folder is a git folder and return the git base folder
+*no need to search the base folder, git will tell this
+* (and not embarrassingly testing for ".git" folder)
+	local;
+		lcCommand as string,;
+		lcOldFolder as string
 
-	If Directory(Addbs(m.lcFolder) + '.git', 1)
-		Return m.lcFolder
-	Endif
+	lcOldFolder = fullpath('','')
+	cd (m.tcFolder)
+	delete file git_x.tmp    && in case
 
-	Return ''
+*if git is not installed, we get an empty or no file
+	lcCommand = 'git rev-parse --show-toplevel>git_x.tmp'
+	run &lcCommand
 
-Endproc
+	if file('git_x.tmp') THEN 
+*the result is either the git base folder or empty for no git repo
+		tcFolder = chrtran(filetostr('git_x.tmp'), '/' + chr(13) + chr(10), '\')
+		delete file git_x.tmp
+	else &&file('git_x.tmp')
+* no file, no git
+		tcFolder = ''
+	endif &&file('git_x.tmp')
+
+	cd (m.lcOldFolder)
+	return m.tcFolder
+
+endproc &&validate

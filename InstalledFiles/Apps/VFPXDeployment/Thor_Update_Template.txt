@@ -1,31 +1,45 @@
-lparameters toUpdateObject
-local lcRepositoryURL, ;
-	lcDownloadsURL, ;
-	lcVersionFileURL, ;
-	lcZIPFileURL, ;
-	lcRegisterWithThor
+lparameters;
+	toUpdateObject
+local;
+	lcRepositoryURL    as string, ;
+	lcDownloadsBranch  as string, ;
+	lcDownloadsURL     as string, ;
+	lcVersionFileURL   as string, ;
+	lcZIPFileURL       as string, ;
+	lcRegisterWithThor as string
 
 * Get the URL for the version and ZIP files.
 
-lcRepositoryURL  = '{REPOSITORY}'
+lcRepositoryURL   = '{REPOSITORY}'
 	&& the URL for the project's repository
-lcDownloadsURL   = strtran(lcRepositoryURL, 'github.com', ;
-	'raw.githubusercontent.com') + '/master/ThorUpdater/'
-lcVersionFileURL = lcDownloadsURL + '{APPID}Version.txt'
+* Note: If you use a more recent version of git, your default branch may not be "master".
+lcDownloadsBranch = 'master'
+lcDownloadsURL    = strtran(m.lcRepositoryURL, 'github.com', ;
+	'raw.githubusercontent.com') + '/' + m.lcDownloadsBranch + '/ThorUpdater/'
+lcVersionFileURL  = m.lcDownloadsURL + '{VERSIONFILE}' &&'{APPID}Version.txt'
 	&& the URL for the file containing code to get the available version number
-lcZIPFileURL     = lcDownloadsURL + '{APPID}.zip'
+lcZIPFileURL      = m.lcDownloadsURL + '{APPID}.zip'
 	&& the URL for the zip file containing the project
+
+<<iif('{COMPONENT}' = 'No', '', '@@@')>>* "{APPNAME}" is a tool. No code created by VFPX Deployment<<iif('{COMPONENT}' = 'No', '', '\\\')>>
+<<iif('{COMPONENT}' = 'No', '@@@', '')>>text to lcRegisterWithThor noshow textmerge
+	messagebox('From the Thor menu, choose "More -> Open Folder -> Components" to see the folder where {APPNAME} was installed', 0, '{APPNAME} Installed', 5000)
+endtext<<iif('{COMPONENT}' = 'No', '\\\', '')>>
 
 * Set the properties of the passed updater object.
 
-with toUpdateObject
+with m.toUpdateObject
 	.ApplicationName      = '{APPNAME}'
 	.VersionLocalFilename = '{APPID}VersionFile.txt'
-	.VersionFileURL       = lcVersionFileURL
-	.SourceFileUrl        = lcZIPFileURL
+	.VersionFileURL       = m.lcVersionFileURL
+	.SourceFileUrl        = m.lcZIPFileURL
 	.Component            = '{COMPONENT}'
-	.Link                 = lcRepositoryURL
+	.Link                 = m.lcRepositoryURL
 	.LinkPrompt           = '{APPNAME} Home Page'
 	.ProjectCreationDate  = {CURRDATE}
+<<iif('{COMPONENT}' = 'No', '*', '')>>	.RegisterWithThor     = m.lcRegisterWithThor
 endwith
-return toUpdateObject
+
+return m.toUpdateObject
+
+*created by VFPX Deployment, <<DATETIME()>>
