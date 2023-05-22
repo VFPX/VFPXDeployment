@@ -1,6 +1,0 @@
-@@@
-The template for .gitattributes
-Placeholders will be replaced once
-\\\#.gitattributes for {AppName}
-# disable newline conversion on checkout with no conversion on check-in for all files
-* -text

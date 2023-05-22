@@ -148,6 +148,8 @@ This is a staging folder that contains only the files Thor CFU should install, n
 - You can manually create the InstalledFiles folder and copy the necessary files into it.
 - If [InstalledFiles.txt](#installedfilestxt) exists, in the BuildProcess folder, VFPX Deployment copies the files listed in it to the InstalledFiles folder (creating that folder and any subdirectories of it if they don't exist).
   - If [InstalledFiles.txt](#installedfilestxt) exists, the *Clear_InstalledFiles* settings controls if all files will be removed from this folder to create an empty folder to copy to.
+- a .gitignore file will be added to this folder to keep it out of the repository. Note: If already in the repo, this will not remove the files!
+
 
 > Note: you can specify a different folder name using the InstalledFilesFolder setting in [ProjectSettings.txt](#settings).
 
