@@ -26,6 +26,8 @@ Text to lcNote NoShow
 - Ignore empty source in InstalledFiles.txt
 - Use empty target in InstalledFiles.txt as staging folder
 - New option Clear_InstalledFiles to copy to empty staging folder
+- a .gitignore to keep the staging folder out of the repository.
+  Note: If already in the repo, this will not remove the files!
 
 ## 2023-05-21 Version  1.2.08541
 - Added support for special remote version file (VersionFile_Remote)

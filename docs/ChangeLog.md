@@ -8,7 +8,9 @@
 - New option Clear_InstalledFiles to copy to empty staging folder
 - a .gitignore to keep the staging folder out of the repository.
   Note: If already in the repo, this will not remove the files!
-
+- Moved to sources of the project from "InstallesFiles" to "Source", to keep it in it's own structure (it also helps understanding the way the project works)
+  Note: If your project stores sources in the staging, "InstallesFiles", folder move it to a better location. See .gitignore above.
+  
 ## 2023-05-21 Version  1.2.08541
 - Added support for special remote version file (VersionFile_Remote)
 - Check if InstalledFiles.txt containes text

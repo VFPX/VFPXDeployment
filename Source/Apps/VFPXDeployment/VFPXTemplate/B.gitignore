@@ -1,0 +1,11 @@
+@@@
+The template for a .gitignore
+Placeholders will be replaced once
+\\\#.gitignore for {AppName}/BuildProcess
+# a .gitignore for BuildProcess to publish to Thor.
+# enable some files that are in general not under git control for VFP projects to publish to Thor
+
+*.fxp
+!*.prg
+!*.txt
+!README.md

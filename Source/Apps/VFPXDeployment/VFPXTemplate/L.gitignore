@@ -1,0 +1,83 @@
+#.gitignore for {AppName}
+# Lutz template for a .gitignore using TEXT ONLY sources
+# from https://github.com/fdbozzo/foxbin2prg/blob/master/docs/FoxBin2Prg_git.md
+# this is a exclude all and include only what you need approach
+
+#exclude general
+*.*
+
+#include general
+#dbx data 
+# depending on the level one uses FoxBin2Prg, this needs to be deactivated.
+# see FoxBin2Prg section below for text version
+!*.dbf
+!*.cdx
+!*.fpt
+
+!*.dbc
+!*.dc[tx]
+#/dbx data 
+
+#grafics
+!*.bmp
+!*.msk
+!*.ico
+!*.cdr
+!*.cur
+#/grafics
+
+#programms
+!*.prg
+!*.fpw
+#/programms
+
+#header
+!*.h
+#/header
+
+#libs (done by FoxBin2Prg, so not processed here)
+#!*.vc[xt]
+#!*.pj[xt]
+#!*.fr[xt]
+#!*.mn[xt]
+#!*.sc[xt]
+#!*.lb[xt]
+#/libs
+
+#FoxBin2Prg
+!*.vc2
+!*.pj2
+!*.fr2
+!*.mn2
+!*.sc2
+!*.lb2
+# if tables / databases are processed by FoxBin2Prg, the next line needs to by active
+#!*.d[bc]2
+#/FoxBin2Prg
+
+#/include general
+
+#include special
+#default git
+!*.gitignore
+!*.gitattributes
+!/desktop.ini
+#desktop.ini. usless? no! it keeeps the folder icon!
+#/include special
+
+#various
+!FoxBin2Prg.cfg
+!README.md
+#/various
+
+#exclude special (again)
+# remove stuff included general that is of no use in the repo
+foxuser.*
+*ref.*
+_command.prg
+#exclude special
+
+#Thor
+# stuff for Thor deployment
+ThorUpdater/*.zip
+#/Thor

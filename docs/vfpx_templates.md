@@ -17,7 +17,7 @@ This document gives in introduction to the templates used by VFPX Deployment to 
 
 ## Using this document
 - Target paths are relative to your projects root folder. This is the toplevel folder of the local git repository you can get invoking `git rev-parse --show-toplevel`.
-- Source paths are relative to *InstalledFiles\Apps\VFPXDeployment\VFPXTemplate* folder of this project
+- Source paths are relative to *Source\Apps\VFPXDeployment\VFPXTemplate* folder of this project
 or the the `"Thor\Thor\Tools\Apps\VFPXDeployment\VFPXTemplate"` local subdirectory in your Thor folder. <u>Sourcefolders</u> are highlighted with underline.
 
 
@@ -53,11 +53,11 @@ The templates will be processed like
 1. Get the template
 2. Replace the placeholders
 3. Run `Textmerge()`. This can do some processing.
-See InstalledFiles\Apps\VFPXDeployment\VersionTemplate.txt, procedure GetRegisterWithThor for example.
+See Source\Apps\VFPXDeployment\VersionTemplate.txt, procedure GetRegisterWithThor for example.
 Here this controls if a code snippet will be include by setting the template comments.
 4. Remove templates comments, that is anything like `@@@ Comments \\\`.
 
 ----
-Last changed: 2023-05-21
+Last changed: 2023-05-22
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
