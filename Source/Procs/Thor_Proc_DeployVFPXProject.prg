@@ -1,6 +1,6 @@
 #define CRLF chr(13) + chr(10)
 
-* Parameter lcFolder is the home folder for the project
+* Parameter tcFolder is the home folder for the project
 *   and defaults to the current folder if not supplied
 lparameters;
 	tcFolder
@@ -17,21 +17,21 @@ cd (m.tcFolder) && Project Home
 
 * Bug out if NoVFPXDeployment.txt exists.
 
-if file('NoVFPXDeployment.txt') then
+if file(addbs(m.tcFolder) + 'NoVFPXDeployment.txt') then
 	messagebox('VFPX Project Deployment will not run because NoVFPXDeployment.txt exists.', ;
 		16, 'VFPX Project Deployment')
 	return
-endif &&file('NoVFPXDeployment.txt')
+endif &&file(addbs(m.tcFolder) + 'NoVFPXDeployment.txt')
 
 * Create the BuildProcess subdirectory of the project folder if necessary.
 
 lcCurrFolder = addbs(addbs(m.tcFolder) + 'BuildProcess') && BuildProcess
 if not directory(m.lcCurrFolder) then
-*SF 20230512 we better check if this exists a different Thor
-*this is not fool-proof, since there are many ways to do Thor
-*but a very common one
+*SF 20230512 we better check if a different Thor exists
+* this is not fool-proof, since there are many ways to do Thor
+* but a very common one
 	if directory(addbs(m.tcFolder) + 'ThorUpdater') then
-		messagebox('There is allready a Thor folder.' + CRLF + CRLF + 'Stoped.', ;
+		messagebox('There is already a Thor folder.' + CRLF + CRLF + 'Stoped.' + CRLF + CRLF + 'You need to carefully create the setup manually.', ;
 			16, 'VFPX Project Deployment')
 		return
 	endif &&directory(addbs(m.tcFolder) + 'ThorUpdater')
@@ -40,6 +40,7 @@ endif &&not directory(m.lcCurrFolder)
 
 * If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt, and
 * BuildMe.prg, AfterBuild.prg from the VFPXDeployment folder.
+* Stop process to let the user set up the tool
 
 lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
 
@@ -130,6 +131,7 @@ procedure Deploy
 		llInclude_Thor       as boolean,;
 		llPrompt             as boolean,;
 		llRecompile          as boolean,;
+		llClear_InstalledFiles as boolean,;
 		lnBin2PRGFolders     as number,;
 		lnFiles              as number,;
 		lnI                  as number,;
@@ -159,6 +161,8 @@ procedure Deploy
 * Get the current project settings into public variables.
 
 	lcProjectSettings = filetostr(m.lcProjectFile)
+
+* Release the PUBLICS in ReleaseThis procedure
 	public;
 		pcAppName     as string,;
 		pcAppID       as string,;
@@ -166,9 +170,7 @@ procedure Deploy
 		pdVersionDate as date,;
 		pcVersionDate as string,;
 		pcChangeLog   as string,;
-		plContinue    as boolean
-*SF 20230512: add new flags
-	public;
+		plContinue    as boolean,;
 		pcFullVersion as string,;
 		pcDate        as string,;
 		pcJulian      as string,;
@@ -235,6 +237,8 @@ procedure Deploy
 			case m.lcUName == 'INSTALLEDFILESFOLDER'
 				lcInstalledFilesFolder = m.lcValue
 *SF 20230512: new flags
+			case m.lcUName == 'CLEAR_INSTALLEDFILES'
+				llClear_InstalledFiles = upper(m.lcValue) = 'Y'
 			case m.lcUName == 'RUNBIN2PRG'
 				plRun_Bin2Prg = upper(m.lcValue) = 'Y'
 			case m.lcUName == 'RUNGIT'
@@ -280,7 +284,7 @@ procedure Deploy
 		endif &&empty(m.lcPJXFile)
 
 		if empty(m.pcVersion) then
-			messagebox('No project to get version number from found.', 16, ;
+			messagebox('No project found to read version number.', 16, ;
 				'VFPX Project Deployment')
 			ReleaseThis()
 			return
@@ -290,21 +294,21 @@ procedure Deploy
 * Ensure we have valid pcAppName and pcAppID values.
 
 	if empty(m.pcAppName) then
-		messagebox('The appName setting was not specified.', 16, ;
+		messagebox('The AppName setting was not specified.', 16, ;
 			'VFPX Project Deployment')
 		ReleaseThis()
 		return
 	endif &&empty(m.pcAppName)
 
 	if empty(m.pcAppID) then
-		messagebox('The appID setting was not specified.', 16, ;
+		messagebox('The AppID setting was not specified.', 16, ;
 			'VFPX Project Deployment')
 		ReleaseThis()
 		return
 	endif &&empty(m.pcAppID)
 
 	if ' ' $ m.pcAppID or '	' $ m.pcAppID then
-		messagebox('The appID setting cannot have spaces or tabs.', 16, ;
+		messagebox('The AppID setting cannot have spaces or tabs.', 16, ;
 			'VFPX Project Deployment')
 		ReleaseThis()
 		return
@@ -486,6 +490,10 @@ procedure Deploy
 *SF 20230514 the test is moved to a place above, so no processing is done
 	if m.llInclude_Thor then
 		if file(m.lcInstalledFilesListing) then
+			if m.llClear_InstalledFiles then
+				loFSO = Createobject("Scripting.FileSystemObject")
+				loFSO.DeleteFolder(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder), .T.)
+			endif &&m.llClear_InstalledFiles
 * If InstalledFiles.txt exists, copy the files listed in it to the
 * InstalledFiles folder (folders are created as necessary).
 			lcFiles = filetostr(m.lcInstalledFilesListing)
@@ -494,9 +502,18 @@ procedure Deploy
 				if left(ltrim(laFiles[m.lnI]), 1) == '#' then
 					loop
 				endif &&LEFT(LTRIM(laFiles[m.lnI]e), 1) == '#'
-				lnWords  = alines(laWords, strtran(laFiles[m.lnI], '||', 0h00), 1 + 4,0h00)
+				lnWords  = alines(laWords, strtran(laFiles[m.lnI], '||', 0h00), 1 + 2, 0h00)
 				lcSource = laWords[1]
 				lcTarget = iif(m.lnWords=1, laWords[1],  laWords[2])
+				if empty(m.lcSource) then
+*not the toplevel folder (aka project root)
+					loop
+				endif &&empty(m.lcSource)
+				if m.lcTarget == '\' then
+*special: Folder .\InstalledFiles for substructure
+					lcTarget = ''
+				endif &&m.lcTarget == '\' then
+
 				if right(m.lcSource, 1) == '\' then
 * just with subfolders
 					ScanDir_InstFiles(m.tcCurrFolder + m.lcSource, addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget)
@@ -507,6 +524,11 @@ procedure Deploy
 
 			next &&lnI
 		endif &&file(m.lcInstalledFilesListing)
+
+		if not file(addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*ignore all in staging folder
+			strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+		endif &&not file(addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 
 * Create the ThorUpdater folder if necessary.
 
@@ -551,8 +573,19 @@ procedure Deploy
 		endif &&file(m.lcUpdateTemplateFile) and not file(m.lcUpdateFile)
 
 * Zip the source files.
+		lcContent = ''
+		if file(addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*ignore all in staging folder
+			lcContent = filetostr(addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+			delete file (addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+		endif &&file(addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 
 		execscript(_screen.cThorDispatcher, 'Thor_Proc_ZipFolder', m.lcInstalledFilesFolder, m.lcZipFile)
+
+		if not empty(m.lcContent)
+*ignore all in staging folder
+			strtofile(m.lcContent, addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+		endif &&not empty(m.lcContent)
 
 * Add AppID.zip and AppIDVersion.txt to the repository.
 
