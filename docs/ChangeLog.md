@@ -1,6 +1,12 @@
 # Release History
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
+## 2023-05-22 Version  1.2.08542
+- Fixed used of fixed typos (INCULDE_ in docu and settings file (~template) )
+- Ignore empty source in InstalledFiles.txt
+- Use empty target in InstalledFiles.txt as staging folder
+- New option Clear_InstalledFiles to copy to empty staging folder
+
 ## 2023-05-21 Version  1.2.08541
 - Added support for special remote version file (VersionFile_Remote)
 - Check if InstalledFiles.txt containes text
@@ -72,6 +78,6 @@
 - Initial release
 
 ----
-Last changed: <!--DeploymentDate-->2023-05-21<!--/DeploymentDate-->
+Last changed: <!--DeploymentDate-->2023-05-22<!--/DeploymentDate-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
