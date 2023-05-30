@@ -6,6 +6,12 @@ lparameters;
 * Standard prefix for all tools for Thor, allowing this tool to
 *   tell Thor about itself.
 
+#define ccTool	'Deploy VFPX Project'
+#define ccKey	'HomeFolder'
+
+#define ccStartKey	 	'Determine Start Folder'
+#define ccEditClassName 'clsVFPXStartFolderChoice'
+
 if pcount() = 1								;
 		and 'O' = vartype (m.lxParam1)		;
 		and 'thorinfo' == lower (m.lxParam1.class) THEN 
@@ -22,6 +28,10 @@ Deploy VFPX Project
 		.Category = 'Applications'
 		.link     = 'https://github.com/VFPX/VFPXDeployment/blob/main/README.md'
 		.Author   = 'JRN'
+		
+		.OptionClasses = 'clsVFPXDeployStart'
+		.OptionTool		  = ccTool
+
 	endwith &&m.lxParam1
 
 	return m.lxParam1
@@ -41,9 +51,6 @@ return
 #define ccCR	chr(13)
 #define ccCRLF	chr(13) + chr(10)
 
-#define ccKey	'DeployVFPXProject'
-#define ccTool	'HomeFolder'
-
 ****************************************************************
 ****************************************************************
 * Normal processing for this tool begins here.
@@ -60,7 +67,11 @@ procedure ToolCode
 * ================================================================================
 	lcPreviousFolder = nvl(execscript(_screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
 
-	lcProjectFolder	 = GetProjectFolder(m.lcPreviousFolder)
+	If nvl(execscript(_screen.cThorDispatcher, 'Get Option=', ccStartKey, ccTool), .F.)
+		lcProjectFolder	 = PromptForProjectFolder(m.lcPreviousFolder)
+	Else
+		lcProjectFolder	 = GetProjectFolder(m.lcPreviousFolder)
+	EndIf
 
 	if directory(m.lcProjectFolder) THEN 
 
@@ -154,3 +165,82 @@ procedure validate
 	return m.tcFolder
 
 endproc &&validate
+
+* ================================================================================
+* ================================================================================
+Procedure PromptForProjectFolder(lcPreviousFolder)
+
+	Local lcFolder, lcValidFolder
+
+	lcValidFolder = ValidateThisFolder(Curdir())
+	If Not Empty(m.lcValidFolder)
+		Return m.lcValidFolder
+	Endif
+
+	Do While .T.
+		lcFolder = getdir(m.lcPreviousFolder, 'Project Home Folder', 'Home Path')
+		If Empty(m.lcFolder)
+			Return ''
+		Endif
+
+		lcValidFolder = ValidateThisFolder(m.lcFolder)
+		If Empty(m.lcValidFolder)
+			Messagebox('Home Folder not found', 16)
+		Else
+			Return m.lcValidFolder
+		Endif
+	Enddo
+
+Endproc
+
+
+Procedure ValidateThisFolder(lcFolder)
+
+	* already in the Project Home Folder?	
+	Local lcHomeFolder
+
+	If Directory(Addbs(m.lcFolder) + '.git', 1)
+		Return m.lcFolder
+	Endif
+
+	Return ''
+
+Endproc
+
+* ================================================================================
+* ================================================================================
+
+Define Class clsVFPXDeployStart As Custom
+
+	Tool		 	= ccTool
+	Key			 	= ccStartKey
+	Value		 	= .F.
+	EditClassName 	= ccEditClassName 
+
+Enddefine
+
+
+Define Class ccEditClassName As Container
+
+	Procedure Init
+		loRenderEngine = Execscript(_Screen.cThorDispatcher, 'Class= OptionRenderEngine')
+
+		TEXT To loRenderEngine.cBodyMarkup Noshow Textmerge
+		
+			.Class	   = 'CheckBox'
+			.Width	   = 300
+			.Left	   = 25
+			.Caption   = 'Always prompt for start folder for project to be deployed.'
+			.WordWrap = .T.
+			.cTool	   = ccTool
+			.cKey	   = ccStartKey
+			
+		ENDTEXT
+
+		loRenderEngine.Render(This, ccTool)
+
+	Endproc
+
+Enddefine
+
+  
