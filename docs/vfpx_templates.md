@@ -24,7 +24,7 @@ or the the `"Thor\Thor\Tools\Apps\VFPXDeployment\VFPXTemplate"` local subdirecto
 ## Overview
 This templates will only be used if the *Inculde_VFPX* in your projects *BuildProcess\\ProjectSettings.txt* file is set to Yes.
 Any run of VFPX Deployment after this is turned on will check for the targets and merge missing stuff to your project.   
-The templates are using substitution of placeholders, see [Thor Update](./ThorUpdate.md) for information.
+The templates are using substitution of placeholders, see [Documentation](./Documentation.md) for information.
 
 Some templates may hold comments *available while not substituted* like `@@@ Comments \\\`. They will be removed after merged into the project.
 

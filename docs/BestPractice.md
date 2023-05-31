@@ -53,7 +53,7 @@ It also contains templates to create issues.
 VFPX Deployoment create a CONTRIBUTION.md and two simple issue templates. They need to be altered to your needs
 
 ## Thor
-The more complex creation of Thor deployment is discussed in [ThorUpdate.md](./ThorUpdate.md).
+The more complex creation of Thor deployment is discussed in [Documentation](./Documentation.md).
 
 ## VFP binary sources
 Using git, VFP binary sources are pain.

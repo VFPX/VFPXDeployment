@@ -18,12 +18,12 @@ so you can easily install your project and update to the latest version without 
 This project is part of [VFPX](https://vfpx.github.io/).
 
 ## Documentation
-See the [Documentation](./docs/ThorUpdate.md) for details on using VFPX Deployment.
+See the [Documentation](./docs/Documentation.md) for details on using VFPX Deployment.
 
 ## Releases
 
-Latest release: <!--DeploymentDate-->2023-05-22<!--/DeploymentDate-->,
-version <!--VERNO-->1.2.08542<!--/VerNo-->
+Latest release: <!--DeploymentDate-->2023-05-31<!--/DeploymentDate-->,
+Version <!--VERNO-->1.2.08551<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
 
@@ -37,9 +37,15 @@ See the great article [Anatomy of a VFPX Project](https://doughennig.blogspot.co
 It shows the setup of *VFPX related data* and *Thor* in two chapters.   
 Since version 1.1.08538 this tool merges both, but the article gives a good idea.
 
+## Run the tool stand alone:
+Download the [zip](https://github.com/VFPX/VFPXDeployment/blob/main/ThorUpdater/VFPXDeployment.zip), expand the folder and run relative to this folder `Procs\Thor_Proc_DeployVFPXProject.prg`
+
+## Run this tool from Thor:
+Download via Thor Check for Updates and run from Thor.
+
 ## Helping with this project
 
 See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--DeploymentDate-->2023-05-22<!--/DeploymentDate-->_   
+Last changed: _<!--DeploymentDate-->2023-05-31<!--/DeploymentDate-->_   
 ![powered by VFPX](./docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")

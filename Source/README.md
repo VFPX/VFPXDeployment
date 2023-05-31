@@ -18,7 +18,7 @@ so you can easily install your project and update to the latest version without 
 This project is part of [VFPX](https://vfpx.github.io/).
 
 ## Documentation
-See the [Documentation](./docs/ThorUpdate.md) for details on using VFPX Deployment.
+See the [Documentation](./docs/Documentation.md) for details on using VFPX Deployment.
 
 ## Releases
 

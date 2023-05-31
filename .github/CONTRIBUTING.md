@@ -24,14 +24,14 @@ Most likely you must alter something in InstallFiles or it's sub folders.
 ---
 3. For major settings, edit the Version setting in _BuildProcess\ProjectSettings.txt_.
 4. Update major changes in _README.md_.
-4. Update _docs\ThorUpdate.md_ on chages how to USE this tool.
+4. Update _docs\Documentation.md_ on chages how to USE this tool.
 4. Update _docs\VFPXDeployment.md_  on chages how this tool WORKS.
 5. Describe the changes in the top of _docs\Change Log.md_.
 6. Run the VFPX Deployment tool to create the installation files by
     -   Invoking menu item  **Thor Tools -> Applications -> VFPX Project Deployment**  
     -   Or executing ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')``` 
     -   Or executing Thor tool **"VFPX Project Deployment"**
-    -   Or follow the [Documentation](../docs/ThorUpdate.md), this project is a normal project of itself.
+    -   Or follow the [Documentation](../docs/Documentation.md), this project is a normal project of itself.
 
 ---
 7. Commit

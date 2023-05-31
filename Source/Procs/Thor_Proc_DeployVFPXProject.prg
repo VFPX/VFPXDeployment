@@ -1,81 +1,109 @@
 #define CRLF chr(13) + chr(10)
 
-* Parameter tcFolder is the home folder for the project
-*   and defaults to the current folder if not supplied
 lparameters;
 	tcFolder
 
-local;
-	lcCurrFolder        as string,;
-	lcProjectName       as string,;
-	lcVFPXDeploymentFolder as string
+* Parameter tcFolder is the home folder for the project
+* If no folder is given, this procedure assumes to run stand-alone
+
+if !empty(tcFolder) and directory(tcFolder) then
+	do main with m.tcFolder
+else  &&!empty(tcFolder) AND directory(tcFolder)
+	local;
+		lcProjectFolder as string
+
+	addproperty(_screen, 'VFPX_DeployStartFolder', fullpath("", ""))
+
+* ================================================================================
+
+	lcProjectFolder	 = GetProject_Folder(_screen.VFPX_DeployStartFolder)
+
+	if directory(m.lcProjectFolder) then
+
+		do main with m.lcProjectFolder
+	endif &&directory(m.lcProjectFolder)
+* ================================================================================
+
+	cd (_screen.VFPX_DeployStartFolder)
+	removeproperty(_screen, 'VFPX_DeployStartFolder')
+endif &&!empty(tcFolder) AND directory(tcFolder)
+
+procedure main (tcFolder)
+
+	local;
+		lcCurrFolder        as string,;
+		lcProjectName       as string,;
+		lcVFPXDeploymentFolder as string
 
 * Get the project folder.
-addproperty(_screen, 'VFPX_Deploy_StartFolder', fullpath("", ""))
-tcFolder      = evl(m.tcFolder, _screen.VFPX_Deploy_StartFolder)
-cd (m.tcFolder) && Project Home
+	if empty(m.tcFolder) then
+		messagebox('Parameter tcFolder could not be empty in Main.', ;
+			16, 'VFPX Project Deployment')
+		return
+	endif &&EMPTY(m.tcFolder)
+
+	cd (m.tcFolder) && Project Home
 
 * Bug out if NoVFPXDeployment.txt exists.
 
-if file(addbs(m.tcFolder) + 'NoVFPXDeployment.txt') then
-	messagebox('VFPX Project Deployment will not run because NoVFPXDeployment.txt exists.', ;
-		16, 'VFPX Project Deployment')
-	return
-endif &&file(addbs(m.tcFolder) + 'NoVFPXDeployment.txt')
+	if file(addbs(m.tcFolder) + 'NoVFPXDeployment.txt') then
+		messagebox('VFPX Project Deployment will not run because NoVFPXDeployment.txt exists.', ;
+			16, 'VFPX Project Deployment')
+		return
+	endif &&file(addbs(m.tcFolder) + 'NoVFPXDeployment.txt')
 
 * Create the BuildProcess subdirectory of the project folder if necessary.
 
-lcCurrFolder = addbs(addbs(m.tcFolder) + 'BuildProcess') && BuildProcess
-if not directory(m.lcCurrFolder) then
+	lcCurrFolder = addbs(addbs(m.tcFolder) + 'BuildProcess') && BuildProcess
+	if not directory(m.lcCurrFolder) then
 *SF 20230512 we better check if a different Thor exists
 * this is not fool-proof, since there are many ways to do Thor
 * but a very common one
-	if directory(addbs(m.tcFolder) + 'ThorUpdater') then
-		messagebox('There is already a Thor folder.' + CRLF + CRLF + 'Stoped.' + CRLF + CRLF + 'You need to carefully create the setup manually.', ;
-			16, 'VFPX Project Deployment')
-		return
-	endif &&directory(addbs(m.tcFolder) + 'ThorUpdater')
-	md (m.lcCurrFolder)
-endif &&not directory(m.lcCurrFolder)
+		if directory(addbs(m.tcFolder) + 'ThorUpdater') then
+			messagebox('There is already a Thor folder.' + CRLF + CRLF + 'Stoped.' + CRLF + CRLF + 'You need to carefully create the setup manually.', ;
+				16, 'VFPX Project Deployment')
+			return
+		endif &&directory(addbs(m.tcFolder) + 'ThorUpdater')
+		md (m.lcCurrFolder)
+	endif &&not directory(m.lcCurrFolder)
 
 * If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt, and
 * BuildMe.prg, AfterBuild.prg from the VFPXDeployment folder.
 * Stop process to let the user set up the tool
 
-lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
+	lcVFPXDeploymentFolder = _screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
 
-if not file(m.lcCurrFolder + 'ProjectSettings.txt') then
-	copy file (m.lcVFPXDeploymentFolder + 'ProjectSettings.txt') to ;
-		(m.lcCurrFolder + 'ProjectSettings.txt')
-	copy file (m.lcVFPXDeploymentFolder + 'VersionTemplate.txt') to ;
-		(m.lcCurrFolder + 'VersionTemplate.txt')
-	copy file (m.lcVFPXDeploymentFolder + 'BuildMe.prg') to ;
-		(m.lcCurrFolder + 'BuildMe.prg')
-	copy file (m.lcVFPXDeploymentFolder + 'AfterBuild.prg') to ;
-		(m.lcCurrFolder + 'AfterBuild.prg')
-	messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
-		'for this project.' + CRLF + ;
-		'Also, edit InstalledFiles.txt and specify ' + ;
-		'which files should be installed.' + CRLF +  CRLF +;
-		'Then run VFPX Project Deployment again.', ;
-		16, 'VFPX Project Deployment')
-	modify file (m.lcCurrFolder + 'ProjectSettings.txt') nowait
-	modify file (m.lcCurrFolder + 'InstalledFiles.txt') nowait
-	return
-endif &&not file(m.lcCurrFolder + 'ProjectSettings.txt')
+	if not file(m.lcCurrFolder + 'ProjectSettings.txt') then
+		copy file (m.lcVFPXDeploymentFolder + 'ProjectSettings.txt') to ;
+			(m.lcCurrFolder + 'ProjectSettings.txt')
+		copy file (m.lcVFPXDeploymentFolder + 'VersionTemplate.txt') to ;
+			(m.lcCurrFolder + 'VersionTemplate.txt')
+		copy file (m.lcVFPXDeploymentFolder + 'BuildMe.prg') to ;
+			(m.lcCurrFolder + 'BuildMe.prg')
+		copy file (m.lcVFPXDeploymentFolder + 'AfterBuild.prg') to ;
+			(m.lcCurrFolder + 'AfterBuild.prg')
+		messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
+			'for this project.' + CRLF + ;
+			'Also, edit InstalledFiles.txt and specify ' + ;
+			'which files should be installed.' + CRLF +  CRLF +;
+			'Then run VFPX Project Deployment again.', ;
+			16, 'VFPX Project Deployment')
+		modify file (m.lcCurrFolder + 'ProjectSettings.txt') nowait
+		modify file (m.lcCurrFolder + 'InstalledFiles.txt') nowait
+		return
+	endif &&not file(m.lcCurrFolder + 'ProjectSettings.txt')
 
-lcProjectName = getwordnum(m.lcCurrFolder, getwordcount(m.lcCurrFolder, '\') - 1, '\')
+	lcProjectName = getwordnum(m.lcCurrFolder, getwordcount(m.lcCurrFolder, '\') - 1, '\')
 
-Deploy(m.lcVFPXDeploymentFolder, m.lcProjectName, addbs(m.tcFolder))
+	Deploy(m.lcVFPXDeploymentFolder, m.lcProjectName, addbs(m.tcFolder))
 
 * Restore the former current directory.
 
-cd (_screen.VFPX_Deploy_StartFolder)
+	removeproperty(_screen, 'VFPX_Deploy_StartFolder')
 
-removeproperty(_screen, 'VFPX_Deploy_StartFolder')
+	return
 
-return
-
+endproc &&Main
 
 * ================================================================================
 * ================================================================================
@@ -491,20 +519,21 @@ procedure Deploy
 	if m.llInclude_Thor then
 		if file(m.lcInstalledFilesListing) then
 			if m.llClear_InstalledFiles then
-				loFSO = Createobject("Scripting.FileSystemObject")
-				loFSO.DeleteFolder(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder), .T.)
+				loFSO = createobject("Scripting.FileSystemObject")
+				loFSO.DeleteFolder(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder), .t.)
 			endif &&m.llClear_InstalledFiles
 * If InstalledFiles.txt exists, copy the files listed in it to the
 * InstalledFiles folder (folders are created as necessary).
 			lcFiles = filetostr(m.lcInstalledFilesListing)
 			lnFiles = alines(laFiles, m.lcFiles, 1 + 4)
+*include
 			for lnI = 1 to m.lnFiles
-				if left(ltrim(laFiles[m.lnI]), 1) == '#' then
-					loop
-				endif &&LEFT(LTRIM(laFiles[m.lnI]e), 1) == '#'
 				lnWords  = alines(laWords, strtran(laFiles[m.lnI], '||', 0h00), 1 + 2, 0h00)
 				lcSource = laWords[1]
 				lcTarget = iif(m.lnWords=1, laWords[1],  laWords[2])
+				if inlist(left(ltrim(m.lcSource), 1), '#', '!') then
+					loop
+				endif &&inlist(left(ltrim(m.lcSource), 1), '#', '!')
 				if empty(m.lcSource) then
 *not the toplevel folder (aka project root)
 					loop
@@ -516,11 +545,26 @@ procedure Deploy
 
 				if right(m.lcSource, 1) == '\' then
 * just with subfolders
-					ScanDir_InstFiles(m.tcCurrFolder + m.lcSource, addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget)
+					ScanDir_InstFiles(m.tcCurrFolder + m.lcSource, addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget, .F.)
 				else
 * just file / skeleton
 					Copy_InstallFile(m.tcCurrFolder + m.lcSource, addbs(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + m.lcTarget)
 				endif
+
+			next &&lnI
+*exclude (iow remove after copy)
+			for lnI = 1 to m.lnFiles
+				if !left(ltrim(m.lcSource), 1) == '!' then
+					loop
+				endif &&!left(ltrim(m.lcSource), 1) == '!'
+				lcSource = SUBSTR(laFiles[m.lnI], 2)
+				if empty(m.lcSource) then
+*not the toplevel folder (aka project root)
+					loop
+				endif &&empty(m.lcSource)
+
+* only pattern through all folders in lcInstalledFilesFolder
+				ScanDir_InstFiles(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder), m.lcSource, .T.)
 
 			next &&lnI
 		endif &&file(m.lcInstalledFilesListing)
@@ -750,11 +794,12 @@ procedure SetDocumentation
 * InstalledFiles folder (folders are created as necessary).
 		lcFiles = filetostr(m.tcSubstituteListing)
 		lnFiles = alines(laFiles, m.lcFiles, 1 + 4)
+*process includes
 		for lnI = 1 to m.lnFiles
 			lcSource = laFiles[m.lnI]
 			if left(ltrim(m.lcSource), 1) == '#' then
 				loop
-			endif &&LEFT(LTRIM(m.lcSource), 1) == '#'
+			endif &&(left(ltrim(m.lcSource), 1) == '#'
 			if right(m.lcSource, 1) == '\' then
 * just with subfolders
 				ScanDir_Templates(m.tcCurrFolder + m.lcSource)
@@ -767,7 +812,6 @@ procedure SetDocumentation
 
 		next &&lnI
 	endif &&file(m.lcInstalledFilesListing)
-
 endproc &&SetDocumentation
 
 procedure ReplacePlaceholders_Once
@@ -863,7 +907,6 @@ endproc &&CheckVersionFile
 procedure ScanDir_Templates
 	lparameters;
 		tcSource
-
 	local;
 		lcOldDir,;
 		lcText,;
@@ -895,7 +938,9 @@ endproc &&ScanDir_Templates
 procedure ScanDir_InstFiles
 	lparameters;
 		tcSourceDir,;
-		tcTargetDir
+		tcTargetDir,;
+		tlExclude
+
 
 	local;
 		lcOldDir,;
@@ -910,10 +955,20 @@ procedure ScanDir_InstFiles
 		if inlist(laDir(m.lnLoop1, 1), '.', '..') then
 			loop
 		endif &&INLIST(laDir(m.lnLoop1,1), '.', '..')
-		ScanDir_InstFiles(addbs(m.tcSourceDir + laDir(m.lnLoop1, 1)), addbs(m.tcTargetDir + laDir(m.lnLoop1, 1)))
+	IF m.tlExclude THEN
+*tcTargetDir is the pattern, just keep it
+		ScanDir_InstFiles(addbs(m.tcSourceDir + laDir(m.lnLoop1, 1)), m.tcTargetDir, m.tlExclude)
+	ELSE  &&m.tlExclude
+		ScanDir_InstFiles(addbs(m.tcSourceDir + laDir(m.lnLoop1, 1)), addbs(m.tcTargetDir + laDir(m.lnLoop1, 1)), m.tlExclude)
+	ENDIF &&m.tlExclude 
 
 	endfor &&lnLoop1
-	Copy_InstallFile(addbs(m.tcSourceDir) + '*.*', addbs(m.tcTargetDir) + '*.*')
+	IF m.tlExclude THEN
+*just delete pattern
+		DELETE FILE (m.tcTargetDir)
+	ELSE  &&m.tlExclude
+		Copy_InstallFile(addbs(m.tcSourceDir) + '*.*', addbs(m.tcTargetDir) + '*.*')
+	ENDIF &&m.tlExclude 
 	cd (m.lcOldDir)
 
 endproc &&ScanDir_InstFiles
@@ -958,3 +1013,81 @@ procedure ReleaseThis
 		pcRepository
 
 endproc &&ReleaseThis
+
+procedure GetProject_Folder
+	lparameters;
+		tcPreviousFolder
+
+	local;
+		lcFolder   as string,;
+		lcValidFolder as string
+
+* try if active folder is in a git repository
+	lcValidFolder = Validate_TopLevel(fullpath('',''))
+	if not empty(m.lcValidFolder) then
+		return m.lcValidFolder
+	endif &&not empty(m.lcValidFolder)
+
+* SF 20230512, try active project next
+*in case we have a structure where we sit in a base with many scatterd projects
+*we try if the Active Project is the one
+	if type("_VFP.ActiveProject")='O' then
+		lcValidFolder = justpath(_vfp.activeproject.name)
+		if not empty(m.lcValidFolder) and  messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"' + ;
+				_vfp.activeproject.name + '" ?', 36, 'VFPX Project Deployment') = 6 then
+			return m.lcValidFolder
+
+		endif &&Not Empty(m.lcValidFolder) AND Messagebox('Run for active project' + Chr(13) + Chr(10) + Chr(13) + Chr(10) ...
+	endif &&type("_VFP.ActiveProject")='O'
+
+*try to get a folder
+	do while .t.
+		lcFolder = getdir(m.tcPreviousFolder, 'Project Home Folder', 'Home Path')
+		if empty(m.lcFolder) then
+			return ''
+		endif &&empty(m.lcFolder)
+
+		lcValidFolder = Validate_TopLevel(m.lcFolder)
+		if empty(m.lcValidFolder) then
+			messagebox('Top level folder not found, not a git repository.', 16, 'VFPX Project Deployment')
+		else &&empty(m.lcValidFolder)
+			return m.lcValidFolder
+		endif &&empty(m.lcValidFolder)
+
+	enddo &&.t.
+
+endproc &&GetProject_Folder
+
+procedure Validate_TopLevel
+	lparameters;
+		tcFolder
+
+* SF 20230512
+*we test if this folder is a git folder and return the git base folder
+*no need to search the base folder, git will tell this
+* (and not embarrassingly testing for ".git" folder)
+	local;
+		lcCommand as string,;
+		lcOldFolder as string
+
+	lcOldFolder = fullpath('','')
+	cd (m.tcFolder)
+	delete file git_x.tmp    && in case
+
+*if git is not installed, we get an empty or no file
+	lcCommand = 'git rev-parse --show-toplevel>git_x.tmp'
+	run &lcCommand
+
+	if file('git_x.tmp') then
+*the result is either the git base folder or empty for no git repo
+		tcFolder = chrtran(filetostr('git_x.tmp'), '/' + chr(13) + chr(10), '\')
+		delete file git_x.tmp
+	else &&file('git_x.tmp')
+* no file, no git
+		tcFolder = ''
+	endif &&file('git_x.tmp')
+
+	cd (m.lcOldFolder)
+	return m.tcFolder
+
+endproc &&Validate_TopLevel

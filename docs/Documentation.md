@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.2.08542<!--/VerNo-->
+## Version <!--VERNO-->1.2.08551<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -37,6 +37,8 @@ A brief idea how to give your project a standard look is discussed in [BestPract
   - [Customize the project settings for your project](#customize-the-project-settings-for-your-project)
   - [Specify what files are to install on the target computer](#specify-what-files-are-to-install-on-the-target-computer)
     - [InstalledFiles.txt](#installedfilestxt)
+      - [Target](#target)
+      - [Excludes](#excludes)
   - [Customize the version template](#customize-the-version-template)
   - [Customize the build tasks](#customize-the-build-tasks)
     - [BuildMe](#buildme)
@@ -93,9 +95,9 @@ More detailed:
 3. If not already done, create a **remote** git repository for your project, for example at github. See [VFPX Add a Project](https://vfpx.github.io/newproject/)
 4. If not already done, create a **local** git repository for your project root folder. Just init, do not add files.
    - or clone the remote, that's up to your choice and level of git knowledge.
-5. Open your pjx or  CD into your project (anywhere) or simple
+5. Open your pjx or CD into your project (anywhere) or simple
 6. Run *VFPX Project Deployment* from Thor/Applications menu
-  - The program tries to figure out your project root from information provided by git in the following order:
+  - The program tries to figure out your project root (this is the top level folder git uses) from information provided by git in the following order:
     1. The recent path in VFP
     2. Home of `_VFP.ACTIVEPROJECT` if there is one (user will be prompted to use it, if found)
     3. User prompt for folder
@@ -106,7 +108,7 @@ More detailed:
    - Version - Mandatory
    - Component - Mandatory
    - Repository - Mandatory if remote repository is not at github.com/VFPX/{AppID}
-   - others, see [ProjectSettings](#settings)
+   - Others, see [ProjectSettings](#settings)
 9. Rerun 
 10. The [ProjectSettings](#settings) will be read
 11. Additional processing and tests run
@@ -308,11 +310,12 @@ Edit InstalledFiles.txt and list each file to be copied to the [staging](#instal
 ![InstalledFiles.txt](./Images/InstalledFiles.png "InstalledFiles.txt")
 
 The file may contain
-- lines starting with # will be ignored
-- empty lines will be ignored
-- single files
-- file skeletons
-- directories If a directory is given in the form `SomeDirectory\` the **whole structure** including subdirectories will be copied.
+- Comments: Lines starting with **#** will be ignored
+- Empty lines will be ignored
+- Single files
+- File skeletons
+- Directories; If a directory is given in the form `SomeDirectory\` the **whole structure** including subdirectories will be copied.
+- Excludes: Lines starting with **!** will hold a skeleton or file to exclude
 
 **Note** The *Clear_InstalledFiles* settings defines if files will be removed from the [staging](#installedfiles) to create an empty folder to copy to.
 
@@ -321,7 +324,13 @@ Each line may contain a target, if the folder / file in the staging folder shoul
 The form is `Source||Target`. If both source and target are folders, the syntax must be `Source\||Target\`.
 - lines with empty Sources will be ignored
 - empty Target is read as staging folder
-- Target == ""\"" is read as staging folder
+- Target == "\\" is read as staging folder
+
+##### Excludes
+Each line starting with **!** holds a *file name pattern* to be excluded from the staging files.
+This is a post-processor, the files will be first copied to the staging folders, and then removed.
+The idea is to remove stuff like *bak* or FoxBin2Text *\*.??2* files, and not name each and any file in the source lines.   
+**Note:** This is a pattern over all files in the staging folder and it's subfolders.
 
 ### Customize the version template
 This is an optional task.
@@ -488,6 +497,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--DeploymentDate-->2023-05-22<!--/DeploymentDate-->
+Last changed: <!--DeploymentDate-->2023-05-31<!--/DeploymentDate-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
