@@ -1,2 +1,4 @@
 Source\||VFPXDeployment\
 BuildProcess\I_README.md||VFPXDeployment\README.md
+!*.bak
+!*.fxp

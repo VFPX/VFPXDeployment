@@ -554,9 +554,9 @@ procedure Deploy
 			next &&lnI
 *exclude (iow remove after copy)
 			for lnI = 1 to m.lnFiles
-				if !left(ltrim(m.lcSource), 1) == '!' then
+				if !left(ltrim(laFiles[m.lnI]), 1) == '!' then
 					loop
-				endif &&!left(ltrim(m.lcSource), 1) == '!'
+				endif &&!left(ltrim(laFiles[m.lnI]), 1) == '!'
 				lcSource = SUBSTR(laFiles[m.lnI], 2)
 				if empty(m.lcSource) then
 *not the toplevel folder (aka project root)
@@ -564,7 +564,7 @@ procedure Deploy
 				endif &&empty(m.lcSource)
 
 * only pattern through all folders in lcInstalledFilesFolder
-				ScanDir_InstFiles(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder), m.lcSource, .T.)
+				ScanDir_InstFiles(ADDBS(fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)), m.lcSource, .T.)
 
 			next &&lnI
 		endif &&file(m.lcInstalledFilesListing)
