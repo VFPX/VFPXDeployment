@@ -71,6 +71,12 @@ Procedure ToolCode
 
 Endproc &&ToolCode
 
+* ================================================================================
+* ================================================================================
+* Search for project to work with
+* Search a pattern of folders to figure out if those folders are within a repository; if true, get toplevel folder
+*
+* Note: There is a similar procedure in Thor_Proc_DeployVFPXProject.prg to allow Thor independed operation
 Procedure GetProjectFolder
 
 	Local;
@@ -114,6 +120,12 @@ Procedure GetProjectFolder
 
 Endproc &&GetProjectFolder
 
+* ================================================================================
+* ================================================================================
+* Search for project to work with (used for stand alone version)
+* use git to check if a given folder is in a repository; if true, return toplevel folder
+*
+* Note: There is a similar procedure in Thor_Proc_DeployVFPXProject.prg to allow Thor independed operation
 Procedure ValidateTopLevel
 	Lparameters;
 		tcFolder

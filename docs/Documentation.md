@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.2.08551<!--/VerNo-->
+## Version <!--VERNO-->1.2.08552<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -142,6 +142,7 @@ This will be used to create the version file for the remote *ThorUpdater\{AppID}
   - Files
   - File skeletons
   - Paths (ending with \\)
+  - Files to exclude (starting with !)
 - Thor_Update_{AppID}.prg: The file to control the update process in Thor. See [First time task to deploy](#first-time-task-to-deploy).
 
 #### InstalledFiles
@@ -317,7 +318,7 @@ The file may contain
 - Directories; If a directory is given in the form `SomeDirectory\` the **whole structure** including subdirectories will be copied.
 - Excludes: Lines starting with **!** will hold a skeleton or file to exclude
 
-**Note** The *Clear_InstalledFiles* settings defines if files will be removed from the [staging](#installedfiles) to create an empty folder to copy to.
+**Note** The *Clear_InstalledFiles* settings defines, if files will be removed from the [staging](#installedfiles) to create an empty folder to copy to.
 
 ##### Target
 Each line may contain a target, if the folder / file in the staging folder should be named different then the source.   
@@ -497,6 +498,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--DeploymentDate-->2023-05-31<!--/DeploymentDate-->
+Last changed: <!--DeploymentDate-->2023-06-01<!--/DeploymentDate-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
