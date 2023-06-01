@@ -179,7 +179,8 @@ Procedure Deploy
 		laBin2PRGFolders(1),;
 		laFiles(1,1),;
 		laSettings(1),;
-		laWords(1,1)
+		laWords(1,1),;
+		laPlaceholders(1,1)
 
 	lcProjectFile           = m.tcCurrFolder + 'BuildProcess\ProjectSettings.txt'
 	lcInstalledFilesListing = m.tcCurrFolder + 'BuildProcess\InstalledFiles.txt'
@@ -518,7 +519,10 @@ Procedure Deploy
 
 	Endif &&Not Empty(m.lcPJXFile) And File(m.lcErrFile)
 
-	SetDocumentation (m.tcCurrFolder, m.tcVFPXDeploymentFolder, m.llInclude_VFPX, m.lcSubstituteListing)
+*get Placeholders
+	ACreate_Placeholders(@laPlaceholders)
+
+	SetDocumentation (m.tcCurrFolder, m.tcVFPXDeploymentFolder, m.llInclude_VFPX, m.lcSubstituteListing, @laPlaceholders)
 
 *SF 20230514 the test is moved to a place above, so no processing is done
 	If m.llInclude_Thor Then
@@ -593,7 +597,7 @@ Procedure Deploy
 		lcVersion = Strtran(m.lcVersion, '{COMPONENT}', m.lcComponent,  -1, -1, 1)
 		lcVersion = Strtran(m.lcVersion, '{CATEGORY}',  m.lcCategory,   -1, -1, 1)
 
-		lcVersion = ReplacePlaceholders_Once(m.lcVersion)
+		lcVersion = ReplacePlaceholders_Once(@laPlaceholders,m.lcVersion)
 
 		Strtofile(m.lcVersion, m.lcVersionFile)
 
@@ -611,7 +615,7 @@ Procedure Deploy
 
 			lcContent = Filetostr(m.lcUpdateTemplateFile)
 
-			lcContent = ReplacePlaceholders_Once(m.lcContent)
+			lcContent = ReplacePlaceholders_Once(@laPlaceholders,m.lcContent)
 
 			lcContent = Strtran(m.lcContent, '{COMPONENT}', m.lcComponent, ;
 				 -1, -1, 1)
@@ -683,7 +687,11 @@ Procedure SetDocumentation
 		tcCurrFolder,;
 		tcVFPXDeploymentFolder,;
 		tlInclude_VFPX,;
-		tcSubstituteListing
+		tcSubstituteListing,;
+		taPlaceholders
+
+	EXTERNAL array;
+		taPlaceholders
 
 *check for several VFPX defaults:
 	Local;
@@ -700,15 +708,15 @@ Procedure SetDocumentation
 	If Not File(m.tcCurrFolder + 'README.md') Then
 		If m.tlInclude_VFPX Then
 			lcText = Filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\R_README.md')
-			lcText = ReplacePlaceholders_Once(m.lcText)
-			lcText = ReplacePlaceholders_Run (m.lcText)
+			lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
+			lcText = ReplacePlaceholders_Run (@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, 'README.md')
 
 		Endif &&m.tlInclude_VFPX
 	Else  &&Not File(m.tcCurrFolder + 'README.md')
 		If File(m.tcCurrFolder + 'README.md') Then
 			lcText = Filetostr('README.md')
-			lcText = ReplacePlaceholders_Run (m.lcText)
+			lcText = ReplacePlaceholders_Run (@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, 'README.md')
 
 		Endif &&File(m.tcCurrFolder + 'README.md')
@@ -717,39 +725,39 @@ Procedure SetDocumentation
 	If m.tlInclude_VFPX Then
 		If Not File(m.tcCurrFolder + 'BuildProcess\README.md') Then
 			lcText = Filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\B_README.md')
-			lcText = ReplacePlaceholders_Once(m.lcText)
-			lcText = ReplacePlaceholders_Run (m.lcText)
+			lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
+			lcText = ReplacePlaceholders_Run (@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, 'BuildProcess\README.md')
 		Endif &&Not File(m.tcCurrFolder + 'BuildProcess\README.md')
 
 		If Not File(m.tcCurrFolder + 'BuildProcess\.gitignore') Then
 			lcText = Filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\B.gitignore')
-			lcText = ReplacePlaceholders_Once(m.lcText)
+			lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, 'BuildProcess\.gitignore')
 		Endif &&Not File(m.tcCurrFolder + 'BuildProcess\README.md')
 
 		If Not File(m.tcCurrFolder + 'ThorUpdater\README.md') Then
 			lcText = Filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\T_README.md')
-			lcText = ReplacePlaceholders_Once(m.lcText)
-			lcText = ReplacePlaceholders_Run (m.lcText)
+			lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
+			lcText = ReplacePlaceholders_Run (@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, 'ThorUpdater\README.md')
 		Endif &&Not File(m.tcCurrFolder + 'ThorUpdater\README.md')
 
 		If Not File(m.tcCurrFolder + 'ThorUpdater\.gitignore') Then
 			lcText = Filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\T.gitignore')
-			lcText = ReplacePlaceholders_Once(m.lcText)
+			lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, 'ThorUpdater\.gitignore')
 		Endif &&Not File(m.tcCurrFolder + 'ThorUpdater\README.md')
 
 		If Not File(m.tcCurrFolder + '.gitignore') Then
 			lcText = Filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\C.gitignore')
-			lcText = ReplacePlaceholders_Once(m.lcText)
+			lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, '.gitignore')
 		Endif &&Not File(m.tcCurrFolder + '.gitignore')
 
 		If Not File(m.tcCurrFolder + '.gitattributes') Then
 			lcText = Filetostr(m.tcVFPXDeploymentFolder + 'VFPXTemplate\R.gitattributes')
-			lcText = ReplacePlaceholders_Once(m.lcText)
+			lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
 			Strtofile(m.lcText, '.gitattributes')
 		Endif &&Not File(m.tcCurrFolder + '.gitattributes')
 
@@ -760,7 +768,7 @@ Procedure SetDocumentation
 
 			For lnFile = 1 To Adir(laFiles,'.github\*.*')
 				lcText = Filetostr('.github\' + laFiles(m.lnFile, 1))
-				lcText = ReplacePlaceholders_Once(m.lcText)
+				lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
 				Strtofile(m.lcText, '.github\' + Forceext(laFiles(m.lnFile, 1),Lower(Justext(laFiles(m.lnFile, 1)))))
 
 			Endfor &&lnFile
@@ -771,7 +779,7 @@ Procedure SetDocumentation
 
 			For lnFile = 1 To Adir(laFiles,'.github\ISSUE_TEMPLATE\*.*')
 				lcText = Filetostr('.github\ISSUE_TEMPLATE\' + laFiles(m.lnFile, 1))
-				lcText = ReplacePlaceholders_Once(m.lcText)
+				lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
 				Strtofile(m.lcText, '.github\ISSUE_TEMPLATE\' + Lower(laFiles(m.lnFile, 1)))
 
 			Endfor &&lnFile
@@ -785,7 +793,7 @@ Procedure SetDocumentation
 
 			For lnFile = 1 To Adir(laFiles,'docs\*.*')
 				lcText = Filetostr('docs\' + laFiles(m.lnFile, 1))
-				lcText = ReplacePlaceholders_Once(m.lcText)
+				lcText = ReplacePlaceholders_Once(@taPlaceholders,m.lcText)
 				Strtofile(m.lcText, 'docs\' + laFiles(m.lnFile, 1))
 
 			Endfor &&lnFile
@@ -816,7 +824,7 @@ Procedure SetDocumentation
 			Else
 * just file / skeleton
 				lcText = Filetostr(m.tcCurrFolder + laFiles[m.lnI])
-				lcText = ReplacePlaceholders_Run (m.lcText)
+				lcText = ReplacePlaceholders_Run (@taPlaceholders,m.lcText)
 				Strtofile(m.lcText,m.tcCurrFolder + laFiles[m.lnI])
 			Endif
 
@@ -845,7 +853,7 @@ Procedure ACreate_Placeholders
 	taPlaceholders( 6, 1) = 'VERSION'
 	taPlaceholders( 7, 1) = 'JULIAN'
 	taPlaceholders( 8, 1) = 'REPOSITORY'
-	taPlaceholders( 9, 2) = 'VERNO'
+	taPlaceholders( 9, 1) = 'VERNO'
 	taPlaceholders(10, 1) = 'CHANGELOG_F'
 
 	taPlaceholders( 1, 2) = m.pcAppName
@@ -919,7 +927,7 @@ Procedure ReplacePlaceholders_Run
 			lnLen   = Atc(m.lcEnd, Substr(m.tcText,m.lnStart))
 *	 tcText  = stuff(tcText, lnStart, lnLen, '<!--VerNo-->' + pcFullVersion)
 			If m.lnLen>0 Then
-				tcText  = Stuff(m.tcText, m.lnStart, m.lnLen - 1, m.lcStart + pcFullVersion)
+				tcText  = Stuff(m.tcText, m.lnStart, m.lnLen - 1, m.lcStart + taPlaceholders(m.tnPlaceholder, 2))
 
 			Endif &&m.lnLen>0
 		Next &&lnOccurence

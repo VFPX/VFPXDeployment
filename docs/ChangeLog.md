@@ -4,14 +4,15 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for last version-->
-## <!--DeploymentDate-->2023-06-01<!--/DeploymentDate--> Version <!--VERNO-->1.2.08552<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-06-01<!--/CVERSIONDATE--> Version <!--VERNO-->1.2.08552<!--/VerNo-->
 
 - New ability for Thor_Proc_DeployVFPXProject.prg, it might run stand alone, without Thor.
 - Added switch to InstalledFiles.txt to exclude file pattern from staging area
 - Messagebox to use active project will only appear if the project is stored in a git repository
-- Changed structure of documentation to fit to own template
 - More substitutions for runtime files. See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md#file-substitution
 - One incompatible change for substitutions due to generalized use. See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md#file-substitution
+- Changed structure of documentation to fit to own template
+- Added links to own source as example in documentation
 
 ## 2023-05-22 Version  1.2.08542
 
@@ -97,6 +98,6 @@
 - Initial release
 
 ----
-Last changed: <!--DeploymentDate-->2023-06-01<!--/DeploymentDate-->
+Last changed: <!--CVERSIONDATE-->2023-06-01<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

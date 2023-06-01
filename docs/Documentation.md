@@ -519,6 +519,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--DeploymentDate-->2023-06-01<!--/DeploymentDate-->
+Last changed: <!--CVERSIONDATE-->2023-06-01<!--/CVERSIONDATE-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
