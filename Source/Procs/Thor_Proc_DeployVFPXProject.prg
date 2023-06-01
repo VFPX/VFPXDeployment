@@ -885,8 +885,10 @@ Procedure ReplacePlaceholders_Once
 		tnPlaceholder as integer,;
 		lnI           As Number
 
+	lcText = m.tcText
+
 	FOR tnPlaceholder = 1 TO ALEN(taPlaceholders,1)  
-		lcText = Strtran(m.tcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
+		lcText = Strtran(m.lcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
 	ENDFOR &&tnPlaceholder 
 	lcText = Textmerge(m.lcText)
 
