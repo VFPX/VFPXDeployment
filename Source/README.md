@@ -1,6 +1,6 @@
 <!-- 
 On each build, the sections framed by
-"VerNo" or "DeploymentDate" will be replaced with recent data
+"VerNo" or "CVERSIONDATE" will be replaced with recent data
 -->
 # VFPX Deployment
 ![VFPX Deployment logo](./docs/Images/vfpxdeployment.png "VFPX Deployment")
@@ -22,7 +22,7 @@ See the [Documentation](./docs/Documentation.md) for details on using VFPX Deplo
 
 ## Releases
 
-Latest release: <!--DeploymentDate-->2023-05-22<!--/DeploymentDate-->,
+Latest release: <!--CVERSIONDATE-->2023-05-22<!--/CVERSIONDATE-->,
 version <!--VERNO-->1.2.08542<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
@@ -41,5 +41,5 @@ Since version 1.1.08538 this tool merges both, but the article gives a good idea
 
 See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--DeploymentDate-->2023-05-22<!--/DeploymentDate-->_   
+Last changed: _<!--CVERSIONDATE-->2023-05-22<!--/CVERSIONDATE-->_   
 ![powered by VFPX](./docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")

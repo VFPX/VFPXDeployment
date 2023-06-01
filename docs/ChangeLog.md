@@ -10,6 +10,8 @@
 - Added switch to InstalledFiles.txt to exclude file pattern from staging area
 - Messagebox to use active project will only appear if the project is stored in a git repository
 - Changed structure of documentation to fit to own template
+- More substitutions for runtime files. See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md#file-substitution
+- One incompatible change for substitutions due to generalized use. See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md#file-substitution
 
 ## 2023-05-22 Version  1.2.08542
 

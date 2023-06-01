@@ -824,27 +824,62 @@ Procedure SetDocumentation
 	Endif &&File(m.lcInstalledFilesListing)
 Endproc &&SetDocumentation
 
+
+* ================================================================================
+* ================================================================================
+* Create an array with placeholders and there values to substitude
+Procedure ACreate_Placeholders
+	Lparameters;
+		taPlaceholders
+		
+	EXTERNAL array;
+		taPlaceholders
+	DIMENSION;
+		taPlaceholders(10, 3)
+
+	taPlaceholders( 1, 1) = 'APPNAME'
+	taPlaceholders( 2, 1) = 'APPID'
+	taPlaceholders( 3, 1) = 'CURRDATE'
+	taPlaceholders( 4, 1) = 'VERSIONDATE'
+	taPlaceholders( 5, 1) = 'CVERSIONDATE'	&&DeploymentDate in old *_Run proc
+	taPlaceholders( 6, 1) = 'VERSION'
+	taPlaceholders( 7, 1) = 'JULIAN'
+	taPlaceholders( 8, 1) = 'REPOSITORY'
+	taPlaceholders( 9, 2) = 'VERNO'
+	taPlaceholders(10, 1) = 'CHANGELOG_F'
+
+	taPlaceholders( 1, 2) = m.pcAppName
+	taPlaceholders( 2, 2) = m.pcAppID
+	taPlaceholders( 3, 2) = m.pcThisDate
+	taPlaceholders( 4, 2) = m.pcDate
+	taPlaceholders( 5, 2) = m.pcVersionDate
+	taPlaceholders( 6, 2) = m.pcVersion
+	taPlaceholders( 7, 2) = m.pcJulian
+	taPlaceholders( 8, 2) = m.pcRepository
+	taPlaceholders( 9, 2) = m.pcFullVersion
+	taPlaceholders(10, 2) = m.pcChangeLog
+Endproc &&ACreate_Placeholders
+
 * ================================================================================
 * ================================================================================
 * Substitude placeholder with values. This could only be done once
 Procedure ReplacePlaceholders_Once
 	Lparameters;
+		taPlaceholders,;
 		tcText
 
-	Local;
-		lcRemove As String,;
-		lcText As String,;
-		lnI   As Number
+	EXTERNAL array;
+		taPlaceholders
 
-	lcText = Strtran(m.tcText, '{APPNAME}',     m.pcAppName,    -1, -1, 1)
-	lcText = Strtran(m.lcText, '{APPID}',       m.pcAppID,      -1, -1, 1)
-	lcText = Strtran(m.lcText, '{CURRDATE}',    m.pcThisDate,   -1, -1, 1)
-	lcText = Strtran(m.lcText, '{VERSIONDATE}', m.pcDate,       -1, -1, 1)
-	lcText = Strtran(m.lcText, '{CVERSIONDATE}',m.pcVersionDate,-1, -1, 1)
-	lcText = Strtran(m.lcText, '{VERSION}',     m.pcVersion,    -1, -1, 1)
-	lcText = Strtran(m.lcText, '{JULIAN}',      m.pcJulian,     -1, -1, 1)
-	lcText = Strtran(m.lcText, '{REPOSITORY}',  m.pcRepository, -1, -1, 1)
-	lcText = Strtran(m.lcText, '{CHANGELOG_F}', m.pcChangeLog, -1, -1, 1)
+	Local;
+		lcRemove      As String,;
+		lcText        As String,;
+		tnPlaceholder as integer,;
+		lnI           As Number
+
+	FOR tnPlaceholder = 1 TO ALEN(taPlaceholders,1)  
+		lcText = Strtran(m.tcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
+	ENDFOR &&tnPlaceholder 
 	lcText = Textmerge(m.lcText)
 
 	For lnI = Occurs('@@@', m.lcText) To 1 Step -1
@@ -861,32 +896,44 @@ Endproc &&ReplacePlaceholders_Once
 * Substitude marked sections. This could be repeated over and over
 Procedure ReplacePlaceholders_Run
 	Lparameters;
+		taPlaceholders,;
 		tcText
 
+	EXTERNAL array;
+		taPlaceholders
+
 	Local;
-		lnLen    As Number,;
-		lnOccurence As Number,;
-		lnStart  As Number
+		tnPlaceholder as integer,;
+		lnLen         As Number,;
+		lnOccurence   As Number,;
+		lnStart       As Number
 
-	For lnOccurence = 1 To Occurs('<!--VERNO-->', Upper(m.tcText))
-		lnStart = Atc('<!--VerNo-->', m.tcText, m.lnOccurence)
-		lnLen   = Atc('<!--/VerNo-->', Substr(m.tcText,m.lnStart))
+	tcText  = STRTRAN(m.tcText, '<!--DEPLOYMENTDATE-->' , '<!--CVERSIONDATE-->' , 1, -1, 1)
+	tcText  = STRTRAN(m.tcText, '<!--/DEPLOYMENTDATE-->', '<!--/CVERSIONDATE-->', 1, -1, 1)
+
+	FOR tnPlaceholder = 1 TO ALEN(taPlaceholders,1)   
+		lcStart = '<!--' + taPlaceholders(m.tnPlaceholder, 1) + '-->'
+		lcEnd   = '<!--/' + taPlaceholders(m.tnPlaceholder, 1) + '-->'
+		For lnOccurence = 1 To Occurs(m.lcStart, Upper(m.tcText))
+			lnStart = Atc(m.lcStart, m.tcText, m.lnOccurence)
+			lnLen   = Atc(m.lcEnd, Substr(m.tcText,m.lnStart))
 *	 tcText  = stuff(tcText, lnStart, lnLen, '<!--VerNo-->' + pcFullVersion)
-		If m.lnLen>0 Then
-			tcText  = Stuff(m.tcText, m.lnStart, m.lnLen - 1, '<!--VERNO-->' + pcFullVersion)
+			If m.lnLen>0 Then
+				tcText  = Stuff(m.tcText, m.lnStart, m.lnLen - 1, m.lcStart + pcFullVersion)
 
-		Endif &&m.lnLen>0
-	Next &&lnOccurence
+			Endif &&m.lnLen>0
+		Next &&lnOccurence
 
-	For lnOccurence = 1 To Occurs('<!--DEPLOYMENTDATE-->', Upper(m.tcText))
-		lnStart = Atc('<!--DeploymentDate-->', m.tcText, m.lnOccurence)
-		lnLen   = Atc('<!--/DeploymentDate-->', Substr(m.tcText,m.lnStart))
-*	 tcText  = stuff(tcText, lnStart, lnLen, '<!--DeploymentDate-->' + tcVersionDateD)
-		If m.lnLen>0 Then
-			tcText  = Stuff(m.tcText, m.lnStart, m.lnLen - 1, '<!--DeploymentDate-->' + pcVersionDate)
+	ENDFOR &&tnPlaceholder 
+*!*		For lnOccurence = 1 To Occurs('<!--DEPLOYMENTDATE-->', Upper(m.tcText))
+*!*			lnStart = Atc('<!--DeploymentDate-->', m.tcText, m.lnOccurence)
+*!*			lnLen   = Atc('<!--/DeploymentDate-->', Substr(m.tcText,m.lnStart))
+*!*	*	 tcText  = stuff(tcText, lnStart, lnLen, '<!--DeploymentDate-->' + tcVersionDateD)
+*!*			If m.lnLen>0 Then
+*!*				tcText  = Stuff(m.tcText, m.lnStart, m.lnLen - 1, '<!--DeploymentDate-->' + pcVersionDate)
 
-		Endif &&m.lnLen>0
-	Next &&lnOccurence
+*!*			Endif &&m.lnLen>0
+*!*		Next &&lnOccurence
 
 	Return m.tcText
 Endproc &&ReplacePlaceholders_Run

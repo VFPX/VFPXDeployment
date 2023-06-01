@@ -64,6 +64,9 @@ A brief idea how to give your project a standard look is discussed in [BestPract
 Example:  
 Settings contains `AppID = VFPXDeployment`, then *Thor_Update_{AppID}.prg* is *Thor_Update_VFPXDeployment.prg*
 - Strings like \[This\] must be replaced with a user set value.
+- Links to example files are in general the files used to create VFPX Deployment.   
+
+Note: For Placeholder, { and } are literals.
 
 ## Prerequisites
 - you should know how to use git in one or the other way
@@ -206,7 +209,7 @@ This is the project root. Some files will copied on first run, if they are not e
 - *NoVFPXDeployment.txt* If the file exists, VFPX Deployment will not process.
 
 ### Settings
-Those are the settings availanle in the BuildProcess\\ProjectSettings.txt file.
+Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../BuildProcess/ProjectSettings.txt "Example file")* file.
 | Setting | Usage |
 | ------ | ------ |
 | **AppName** | The display name for the project. |
@@ -237,44 +240,51 @@ If both *Inculde_VFPX* and *Inculde_Thor* are disabled, [File substitution](#fil
 ### Public variables
 Public variables read from the  BuildProcess\\ProjectSettings.txt file,
 that might be modified or used in [BuildMe.prg](#buildme) preprocessing,
-or in the [AfterBuild.prg](#afterbuild) postprocess program.
-| Variable | Usage |
-| ------ | ------ |
-| **pcAppName**: | the AppName setting |
-| **pcAppID** | the AppID setting |
-| **pcVersion** | the version number (the Version setting but can also be set in code; see the next section) |
-| **pdVersionDate** | the release date (the VersionDate setting or the current date if not specified) |
-| **pcDate** | the release date *pdVersionDate* as a string (YYYYMMDD) |
-| **pcVersionDate** | the release date *pdVersionDate* as a string (YYYY-MM-DD) |
-| **pcThisDate** | the release date `DATE`as a string (DATE(YYYY, MM, DD)) |
-| **pcJulian** | the release date as string as days since 2000/01/01 |
-| **pcChangeLog** | the ChangeLog setting |
-| **plContinue** | .T. to continue the deployment process or .F. to stop |
-| **plRun_Bin2Prg** | .T. to auto run FoxBin2prg (default) |
-| **plRun_git** | .T. to auto run git (default) |
-| **pcFullVersion** | The version as it should look like to replace in README.md on each run. Default: pcVersion |   
-| **pcRepository** | The URL of the remote repository (for web, not git access) |
+or in the [AfterBuild.prg](#afterbuild) postprocess program.   
+A lot of these variables may be used by [templates substitution](#templates-substitution)
+and [file substitution](#file-substitution).
+
+| Variable | Usage | in substitution |
+| ------ | ------ | ------ |
+| **pcAppName**: | the AppName setting | Yes |
+| **pcAppID** | the AppID setting | Yes |
+| **pcVersion** | the version number (the Version setting but can also be set in code; see the next section) | Yes |
+| **pdVersionDate** | the release date (the VersionDate setting or the current date if not specified) | No |
+| **pcDate** | the release date *pdVersionDate* as a string (YYYYMMDD) | Yes |
+| **pcVersionDate** | the release date *pdVersionDate* as a string (YYYY-MM-DD) | Yes |
+| **pcThisDate** | the release date `DATE`as a string (DATE(YYYY, MM, DD)) | Yes |
+| **pcJulian** | the release date as string as days since 2000/01/01 | Yes |
+| **pcChangeLog** | the ChangeLog setting | Yes (The file name, not the file content) | No |
+| **plContinue** | .T. to continue the deployment process or .F. to stop | No |
+| **plRun_Bin2Prg** | .T. to auto run FoxBin2prg (default) | No |
+| **plRun_git** | .T. to auto run git (default) | No |
+| **pcFullVersion** | The version as it should look like to replace in README.md on each run. Default: pcVersion | Yes |
+| **pcRepository** | The URL of the remote repository (for web, not git access) | Yes |
 
 ### Placeholders
 Placeholders that will be substituted.  
-For Thor_Update_{AppID}.prg and VFPX documentation on first run, for {AppID}Version.txt on each run.
-| Placeholder | Substituted by | Usage |
-| ------ | ------ | ------ |
-| **{APPNAME}** | pcAppName | substituted with the value of *pcAppName*. |
-| **{APPID}** | pcAppID | substituted with the value of *pcAppID*. |
-| **{CURRDATE}** | pcThisDate | substituted with the value of *pcThisDate* |
-| **{VERSIONDATE}** | pcDate | substituted with the value of *pcDate*, this is  the value of *pdVersionDate* formatted as YYYYMMDD. |
-| **{CVERSIONDATE}** | pcVersionDate | substituted with the *pcVersionDate*, this is  the value of *pdVersionDate* formatted as YYYY-MM-DD. |
-| **{VERSION}** | pcVersion | substituted with the value of *pcVersion*. |
-| **{JULIAN}** | pcJulian | substituted with the value of *pcJulian* as a numeric value: the release date as string as days since 2000/01/01. |
-| **{REPOSITORY}** | pcRepository | substituted with the value of *pcRepository*. |
-| **{CHANGELOG_F}** | pcChangeLog | substituted with **value** of *pcChangeLog*.|
-| **{CHANGELOG}** | \[pcChangeLog\] | substituted with the **contents** of the file specified in *pcChangeLog*.<br/>Only for {AppID}Version.txt, each run. |
-| **{CATEGORY}** | Category | substituted with the value of the *Category* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run. |
-| **{COMPONENT}** | Component | substituted with the value of the *Component* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run and<br/>Thor_Update_{AppID}.prg, first run. |
-| **{VERSIONFILE}** | VersionFile_Remote | substituted with the value of the *VersionFile_Remote* setting.<br/>Only for Thor_Update_{AppID}.prg, first run. |
+There are two ways of substitiution. 
+1. Create files from templates, called [templates substitution](#templates-substitution), that will fill in a value that will never be changed in the result file. Most of those replaces will only be use once. The version file {AppID}Version.txt will be created on each run from VersionTemplate.txt. Those substitutions exist as **{Placeholder}**
+2. Alter files on each run by [file substitution](#file-substitution). Those are sections like **\<!--VERNO--\>*content*\<!--/VERNO--\>**, where *content* will be substituded.
 
-The template may hold comments *available while not substituted* like `@@@ Comments \\\`. They will be removed after created in project folder.
+
+For Thor_Update_{AppID}.prg and VFPX documentation on first run, for {AppID}Version.txt on each run.
+| Placeholder | Substituted by | Usage | In [Templates substitution](#templates-substitution) | In [File substitution](#file-substitution) |
+| ------ | ------ | ------ | ------ | ------ |
+| **APPNAME** | pcAppName | substituted with the value of *pcAppName*. | Yes | Yes |
+| **APPID** | pcAppID | substituted with the value of *pcAppID*. | Yes | Yes |
+| **CURRDATE** | pcThisDate | substituted with the value of *pcThisDate* | Yes | Yes |
+| **VERSIONDATE** | pcDate | substituted with the value of *pcDate*, this is  the value of *pdVersionDate* formatted as YYYYMMDD. | Yes | Yes |
+| **CVERSIONDATE** | pcVersionDate | substituted with the *pcVersionDate*, this is  the value of *pdVersionDate* formatted as YYYY-MM-DD. | Yes | Yes |
+| **VERSION** | pcVersion | substituted with the value of *pcVersion*. | Yes | Yes |
+| **JULIAN** | pcJulian | substituted with the value of *pcJulian* as a numeric value: the release date as string as days since 2000/01/01. | Yes | Yes |
+| **REPOSITORY** | pcRepository | substituted with the value of *pcRepository*. | Yes | Yes |
+| **VERNO** | pcFullVersion | substituted with the value of the *pcFullVersion* variable. |
+| **CHANGELOG_F** | pcChangeLog | substituted with **value** of *pcChangeLog*.| Yes | Yes |
+| **CHANGELOG** | \[pcChangeLog\] | substituted with the **contents** of the file specified in *pcChangeLog*.<br/>Only for {AppID}Version.txt, each run. | Yes | No |
+| **CATEGORY** | Category | substituted with the value of the *Category* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run. | Yes | No |
+| **COMPONENT** | Component | substituted with the value of the *Component* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run and<br/>Thor_Update_{AppID}.prg, first run. | Yes | No |
+| **VERSIONFILE** | VersionFile_Remote | substituted with the value of the *VersionFile_Remote* setting.<br/>Only for Thor_Update_{AppID}.prg, first run. | Yes | No |
 
 ## Setting up the build process
 
@@ -293,7 +303,7 @@ In order to work with VFPX Deployment, your project must be under git control, a
 ### Customize the project settings for your project
 Start VFP, CD to the folder containing your project, and invoke the VFPX Deployment tool (from the Thor Tools, Application, VFPX Project Deployment menu item or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```. The first time you do that, it'll create a BuildProcess subdirectory of the project root folder, copy some files to it, and terminate.
 
-Edit *BuildProcess\\ProjectSettings.txt* to specify your project information (the case of these settings is unimportant):
+Edit *[BuildProcess\\ProjectSettings.txt](../BuildProcess/ProjectSettings.txt "Example file")* to specify your project information (the case of these settings is unimportant):
 
 ![ProjectSettings.txt](./Images/ProjectSettings.png "ProjectSettings.txt")
 
@@ -306,7 +316,7 @@ There are two ways to determine what to install
 - Use the *BuildProcess\\InstalledFiles.txt* file to determine to files that should be copied to the staging folder by the build process.   
 
 #### InstalledFiles.txt
-Edit InstalledFiles.txt and list each file to be copied to the [staging](#installedfiles) folder on a separate line. **All paths should be relative to the project root folder.**   
+Edit *[BuildProcess\\InstalledFiles.txt](../BuildProcess/InstalledFiles.txt "Example file")* and list each file to be copied to the [staging](#installedfiles) folder on a separate line. **All paths should be relative to the project root folder.**   
 
 ![InstalledFiles.txt](./Images/InstalledFiles.png "InstalledFiles.txt")
 
@@ -336,7 +346,7 @@ The idea is to remove stuff like *bak* or FoxBin2Text *\*.??2* files, and not na
 ### Customize the version template
 This is an optional task.
 
-VersionTemplate.txt already has the code most projects would use. However, you may wish to edit it to customize the behavior; see comments in the provided file for possible customization points. Also note the use of @@@ and \\\\\\\: text between those delimiters is for you to read but is removed in the {AppID}Version.txt file that's generated from the template.
+*[BuildProcess\\VersionTemplate.txt](../BuildProcess/VersionTemplate.txt "Example file")* already has the code most projects would use. However, you may wish to edit it to customize the behavior; see comments in the provided file for possible customization points. Also note the use of @@@ and \\\\\\\: text between those delimiters is for you to read but is removed in the {AppID}Version.txt file that's generated from the template.
 
 The code in this file must accept a single parameter, which is a Thor CFU updater object. The code typically sets properties of that object to do whatever is necessary.
 
@@ -350,12 +360,12 @@ See comments in VersionTemplate.txt about how to use different types of version 
 This is an optional task.
 
 #### BuildMe
-If you need to perform specific tasks as part of the build process, such as updating version numbers in code or include files, edit BuildMe.prg to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). If the Version setting isn't specified in ProjectSettings.txt and the prompt setting is N, set the pcVersion variable to the appropriate value.
+If you need to perform specific tasks as part of the build process, such as updating version numbers in code or include files, edit *[BuildProcess\\BuildMe.prg](../BuildProcess/BuildMe.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). If the Version setting isn't specified in ProjectSettings.txt and the prompt setting is N, set the pcVersion variable to the appropriate value.
 
 If no specific tasks are needed beyond what the VFPX Deployment process does, you can delete BuildMe.prg.
 
 #### AfterBuild
-If you need to perform specific tasks after the build process, such as running your own idea of git, like add ., tag, push, etc, edit AfterBuild.prg to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). 
+If you need to perform specific tasks after the build process, such as running your own idea of git, like add ., tag, push, etc, edit *[BuildProcess\\AfterBuild.prg](../Source/Apps/VFPXDeployment/AfterBuild.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). 
 
 If no specific tasks are needed beyond what the VFPX Deployment process does, you can delete AfterBuild.prg.
 
@@ -377,21 +387,32 @@ This is an optional task.
 All substitution will run before the files get copied to the [staging](#installedfiles) folder.
 
 #### Templates substitution
-Some documentation files allow to be automatic substituted to deplyoment information using [Placeholders](#placeholders)
- on second run of VFPX Deployment or as soon as *Inculde_VFPX* is enabled. See [VFPX Templates](./vfpx_templates.md)
+Some documentation files allow to be automatic substituted to deplyoment information using [placeholders](#placeholders)
+on second run of VFPX Deployment or as soon as *Inculde_VFPX* is enabled. See [VFPX Templates](./vfpx_templates.md). The list of placeholders available is on placeholders topic.
+
+A placeholder looks like **{Placeholder}**, and will be substituded with the value in the placeholder table.
+
+The template may hold comments *available while not substituted* like `@@@ Comments \\\`. They will be removed after created in project folder. Normal comments like <!--comment--\> will remain. 
+
+See this *[example.](../source/apps/vfpxdeployment/VersionTemplate.txt "Example file")*
 
 #### File substitution
-On each run of VFPX Deployment, some files will be substituted in the following way:
-- All space between *\<!--VERNO--\>* and *\<!--/VERNO--\>* will be replaced with *pcFullVersion*.
-- All space between *\<!--DeploymentDate--\>* and *\<!--/DeploymentDate--\>* will be replaced with *pcVersionDate*   
+On each run of VFPX Deployment, some files will be substituted by [placeholders](#placeholders). See there for the list of placeholders available. The substitution works like: 
+- All space between *\<!--placeholders--\>* and *\<!--/placeholders--\>* will be replaced with substitution named in placeholders.   
+
+---
+A special will be *\<!--DeploymentDate--\>*content*\<!--/DeploymentDate--\>*. This is inherited from older version and is no longer valid. **DeploymentDate** will be replaced by **CVERSIONDATE** placeholder. To avoid to look up any file, this version will silently rename, so the files *working* will be updated. This is not true for your templates like *VersionTemplate.txt*. While the templates will work now, the rename may be removed with in later versions. Please rework.
+<!--You know, the kind way is like *Would yo mind to remove it while you merge, since I have no time yet.-->
+
+---
 This substitution will run independent of *Inculde_VFPX* and *Inculde_Thor* settings.   
 Example: Check the source of this file
 ##### README.md
-On each run of VFPX Deployment, README.md will be processed. This is automatically active.
+On each run of VFPX Deployment, *[README.md](../README.md "Example file")* will be processed. This is automatically active.
 
 ##### Substitute.txt
 This is a list of files to substitute.   
-The file *BuildProcess\\Substitute.txt* is optional. The file may contain:
+The file *[BuildProcess\\Substitute.txt](../BuildProcess/Substitute.txt "Example file")* is optional. The file may contain:
 - lines starting with # will be ignored
 - single files
 - file skeletons

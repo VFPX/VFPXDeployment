@@ -28,4 +28,4 @@ Since version 1.1.08538 this tool merges both, but the article gives a good idea
 
 See [How to contribute to VFPX Deployment](https://github.com/lscheffler/VFPXDeployment/blob/main/.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--DeploymentDate-->2023-05-30<!--/DeploymentDate-->_   
+Last changed: _<!--CVERSIONDATE-->2023-05-30<!--/CVERSIONDATE-->_   
