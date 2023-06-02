@@ -4,7 +4,7 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for last version-->
-## <!--CVERSIONDATE-->2023-06-01<!--/CVERSIONDATE--> Version <!--VERNO-->1.2.08552<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-06-02<!--/CVERSIONDATE--> Version <!--VERNO-->1.2.08553<!--/VerNo-->
 
 - New ability for Thor_Proc_DeployVFPXProject.prg, it might run stand alone, without Thor.
 - Added switch to InstalledFiles.txt to exclude file pattern from staging area
@@ -98,6 +98,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-06-01<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-06-02<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
