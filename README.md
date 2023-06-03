@@ -22,8 +22,8 @@ See the [Documentation](./docs/Documentation.md) for details on using VFPX Deplo
 
 ## Releases
 
-Latest release: <!--CVERSIONDATE-->2023-06-02<!--/CVERSIONDATE-->,
-Version <!--VERNO-->1.2.08553<!--/VerNo-->
+Latest release: <!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE-->,
+Version <!--VERNO-->1.2.08554<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
 
@@ -47,5 +47,5 @@ Download via Thor Check for Updates and run from Thor.
 
 See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--CVERSIONDATE-->2023-06-02<!--/CVERSIONDATE-->_   
+Last changed: _<!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE-->_   
 ![powered by VFPX](./docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")
