@@ -1,3 +1,14 @@
+#Define ccTab  	Chr(9)
+#Define ccLF	Chr(10)
+#Define ccCR	Chr(13)
+#Define ccCRLF	Chr(13) + Chr(10)
+
+#Define ccTool	'Deploy VFPX Project'
+#Define ccKey	'HomeFolder'
+
+#Define ccStartKey	 	'Determine Start Folder'
+#Define ccEditClassName 'clsVFPXStartFolderChoice'
+
 Lparameters;
 	lxParam1
 
@@ -22,6 +33,10 @@ Deploy VFPX Project
 		.Category = 'Applications'
 		.Link     = 'https://github.com/VFPX/VFPXDeployment/blob/main/README.md'
 		.Author   = 'JRN'
+
+		.OptionClasses = 'clsVFPXDeployStart'
+		.OptionTool		  = ccTool
+
 	Endwith &&m.lxParam1
 
 	Return m.lxParam1
@@ -36,14 +51,6 @@ Endif &&pcount() = 0
 
 Return
 
-#Define ccTab  	Chr(9)
-#Define ccLF	Chr(10)
-#Define ccCR	Chr(13)
-#Define ccCRLF	Chr(13) + Chr(10)
-
-#Define ccKey	'DeployVFPXProject'
-#Define ccTool	'HomeFolder'
-
 ****************************************************************
 ****************************************************************
 * Normal processing for this tool begins here.
@@ -52,7 +59,6 @@ Procedure ToolCode
 		lxParam1
 
 	Local;
-		lcPreviousFolder As String,;
 		lcProjectFolder As String
 
 	AddProperty(_Screen, 'VFPX_DeployStartFolder', Fullpath("", ""))
@@ -60,8 +66,15 @@ Procedure ToolCode
 * ================================================================================
 	lcProjectFolder	 = GetProjectFolder()
 
-	If Directory(m.lcProjectFolder) Then
+	If Nvl(Execscript(_Screen.cThorDispatcher, 'Get Option=', ccStartKey, ccTool), .F.)
+*Pick project byGetDir
+		lcProjectFolder	 = PromptForProjectFolder()
+	Else
+*Complex project search
+		lcProjectFolder	 = GetProjectFolder()
+	Endif
 
+	If Directory(m.lcProjectFolder) Then
 		Execscript(_Screen.cThorDispatcher, 'Thor_Proc_DeployVFPXProject', m.lcProjectFolder)
 	Endif &&directory(m.lcProjectFolder)
 * ================================================================================
@@ -95,8 +108,8 @@ Procedure GetProjectFolder
 *we try if the Active Project is the one
 	If Type("_VFP.ActiveProject")='O' Then
 		lcValidFolder = Justpath(_vfp.ActiveProject.Name)
-		If Not Empty(m.lcValidFolder) AND  Messagebox('Run for active project' + Chr(13) + Chr(10) + Chr(13) + Chr(10) + '"' + ;
-					_vfp.ActiveProject.Name + '" ?', 36, 'VFPX Project Deployment') = 6 THEN 
+		If Not Empty(m.lcValidFolder) And  Messagebox('Run for active project' + Chr(13) + Chr(10) + Chr(13) + Chr(10) + '"' + ;
+				_vfp.ActiveProject.Name + '" ?', 36, 'VFPX Project Deployment') = 6 Then
 			Return m.lcValidFolder
 
 		Endif &&Not Empty(m.lcValidFolder) AND Messagebox('Run for active project' + Chr(13) + Chr(10) + Chr(13) + Chr(10) ...
@@ -159,3 +172,98 @@ Procedure ValidateTopLevel
 	Return m.tcFolder
 
 Endproc &&ValidateTopLevel
+
+* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *
+*                                                                                *
+* Alternate search for base directory                                            *
+*                                                                                *
+* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *
+
+* ================================================================================
+* ================================================================================
+* Just prompt for folder
+Procedure PromptForProjectFolder
+
+	Local;
+		lcFolder,;
+		lcValidFolder,;
+		lcPreviousFolder
+
+	lcPreviousFolder = Nvl(Execscript(_Screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
+
+	Do While .T.
+		lcFolder = Getdir(m.lcPreviousFolder, 'Project Home Folder', 'Home Path')
+		If Empty(m.lcFolder)
+			Return ''
+		Endif &&Empty(m.lcFolder)
+
+		lcValidFolder = ValidateThisFolder(m.lcFolder)
+		If Empty(m.lcValidFolder)
+			Messagebox('Home Folder not found', 16)
+		Else  &&Empty(m.lcValidFolder)
+			If Directory(m.lcValidFolder) Then
+				Execscript(_Screen.cThorDispatcher, 'Set Option=', ccKey, ccTool, m.lcValidFolder)
+			Endif &&directory(m.lcValidFolder) THEN
+			Return m.lcValidFolder
+		Endif &&Empty(m.lcValidFolder)
+	Enddo &&.T.
+
+Endproc &&PromptForProjectFolder
+
+* ================================================================================
+* ================================================================================
+* Check if folder is git toplevel
+Procedure ValidateThisFolder
+	Lparameters;
+		tcFolder
+
+* already in the Project Home Folder?
+	Local lcHomeFolder
+
+*	If Directory(Addbs(m.tcFolder) + '.git', 1)
+	If Upper(Addbs(m.tcFolder))==Upper(Addbs(ValidateTopLevel(m.tcFolder))) THEN 
+		Return m.tcFolder
+	Endif &&Upper(Addbs(m.tcFolder))==Upper(Addbs(ValidateTopLevel(m.tcFolder)))
+
+	Return ''
+
+Endproc &&ValidateThisFolder
+
+* ================================================================================
+* ================================================================================
+* Options stuff
+
+Define Class clsVFPXDeployStart As Custom
+
+	Tool		 	= ccTool
+	Key			 	= ccStartKey
+	Value		 	= .F.
+	EditClassName 	= ccEditClassName
+
+Enddefine &&clsVFPXDeployStart
+
+Define Class ccEditClassName As Container
+
+	Procedure Init
+		Local;
+			loRenderEngine
+
+		loRenderEngine = Execscript(_Screen.cThorDispatcher, 'Class= OptionRenderEngine')
+
+		TEXT To loRenderEngine.cBodyMarkup Noshow Textmerge
+
+			.Class	   = 'CheckBox'
+			.Width	   = 300
+			.Left	   = 25
+			.Caption   = 'Always prompt for start folder for project to be deployed.'
+			.WordWrap = .T.
+			.cTool	   = ccTool
+			.cKey	   = ccStartKey
+
+		ENDTEXT
+
+		loRenderEngine.Render(This, ccTool)
+
+	Endproc &&Init
+
+Enddefine &&ccEditClassName
