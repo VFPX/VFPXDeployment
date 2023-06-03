@@ -1,17 +1,33 @@
 # Release History
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
+<!-- Note, the next line needs to be on top to auto generate version and date for this version,
+     old version must be without the substitution marks (HTML comments),
+     so please remove for last version-->
+## <!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE--> Version <!--VERNO-->1.2.08554<!--/VerNo-->
+
+- New ability for Thor_Proc_DeployVFPXProject.prg, it might run stand alone, without Thor.
+- Added switch to InstalledFiles.txt to exclude file pattern from staging area
+- Messagebox to use active project will only appear if the project is stored in a git repository
+- More substitutions for runtime files. See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md#file-substitution
+- One incompatible change for substitutions due to generalized use. See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md#file-substitution
+- Changed structure of documentation to fit to own template
+- Added links to own source as example in documentation
+- New option to pick a folder on startup, circumventing check for current folder and project
+
 ## 2023-05-22 Version  1.2.08542
+
 - Fixed used of fixed typos (INCULDE_ in docu and settings file (~template) )
 - Ignore empty source in InstalledFiles.txt
 - Use empty target in InstalledFiles.txt as staging folder
 - New option Clear_InstalledFiles to copy to empty staging folder
-- a .gitignore to keep the staging folder out of the repository.   
+- A .gitignore to keep the staging folder out of the repository.   
   Note: If already in the repo, this will not remove the files!
-- Moved to sources of the project from "InstallesFiles" to "Source", to keep it in it's own structure (it also helps understanding the way the project works)   
-  Note: If your project stores sources in the staging, "InstallesFiles", folder move it to a better location. See .gitignore above.
+- Moved sources of the VFPX Deployment project from "InstalledFiles" to "Source", to keep it in it's own structure (it also helps understanding the way the project works)   
+  Note: If your project stores sources in the staging, "InstalledFiles", folder; move it to a better location. See .gitignore above.
   
 ## 2023-05-21 Version  1.2.08541
+
 - Added support for special remote version file (VersionFile_Remote)
 - Check if InstalledFiles.txt containes text
 - Allow CLEAR ALL in AfterBuild.prg
@@ -24,12 +40,13 @@
   - create document templates for user project
   - automatic substitution for release date and version in README.md
   - automatic substitution for release date and version for a user defined list of files
-  - .gitignore for BuildProcess and ThorUpdater folder, to allow simple git add . on whole project
+  - .gitignore for BuildProcess and ThorUpdater folder, to allow simple `git add .` on whole project
 - Updated search for home folder, using git info
+- Updated search for home folder, fixed wrong search for current folder
 - Updated search for home folder, using active project
 - Added flag to disable FoxBin2Prg
 - Added flag to disable git
-- Option to use projects Version number as version
+- Option to use projects (pjx) Version number as version
 - InstalledFiles.txt may now target whole structures of subdirectories
 - InstalledFiles.txt may name a target for a source
 - Several new public variables to interact with
@@ -82,6 +99,6 @@
 - Initial release
 
 ----
-Last changed: <!--DeploymentDate-->2023-05-22<!--/DeploymentDate-->
+Last changed: <!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

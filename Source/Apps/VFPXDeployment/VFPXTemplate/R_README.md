@@ -8,7 +8,7 @@ The following will be set on initial run:
 Fill other placeholders
 \\\<!-- 
 On each build, the sections framed by
-"VerNo" or "DeploymentDate" will be replaced with recent data
+"VerNo" or "CVERSIONDATE" will be replaced with recent data
 -->
 # {APPNAME}
 Project home: {REPOSITORY}
@@ -25,7 +25,7 @@ See the [documentation]({CHANGELOG_F}) for details on using {APPNAME}.
 
 ## Releases
 
-Latest release: <!--DeploymentDate--> -will be replaced on build- <!--/DeploymentDate-->,
+Latest release: <!--CVERSIONDATE--> -will be replaced on build- <!--/CVERSIONDATE-->,
 version <!--VerNo--> -will be replaced on build- <!--/VerNo-->
 
 See the [change log](docs/ChangeLog.md) for release information.
@@ -41,6 +41,6 @@ If you do not use Thor, download or clone [this repository]({REPOSITORY}).
 See [How to contribute to {APPNAME}](.github/CONTRIBUTING.md) for details on how to help with this project.
 
 ----
-Last changed: _<!--DeploymentDate--> -will be replaced on build- <!--/DeploymentDate-->_   
+Last changed: _<!--CVERSIONDATE--> -will be replaced on build- <!--/CVERSIONDATE-->_   
 
 ![powered by VFPX](./docs/images/vfpxpoweredby_alternative.gif "powered by VFPX")

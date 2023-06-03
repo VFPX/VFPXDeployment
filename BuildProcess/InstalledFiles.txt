@@ -1,2 +1,4 @@
 Source\||\
-README.md
+BuildProcess\I_README.md||README.md
+!*.bak
+!*.fxp

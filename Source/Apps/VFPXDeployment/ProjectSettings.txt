@@ -1,5 +1,5 @@
 *ProjectSettings.txt to create Thor deployment
-*See https://github.com/VFPX/VFPXDeployment/blob/main/docs/ThorUpdate.md for help.
+*See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md for help.
 *Paths relative are based on git toplevel folder
 
 *The name to show in Thor. Mandatory

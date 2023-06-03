@@ -1,232 +1,257 @@
-lparameters;
- lxParam1
+#Define ccTab  	Chr(9)
+#Define ccLF	Chr(10)
+#Define ccCR	Chr(13)
+#Define ccCRLF	Chr(13) + Chr(10)
+
+#Define ccTool	'Deploy VFPX Project'
+#Define ccKey	'HomeFolder'
+
+#Define ccStartKey	 	'Determine Start Folder'
+#Define ccEditClassName 'clsVFPXStartFolderChoice'
+
+Lparameters;
+	lxParam1
 
 ****************************************************************
 ****************************************************************
 * Standard prefix for all tools for Thor, allowing this tool to
 *   tell Thor about itself.
 
-#define ccTool	'Deploy VFPX Project'
-#define ccKey	'HomeFolder'
+If Pcount() = 1								;
+		and 'O' = Vartype (m.lxParam1)		;
+		and 'thorinfo' == Lower (m.lxParam1.Class) Then
 
-#define ccStartKey	 	'Determine Start Folder'
-#define ccEditClassName 'clsVFPXStartFolderChoice'
-
-if pcount() = 1								;
-		and 'O' = vartype (m.lxParam1)		;
-		and 'thorinfo' == lower (m.lxParam1.class) THEN 
-
-	with m.lxParam1   
+	With m.lxParam1
 
 * Required
-		.prompt		   = 'VFPX Project Deployment' && used in menus
+		.Prompt		   = 'VFPX Project Deployment' && used in menus
 
-		text To .Description NOSHOW  
+		TEXT To .Description NOSHOW
 Deploy VFPX Project
 		ENDTEXT
-		
+
 		.Category = 'Applications'
-		.link     = 'https://github.com/VFPX/VFPXDeployment/blob/main/README.md'
+		.Link     = 'https://github.com/VFPX/VFPXDeployment/blob/main/README.md'
 		.Author   = 'JRN'
-		
+
 		.OptionClasses = 'clsVFPXDeployStart'
 		.OptionTool		  = ccTool
 
-	endwith &&m.lxParam1
+	Endwith &&m.lxParam1
 
-	return m.lxParam1
+	Return m.lxParam1
 
-endif &&pcount() = 1 and 'O' = vartype (m.lxParam1) and 'thorinfo' == lower (m.lxParam1.class)
+Endif &&pcount() = 1 and 'O' = vartype (m.lxParam1) and 'thorinfo' == lower (m.lxParam1.class)
 
-if pcount() = 0 THEN 
-	do ToolCode
-else &&pcount() = 0
-	do ToolCode with m.lxParam1
-endif &&pcount() = 0
+If Pcount() = 0 Then
+	Do ToolCode
+Else &&pcount() = 0
+	Do ToolCode With m.lxParam1
+Endif &&pcount() = 0
 
-return
-
-#define ccTab  	chr(9)
-#define ccLF	chr(10)
-#define ccCR	chr(13)
-#define ccCRLF	chr(13) + chr(10)
+Return
 
 ****************************************************************
 ****************************************************************
 * Normal processing for this tool begins here.
-procedure ToolCode   
-	lparameters;
+Procedure ToolCode
+	Lparameters;
 		lxParam1
 
-	local;
-		lcPreviousFolder as string,;
-		lcProjectFolder as string
+	Local;
+		lcProjectFolder As String
 
-		addproperty(_screen, 'VFPX_DeployStartFolder', fullpath("", ""))
+	AddProperty(_Screen, 'VFPX_DeployStartFolder', Fullpath("", ""))
 
 * ================================================================================
-	lcPreviousFolder = nvl(execscript(_screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
+	lcProjectFolder	 = GetProjectFolder()
 
-	If nvl(execscript(_screen.cThorDispatcher, 'Get Option=', ccStartKey, ccTool), .F.)
-		lcProjectFolder	 = PromptForProjectFolder(m.lcPreviousFolder)
+	If Nvl(Execscript(_Screen.cThorDispatcher, 'Get Option=', ccStartKey, ccTool), .F.)
+*Pick project byGetDir
+		lcProjectFolder	 = PromptForProjectFolder()
 	Else
-		lcProjectFolder	 = GetProjectFolder(m.lcPreviousFolder)
-	EndIf
+*Complex project search
+		lcProjectFolder	 = GetProjectFolder()
+	Endif
 
-	if directory(m.lcProjectFolder) THEN 
-
-		execscript(_screen.cThorDispatcher, 'Set Option=', ccKey, ccTool, m.lcProjectFolder)
-
-		execscript(_screen.cThorDispatcher, 'Thor_Proc_DeployVFPXProject', m.lcProjectFolder)
-	endif &&directory(m.lcProjectFolder)
+	If Directory(m.lcProjectFolder) Then
+		Execscript(_Screen.cThorDispatcher, 'Thor_Proc_DeployVFPXProject', m.lcProjectFolder)
+	Endif &&directory(m.lcProjectFolder)
 * ================================================================================
 
-	cd (_screen.VFPX_DeployStartFolder)
-	removeproperty(_screen, 'VFPX_DeployStartFolder')
+	Cd (_Screen.VFPX_DeployStartFolder)
+	Removeproperty(_Screen, 'VFPX_DeployStartFolder')
 
-endproc &&ToolCode
+Endproc &&ToolCode
 
-procedure GetProjectFolder   
-	lparameters;
-		tcPreviousFolder
-		
-	local;
-		lcFolder   as string,;
-		lcValidFolder as string
+* ================================================================================
+* ================================================================================
+* Search for project to work with
+* Search a pattern of folders to figure out if those folders are within a repository; if true, get toplevel folder
+*
+* Note: There is a similar procedure in Thor_Proc_DeployVFPXProject.prg to allow Thor independed operation
+Procedure GetProjectFolder
+
+	Local;
+		lcFolder   As String,;
+		lcValidFolder As String
 
 * try if active folder is in a git repository
-	lcValidFolder = validate(fullpath('',''))
-	if not empty(m.lcValidFolder) THEN 
-		return m.lcValidFolder
-	endif &&not empty(m.lcValidFolder)
+	lcFolder = Fullpath('','')
+	lcValidFolder = ValidateTopLevel(m.lcFolder)
+	If Not Empty(m.lcValidFolder) Then
+		Return m.lcValidFolder
+	Endif &&not empty(m.lcValidFolder)
 
 * SF 20230512, try active project next
 *in case we have a structure where we sit in a base with many scatterd projects
 *we try if the Active Project is the one
-	if type("_VFP.ActiveProject")='O' THEN 
-		if messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"' + ;
-				 _vfp.activeproject.name + '" ?', 36, 'VFPX Project Deployment') = 6 THEN 
-			lcValidFolder = justpath(_vfp.activeproject.name)
-			if not empty(m.lcValidFolder) THEN 
-				return m.lcValidFolder
+	If Type("_VFP.ActiveProject")='O' Then
+		lcValidFolder = Justpath(_vfp.ActiveProject.Name)
+		If Not Empty(m.lcValidFolder) And  Messagebox('Run for active project' + Chr(13) + Chr(10) + Chr(13) + Chr(10) + '"' + ;
+				_vfp.ActiveProject.Name + '" ?', 36, 'VFPX Project Deployment') = 6 Then
+			Return m.lcValidFolder
 
-			endif &&not empty(m.lcValidFolder)
-		endif &&messagebox('Run for active project' + chr(13) + chr(10) + chr(13) + chr(10) + '"' _vfp.activeproject.name + ...
-	endif &&type("_VFP.ActiveProject")='O'
+		Endif &&Not Empty(m.lcValidFolder) AND Messagebox('Run for active project' + Chr(13) + Chr(10) + Chr(13) + Chr(10) ...
+	Endif &&type("_VFP.ActiveProject")='O'
 
 *try to get a folder
-	do while .t.   
-		lcFolder = getdir(m.tcPreviousFolder, 'Project Home Folder', 'Home Path')
-		if empty(m.lcFolder) THEN 
-			return ''
-		endif &&empty(m.lcFolder)
+	Do While .T.
+		lcFolder = Getdir(m.lcFolder, 'Project Home Folder', 'Home Path')
+		If Empty(m.lcFolder) Then
+			Return ''
+		Endif &&empty(m.lcFolder)
 
-		lcValidFolder = validate(m.lcFolder)
-		if empty(m.lcValidFolder) THEN 
-			messagebox('Home Folder not found, not a git repository.', 16, 'VFPX Project Deployment')
-		else &&empty(m.lcValidFolder)
-			return m.lcValidFolder
-		endif &&empty(m.lcValidFolder)
+		lcValidFolder = ValidateTopLevel(m.lcFolder)
+		If Empty(m.lcValidFolder) Then
+			Messagebox('Top level folder not found, not a git repository.', 16, 'VFPX Project Deployment')
+		Else &&empty(m.lcValidFolder)
+			Return m.lcValidFolder
+		Endif &&empty(m.lcValidFolder)
 
-	enddo &&.t.
+	Enddo &&.t.
 
-endproc &&GetProjectFolder
+Endproc &&GetProjectFolder
 
-procedure validate   
-	lparameters;
+* ================================================================================
+* ================================================================================
+* Search for project to work with (used for stand alone version)
+* use git to check if a given folder is in a repository; if true, return toplevel folder
+*
+* Note: There is a similar procedure in Thor_Proc_DeployVFPXProject.prg to allow Thor independed operation
+Procedure ValidateTopLevel
+	Lparameters;
 		tcFolder
 
 * SF 20230512
 *we test if this folder is a git folder and return the git base folder
 *no need to search the base folder, git will tell this
 * (and not embarrassingly testing for ".git" folder)
-	local;
-		lcCommand as string,;
-		lcOldFolder as string
+	Local;
+		lcCommand As String,;
+		lcOldFolder As String
 
-	lcOldFolder = fullpath('','')
-	cd (m.tcFolder)
-	delete file git_x.tmp    && in case
+	lcOldFolder = Fullpath('','')
+	Cd (m.tcFolder)
+	Delete File git_x.tmp    && in case
 
 *if git is not installed, we get an empty or no file
 	lcCommand = 'git rev-parse --show-toplevel>git_x.tmp'
-	run &lcCommand
+	Run &lcCommand
 
-	if file('git_x.tmp') THEN 
+	If File('git_x.tmp') Then
 *the result is either the git base folder or empty for no git repo
-		tcFolder = chrtran(filetostr('git_x.tmp'), '/' + chr(13) + chr(10), '\')
-		delete file git_x.tmp
-	else &&file('git_x.tmp')
+		tcFolder = Chrtran(Filetostr('git_x.tmp'), '/' + Chr(13) + Chr(10), '\')
+		Delete File git_x.tmp
+	Else &&file('git_x.tmp')
 * no file, no git
 		tcFolder = ''
-	endif &&file('git_x.tmp')
+	Endif &&file('git_x.tmp')
 
-	cd (m.lcOldFolder)
-	return m.tcFolder
+	Cd (m.lcOldFolder)
+	Return m.tcFolder
 
-endproc &&validate
+Endproc &&ValidateTopLevel
+
+* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *
+*                                                                                *
+* Alternate search for base directory                                            *
+*                                                                                *
+* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *
 
 * ================================================================================
 * ================================================================================
-Procedure PromptForProjectFolder(lcPreviousFolder)
+* Just prompt for folder
+Procedure PromptForProjectFolder
 
-	Local lcFolder, lcValidFolder
+	Local;
+		lcFolder,;
+		lcValidFolder,;
+		lcPreviousFolder
 
-	lcValidFolder = ValidateThisFolder(Curdir())
-	If Not Empty(m.lcValidFolder)
-		Return m.lcValidFolder
-	Endif
+	lcPreviousFolder = Nvl(Execscript(_Screen.cThorDispatcher, 'Get Option=', ccKey, ccTool), '')
 
 	Do While .T.
-		lcFolder = getdir(m.lcPreviousFolder, 'Project Home Folder', 'Home Path')
+		lcFolder = Getdir(m.lcPreviousFolder, 'Project Home Folder', 'Home Path')
 		If Empty(m.lcFolder)
 			Return ''
-		Endif
+		Endif &&Empty(m.lcFolder)
 
 		lcValidFolder = ValidateThisFolder(m.lcFolder)
 		If Empty(m.lcValidFolder)
 			Messagebox('Home Folder not found', 16)
-		Else
+		Else  &&Empty(m.lcValidFolder)
+			If Directory(m.lcValidFolder) Then
+				Execscript(_Screen.cThorDispatcher, 'Set Option=', ccKey, ccTool, m.lcValidFolder)
+			Endif &&directory(m.lcValidFolder) THEN
 			Return m.lcValidFolder
-		Endif
-	Enddo
+		Endif &&Empty(m.lcValidFolder)
+	Enddo &&.T.
 
-Endproc
+Endproc &&PromptForProjectFolder
 
+* ================================================================================
+* ================================================================================
+* Check if folder is git toplevel
+Procedure ValidateThisFolder
+	Lparameters;
+		tcFolder
 
-Procedure ValidateThisFolder(lcFolder)
-
-	* already in the Project Home Folder?	
+* already in the Project Home Folder?
 	Local lcHomeFolder
 
-	If Directory(Addbs(m.lcFolder) + '.git', 1)
-		Return m.lcFolder
-	Endif
+*	If Directory(Addbs(m.tcFolder) + '.git', 1)
+	If Upper(Addbs(m.tcFolder))==Upper(Addbs(ValidateTopLevel(m.tcFolder))) THEN 
+		Return m.tcFolder
+	Endif &&Upper(Addbs(m.tcFolder))==Upper(Addbs(ValidateTopLevel(m.tcFolder)))
 
 	Return ''
 
-Endproc
+Endproc &&ValidateThisFolder
 
 * ================================================================================
 * ================================================================================
+* Options stuff
 
 Define Class clsVFPXDeployStart As Custom
 
 	Tool		 	= ccTool
 	Key			 	= ccStartKey
 	Value		 	= .F.
-	EditClassName 	= ccEditClassName 
+	EditClassName 	= ccEditClassName
 
-Enddefine
-
+Enddefine &&clsVFPXDeployStart
 
 Define Class ccEditClassName As Container
 
 	Procedure Init
+		Local;
+			loRenderEngine
+
 		loRenderEngine = Execscript(_Screen.cThorDispatcher, 'Class= OptionRenderEngine')
 
 		TEXT To loRenderEngine.cBodyMarkup Noshow Textmerge
-		
+
 			.Class	   = 'CheckBox'
 			.Width	   = 300
 			.Left	   = 25
@@ -234,13 +259,11 @@ Define Class ccEditClassName As Container
 			.WordWrap = .T.
 			.cTool	   = ccTool
 			.cKey	   = ccStartKey
-			
+
 		ENDTEXT
 
 		loRenderEngine.Render(This, ccTool)
 
-	Endproc
+	Endproc &&Init
 
-Enddefine
-
-  
+Enddefine &&ccEditClassName
