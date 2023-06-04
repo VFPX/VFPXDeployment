@@ -12,6 +12,17 @@ Local;
 If !Empty(m.tcFolder) And Directory(m.tcFolder) Then
 	Do Main With m.tcFolder
 Else  &&!Empty(m.tcFolder) And Directory(m.tcFolder)
+*Try .. EndTry bei IntelliScript
+*!*	LOCAL;
+*!*	 llError     AS BOOLEAN,;
+*!*	 loException AS EXCEPTION
+
+	If !Pemstatus(_Screen,'cThorDispatcher',5) Then
+		Messagebox('Thor must running to run VFPX Deployment.' , ;
+			16, 'VFPX Project Deployment')
+		Return .F.
+	Endif &&!PEMSTATUS(_Screen,'cThorDispatcher',5)
+
 	AddProperty(_Screen, 'VFPX_DeployStartFolder', Fullpath("", ""))
 
 * ================================================================================
@@ -43,7 +54,7 @@ Procedure Main
 * Get the project folder.
 	If Empty(m.tcFolder) Then
 		Messagebox('Parameter tcFolder could not be empty in Main.', ;
-			 16, 'VFPX Project Deployment')
+			16, 'VFPX Project Deployment')
 		Return
 	Endif &&Empty(m.tcFolder)
 
@@ -53,7 +64,7 @@ Procedure Main
 
 	If File(Addbs(m.tcFolder) + 'NoVFPXDeployment.txt') Then
 		Messagebox('VFPX Project Deployment will not run because NoVFPXDeployment.txt exists.', ;
-			 16, 'VFPX Project Deployment')
+			16, 'VFPX Project Deployment')
 		Return
 	Endif &&File(Addbs(m.tcFolder) + 'NoVFPXDeployment.txt')
 
@@ -66,7 +77,7 @@ Procedure Main
 * but a very common one
 		If Directory(Addbs(m.tcFolder) + 'ThorUpdater') Then
 			Messagebox('There is already a Thor folder.' + CRLF + CRLF + 'Stoped.' + CRLF + CRLF + 'You need to carefully create the setup manually.', ;
-				 16, 'VFPX Project Deployment')
+				16, 'VFPX Project Deployment')
 			Return
 		Endif &&Directory(Addbs(m.tcFolder) + 'ThorUpdater')
 		Md (m.lcCurrFolder)
@@ -88,11 +99,11 @@ Procedure Main
 		Copy File (m.lcVFPXDeploymentFolder + 'AfterBuild.prg') To ;
 			(m.lcCurrFolder + 'AfterBuild.prg')
 		Messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
-			 'for this project.' + CRLF + ;
-			 'Also, edit InstalledFiles.txt and specify ' + ;
-			 'which files should be installed.' + CRLF +  CRLF +;
-			 'Then run VFPX Project Deployment again.', ;
-			 16, 'VFPX Project Deployment')
+			'for this project.' + CRLF + ;
+			'Also, edit InstalledFiles.txt and specify ' + ;
+			'which files should be installed.' + CRLF +  CRLF +;
+			'Then run VFPX Project Deployment again.', ;
+			16, 'VFPX Project Deployment')
 		Modify File (m.lcCurrFolder + 'ProjectSettings.txt') Nowait
 		Modify File (m.lcCurrFolder + 'InstalledFiles.txt') Nowait
 		Return
@@ -319,7 +330,7 @@ Procedure Deploy
 
 		If Empty(m.pcVersion) Then
 			Messagebox('No project found to read version number.', 16, ;
-				 'VFPX Project Deployment')
+				'VFPX Project Deployment')
 			ReleaseThis()
 			Return
 
@@ -329,21 +340,21 @@ Procedure Deploy
 
 	If Empty(m.pcAppName) Then
 		Messagebox('The AppName setting was not specified.', 16, ;
-			 'VFPX Project Deployment')
+			'VFPX Project Deployment')
 		ReleaseThis()
 		Return
 	Endif &&Empty(m.pcAppName)
 
 	If Empty(m.pcAppID) Then
 		Messagebox('The AppID setting was not specified.', 16, ;
-			 'VFPX Project Deployment')
+			'VFPX Project Deployment')
 		ReleaseThis()
 		Return
 	Endif &&Empty(m.pcAppID)
 
 	If ' ' $ m.pcAppID Or '	' $ m.pcAppID Then
 		Messagebox('The AppID setting cannot have spaces or tabs.', 16, ;
-			 'VFPX Project Deployment')
+			'VFPX Project Deployment')
 		ReleaseThis()
 		Return
 	Endif &&' ' $ m.pcAppID Or '	' $ m.pcAppID
@@ -360,14 +371,14 @@ Procedure Deploy
 	If (Empty(m.lcPJXFile) And Not Empty(m.lcAppFile)) Or ;
 			(Empty(m.lcAppFile) And Not Empty(m.lcPJXFile)) Then
 		Messagebox('If you specify one of them, you have to specify both ' + ;
-			 'PJXFile and AppFile.', 16, 'VFPX Project Deployment')
+			'PJXFile and AppFile.', 16, 'VFPX Project Deployment')
 		ReleaseThis()
 		Return
 	Endif &&(Empty(m.lcPJXFile) And Not Empty(m.lcAppFile)) Or (Empty(m.lcAppFile) And Not Empty(m.lcPJXFile))
 
 	If Not Empty(m.lcPJXFile) And Val(Version(4)) > 9 Then
 		Messagebox('You must run VFPX Project Deployment using VFP 9 not VFP Advanced.', ;
-			 16, 'VFPX Project Deployment')
+			16, 'VFPX Project Deployment')
 		ReleaseThis()
 		Return
 	Endif &&Not Empty(m.lcPJXFile) And Val(Version(4)) > 9
@@ -387,7 +398,7 @@ Procedure Deploy
 		Do Case
 			Case Not File(m.lcFoxBin2PRG)
 				Messagebox('FoxBin2PRG.EXE not found.', 16, ;
-					 'VFPX Project Deployment')
+					'VFPX Project Deployment')
 				ReleaseThis()
 				Return
 * &&not file(m.lcFoxBin2PRG)
@@ -399,7 +410,7 @@ Procedure Deploy
 					laBin2PRGFolders[m.lnI] = Fullpath(m.tcCurrFolder + m.lcFolder)
 					If Not Directory(laBin2PRGFolders[m.lnI]) Then
 						Messagebox('Folder "' + m.lcFolder + '" not found.', 16,	;
-							 'VFPX Project Deployment')
+							'VFPX Project Deployment')
 						ReleaseThis()
 						Return
 
@@ -448,11 +459,11 @@ Procedure Deploy
 			Or (File(m.lcInstalledFilesListing)) And Empty(Filetostr(m.lcInstalledFilesListing)) Then
 * If no InstalledFiles.txt exists, and no InstalledFiles folder, break
 		Messagebox('Please either create InstalledFiles.txt in the ' + ;
-			 'BuildProcess folder with each file to be installed by Thor ' + ;
-			 'listed on a separate line, or create a subdirectory of ' + ;
-			 'the project folder named InstalledFiles and copy the ' + ;
-			 'files Thor should install to it.', ;
-			 16, 'VFPX Project Deployment')
+			'BuildProcess folder with each file to be installed by Thor ' + ;
+			'listed on a separate line, or create a subdirectory of ' + ;
+			'the project folder named InstalledFiles and copy the ' + ;
+			'files Thor should install to it.', ;
+			16, 'VFPX Project Deployment')
 		ReleaseThis()
 		Return
 
@@ -473,7 +484,7 @@ Procedure Deploy
 
 	If Empty(m.pcVersion) Then
 		Messagebox('The version setting was not specified.', 16, ;
-			 'VFPX Project Deployment')
+			'VFPX Project Deployment')
 		ReleaseThis()
 		Return
 	Endif &&Empty(m.pcVersion)
@@ -512,7 +523,7 @@ Procedure Deploy
 
 	If Not Empty(m.lcPJXFile) And File(m.lcErrFile) Then
 		Messagebox('An error occurred building the project.' + CRLF +;
-			 ' Please see the ERR file for details.', 16, 'VFPX Project Deployment')
+			' Please see the ERR file for details.', 16, 'VFPX Project Deployment')
 		Modify File (m.lcErrFile) Nowait
 		ReleaseThis()
 		Return
@@ -618,9 +629,9 @@ Procedure Deploy
 			lcContent = ReplacePlaceholders_Once(@laPlaceholders,m.lcContent)
 
 			lcContent = Strtran(m.lcContent, '{COMPONENT}', m.lcComponent, ;
-				 -1, -1, 1)
+				-1, -1, 1)
 			lcContent = Strtran(m.lcContent, '{VERSIONFILE}', m.lcVersionFileR, ;
-				 -1, -1, 1)
+				-1, -1, 1)
 			Strtofile(m.lcContent, m.lcUpdateFile)
 
 		Endif &&File(m.lcUpdateTemplateFile) And Not File(m.lcUpdateFile)
@@ -690,7 +701,7 @@ Procedure SetDocumentation
 		tcSubstituteListing,;
 		taPlaceholders
 
-	EXTERNAL array;
+	External Array;
 		taPlaceholders
 
 *check for several VFPX defaults:
@@ -839,10 +850,10 @@ Endproc &&SetDocumentation
 Procedure ACreate_Placeholders
 	Lparameters;
 		taPlaceholders
-		
-	EXTERNAL array;
+
+	External Array;
 		taPlaceholders
-	DIMENSION;
+	Dimension;
 		taPlaceholders(10, 3)
 
 	taPlaceholders( 1, 1) = 'APPNAME'
@@ -876,20 +887,20 @@ Procedure ReplacePlaceholders_Once
 		taPlaceholders,;
 		tcText
 
-	EXTERNAL array;
+	External Array;
 		taPlaceholders
 
 	Local;
 		lcRemove      As String,;
 		lcText        As String,;
-		tnPlaceholder as integer,;
+		tnPlaceholder As Integer,;
 		lnI           As Number
 
 	lcText = m.tcText
 
-	FOR tnPlaceholder = 1 TO ALEN(taPlaceholders,1)  
+	For tnPlaceholder = 1 To Alen(taPlaceholders,1)
 		lcText = Strtran(m.lcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
-	ENDFOR &&tnPlaceholder 
+	Endfor &&tnPlaceholder
 	lcText = Textmerge(m.lcText)
 
 	For lnI = Occurs('@@@', m.lcText) To 1 Step -1
@@ -909,19 +920,19 @@ Procedure ReplacePlaceholders_Run
 		taPlaceholders,;
 		tcText
 
-	EXTERNAL array;
+	External Array;
 		taPlaceholders
 
 	Local;
-		tnPlaceholder as integer,;
+		tnPlaceholder As Integer,;
 		lnLen         As Number,;
 		lnOccurence   As Number,;
 		lnStart       As Number
 
-	tcText  = STRTRAN(m.tcText, '<!--DEPLOYMENTDATE-->' , '<!--CVERSIONDATE-->' , 1, -1, 1)
-	tcText  = STRTRAN(m.tcText, '<!--/DEPLOYMENTDATE-->', '<!--/CVERSIONDATE-->', 1, -1, 1)
+	tcText  = Strtran(m.tcText, '<!--DEPLOYMENTDATE-->' , '<!--CVERSIONDATE-->' , 1, -1, 1)
+	tcText  = Strtran(m.tcText, '<!--/DEPLOYMENTDATE-->', '<!--/CVERSIONDATE-->', 1, -1, 1)
 
-	FOR tnPlaceholder = 1 TO ALEN(taPlaceholders,1)   
+	For tnPlaceholder = 1 To Alen(taPlaceholders,1)
 		lcStart = '<!--' + taPlaceholders(m.tnPlaceholder, 1) + '-->'
 		lcEnd   = '<!--/' + taPlaceholders(m.tnPlaceholder, 1) + '-->'
 		For lnOccurence = 1 To Occurs(m.lcStart, Upper(m.tcText))
@@ -934,7 +945,7 @@ Procedure ReplacePlaceholders_Run
 			Endif &&m.lnLen>0
 		Next &&lnOccurence
 
-	ENDFOR &&tnPlaceholder 
+	Endfor &&tnPlaceholder
 *!*		For lnOccurence = 1 To Occurs('<!--DEPLOYMENTDATE-->', Upper(m.tcText))
 *!*			lnStart = Atc('<!--DeploymentDate-->', m.tcText, m.lnOccurence)
 *!*			lnLen   = Atc('<!--/DeploymentDate-->', Substr(m.tcText,m.lnStart))
@@ -1108,7 +1119,7 @@ Procedure GetProject_Folder
 	If Type("_VFP.ActiveProject")='O' Then
 		lcValidFolder = Justpath(_vfp.ActiveProject.Name)
 		If Not Empty(m.lcValidFolder) And  Messagebox('Run for active project' + CRLF + CRLF + '"' + ;
-				 _vfp.ActiveProject.Name + '" ?', 36, 'VFPX Project Deployment') = 6 Then
+				_vfp.ActiveProject.Name + '" ?', 36, 'VFPX Project Deployment') = 6 Then
 			Return m.lcValidFolder
 
 		Endif &&Not Empty(m.lcValidFolder) And Messagebox('Run for active project' + CRLF + CRLF  ...

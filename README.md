@@ -22,8 +22,8 @@ See the [Documentation](./docs/Documentation.md) for details on using VFPX Deplo
 
 ## Releases
 
-Latest release: <!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE-->,
-Version <!--VERNO-->1.2.08554<!--/VerNo-->
+Latest release: <!--CVERSIONDATE-->2023-06-04<!--/CVERSIONDATE-->,
+Version <!--VERNO-->1.2.08555<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
 
@@ -38,7 +38,8 @@ It shows the setup of *VFPX related data* and *Thor* in two chapters.
 Since version 1.1.08538 this tool merges both, but the article gives a good idea.
 
 ## Run the tool stand alone:
-Download the [zip](https://github.com/VFPX/VFPXDeployment/blob/main/ThorUpdater/VFPXDeployment.zip), expand the folder and run relative to this folder `Procs\Thor_Proc_DeployVFPXProject.prg`
+Download the [zip](https://github.com/VFPX/VFPXDeployment/blob/main/ThorUpdater/VFPXDeployment.zip), expand the folder and run relative to this folder `Procs\Thor_Proc_DeployVFPXProject.prg`.   
+**Note:** While this is not installed *via Thor*, Thor still *needs to be running* to provide access to FoxBin2Prg and zip.
 
 ## Run this tool from Thor:
 Download via Thor Check for Updates and run from Thor.
@@ -47,5 +48,5 @@ Download via Thor Check for Updates and run from Thor.
 
 See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE-->_   
+Last changed: _<!--CVERSIONDATE-->2023-06-04<!--/CVERSIONDATE-->_   
 ![powered by VFPX](./docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")

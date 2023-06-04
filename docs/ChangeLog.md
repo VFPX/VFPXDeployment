@@ -3,8 +3,13 @@
 
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
-     so please remove for last version-->
-## <!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE--> Version <!--VERNO-->1.2.08554<!--/VerNo-->
+     so please remove for second newest version-->
+## <!--CVERSIONDATE-->2023-06-04<!--/CVERSIONDATE--> Version <!--VERNO-->1.2.08555<!--/VerNo-->
+- Fixed problem that VFPX Deployment needs Thor running, even when Thor_Proc_DeployVFPXProject.prg is not started from Thor
+  - Clarified in README.md 
+- Fixed superfluous folder VFPXDeployment in zip. Please remove the folder from Thor *tools* folder.
+
+## 2023-06-03 Version 1.2.08554
 
 - New ability for Thor_Proc_DeployVFPXProject.prg, it might run stand alone, without Thor.
 - Added switch to InstalledFiles.txt to exclude file pattern from staging area
@@ -99,6 +104,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-06-03<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-06-04<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
