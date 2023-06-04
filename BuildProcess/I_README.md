@@ -14,7 +14,8 @@ so you can easily install your project and update to the latest version without 
 See the [Documentation](https://github.com/lscheffler/VFPXDeployment/blob/main/docs/ThorUpdate.md) for details on using VFPX Deployment.
 
 ## Run the Project:
-From the folder of this file, run `Procs\Thor_Proc_DeployVFPXProject.prg`
+From the folder of this file, run `Procs\Thor_Proc_DeployVFPXProject.prg`.   
+**Note:** While this is might not be installed *via Thor*, Thor still *needs to be running* to provide access to FoxBin2Prg and zip.
 
 ## Releases
 See the [Release history](https://github.com/lscheffler/VFPXDeployment/blob/main/docs//ChangeLog.md) for release information.
