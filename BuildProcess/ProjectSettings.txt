@@ -1,4 +1,4 @@
 AppName   = VFPX Deployment
 AppID     = VFPXDeployment
-Version   = 1.2
+Version   = 1.3
 ChangeLog = docs/ChangeLog.md

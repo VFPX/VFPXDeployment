@@ -108,6 +108,7 @@ Procedure GetProjectFolder
 *we try if the Active Project is the one
 	If Type("_VFP.ActiveProject")='O' Then
 		lcValidFolder = Justpath(_vfp.ActiveProject.Name)
+		lcValidFolder = Validate_TopLevel(m.lcValidFolder)
 		If Not Empty(m.lcValidFolder) And  Messagebox('Run for active project' + Chr(13) + Chr(10) + Chr(13) + Chr(10) + '"' + ;
 				_vfp.ActiveProject.Name + '" ?', 36, 'VFPX Project Deployment') = 6 Then
 			Return m.lcValidFolder
