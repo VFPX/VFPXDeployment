@@ -587,12 +587,13 @@ Procedure Deploy
 				ScanDir_InstFiles(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)), m.lcSource, .T.)
 
 			Next &&lnI
-		Endif &&File(m.lcInstalledFilesListing)
 
-		If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+			If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 *ignore all in staging folder
-			Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
-		Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+			Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+
+		Endif &&File(m.lcInstalledFilesListing)
 
 * Create the ThorUpdater folder if necessary.
 
@@ -635,7 +636,7 @@ Procedure Deploy
 			Strtofile(m.lcContent, m.lcUpdateFile)
 
 		Endif &&File(m.lcUpdateTemplateFile) And Not File(m.lcUpdateFile)
-
+ 
 * Zip the source files.
 		lcContent = ''
 		If File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')

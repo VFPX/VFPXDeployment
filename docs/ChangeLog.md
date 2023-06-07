@@ -4,7 +4,11 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-06-04<!--/CVERSIONDATE--> Version <!--VERNO-->1.2.08555<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-06-07<!--/CVERSIONDATE--> Version <!--VERNO-->1.3.08558<!--/VerNo-->
+- Fixed an issue with ActiveProject not in toplevel folder
+- Fixed problem with autocreated .gitignore in staging folder, if no InstalledFiles.txt is given. The file must be removed manually.
+
+## 2023-06-04 Version 1.2.08555
 - Fixed problem that VFPX Deployment needs Thor running, even when Thor_Proc_DeployVFPXProject.prg is not started from Thor
   - Clarified in README.md 
 - Fixed superfluous folder VFPXDeployment in zip. Please remove the folder from Thor *tools* folder.
@@ -104,6 +108,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-06-04<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-06-07<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
