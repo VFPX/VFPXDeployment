@@ -168,7 +168,6 @@ Procedure Deploy
 		lcValue              As String,;
 		lcVersion            As String,;
 		lcVersionFile        As String,;
-		lcVersionFileR       As String,;
 		lcVersionTemplateFile As String,;
 		lcZipFile            As String,;
 		llClear_InstalledFiles As Boolean,;
@@ -221,6 +220,7 @@ Procedure Deploy
 		pcJulian      As String,;
 		pcThisDate    As String,;
 		pcRepository  As String,;
+		pcVersionFile_Remote As String,;
 		plRun_Bin2Prg As Boolean,;
 		plRun_git     As Boolean
 
@@ -293,7 +293,7 @@ Procedure Deploy
 			Case m.lcUName == 'INCLUDE_THOR'
 				llInclude_Thor = Upper(m.lcValue) = 'Y'
 			Case m.lcUName == 'VERSIONFILE_REMOTE'
-				lcVersionFileR = m.lcValue
+				pcVersionFile_Remote = m.lcValue
 */SF 20230512
 		Endcase
 	Next &&lnI
@@ -383,9 +383,9 @@ Procedure Deploy
 		Return
 	Endif &&Not Empty(m.lcPJXFile) And Val(Version(4)) > 9
 
-	If Empty(m.lcVersionFileR) Then
-		lcVersionFileR = m.pcAppID + 'Version.txt'
-	Endif &&Empty(m.lcVersionFileR)
+	If Empty(m.pcVersionFile_Remote) Then
+		pcVersionFile_Remote = m.pcAppID + 'Version.txt'
+	Endif &&Empty(m.pcVersionFile_Remote)
 
 * If Bin2PRGFolderSource or PJXFile was supplied, find FoxBin2PRG.EXE.
 
@@ -425,7 +425,7 @@ Procedure Deploy
 * a string version of the release date.
 
 	lcZipFile     = 'ThorUpdater\' + m.pcAppID + '.zip'
-	lcVersionFile = 'ThorUpdater\' + m.lcVersionFileR
+	lcVersionFile = 'ThorUpdater\' + m.pcVersionFile_Remote
 	lcUpdateFile  = m.tcCurrFolder + 'BuildProcess\Thor_Update_' + m.pcAppID + '.prg'
 	pcDate        = Dtoc(m.pdVersionDate, 1)
 	pcVersionDate = Stuff(Stuff(m.pcDate, 7, 0, '-'), 5, 0, '-')
@@ -631,7 +631,7 @@ Procedure Deploy
 
 			lcContent = Strtran(m.lcContent, '{COMPONENT}', m.lcComponent, ;
 				-1, -1, 1)
-			lcContent = Strtran(m.lcContent, '{VERSIONFILE}', m.lcVersionFileR, ;
+			lcContent = Strtran(m.lcContent, '{VERSIONFILE}', m.pcVersionFile_Remote, ;
 				-1, -1, 1)
 			Strtofile(m.lcContent, m.lcUpdateFile)
 
@@ -1084,7 +1084,8 @@ Procedure ReleaseThis
 		pcDate,;
 		pcJulian,;
 		pcThisDate,;
-		pcRepository
+		pcRepository,;
+		pcVersionFile_Remote
 
 Endproc &&ReleaseThis
 
