@@ -4,7 +4,7 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-06-28<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08579<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-06-28<!--/CVERSIONDATE--> Version <!--VERNO-->1.5.08579<!--/VerNo-->
 - Added new public var, to deal with GoFish complex creation.
 
 ## 2023-06-28 Version 1.4.08579

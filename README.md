@@ -23,7 +23,7 @@ See the [Documentation](./docs/Documentation.md) for details on using VFPX Deplo
 ## Releases
 
 Latest release: <!--CVERSIONDATE-->2023-06-28<!--/CVERSIONDATE-->,
-Version <!--VERNO-->1.4.08579<!--/VerNo-->
+Version <!--VERNO-->1.5.08579<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
 

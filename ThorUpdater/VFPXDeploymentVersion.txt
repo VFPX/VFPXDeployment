@@ -1,11 +1,11 @@
 Lparameters toUpdateObject
 Local lcDate, ldDate
 
-lcDate = '20230611'
+lcDate = '20230628'
 
 With m.toUpdateObject
-	.VersionNumber    = '1.4 - ' + lcDate
-	.AvailableVersion = 'VFPX Deployment-1.4-08562-' + lcDate
+	.VersionNumber    = '1.5 - ' + lcDate
+	.AvailableVersion = 'VFPX Deployment-1.5-08579-' + lcDate
 	.Notes            = GetReleaseNotes()
 Endwith
 
@@ -24,7 +24,10 @@ Text to lcNote NoShow
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-06-11<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08562<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-06-28<!--/CVERSIONDATE--> Version <!--VERNO-->1.5.08579<!--/VerNo-->
+- Added new public var, to deal with GoFish complex creation.
+
+## 2023-06-28 Version 1.4.08579
 - Fixed an issue with ActiveProject as target
 
 2023-06-07 Version 1.3.08558
@@ -131,7 +134,7 @@ Text to lcNote NoShow
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-06-11<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-06-28<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
 
