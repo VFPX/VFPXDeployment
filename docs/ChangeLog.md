@@ -4,10 +4,14 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-06-11<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08562<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08589<!--/VerNo-->
+- Fixed typos in documentation
+- Add ALLTRIM() to folder for FoxBin2PRG to process in case there's a space in the FoxBin2PRGFolder setting in ProjectSettings.txt
+
+## 2023-06-11 Version 1.4.08562
 - Fixed an issue with ActiveProject as target
 
-2023-06-07 Version 1.3.08558
+## 2023-06-07 Version 1.3.08558
 - Fixed an issue with ActiveProject not in toplevel folder
 - Fixed problem with autocreated .gitignore in staging folder, if no InstalledFiles.txt is given. The file must be removed manually.
 
@@ -111,6 +115,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-06-11<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

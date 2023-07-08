@@ -407,7 +407,7 @@ Procedure Deploy
 				lnBin2PRGFolders = Alines(laBin2PRGFolders, m.lcBin2PRGFolderSource, 4, ',')
 				For lnI = 1 To m.lnBin2PRGFolders
 					lcFolder                = laBin2PRGFolders[m.lnI]
-					laBin2PRGFolders[m.lnI] = Fullpath(m.tcCurrFolder + m.lcFolder)
+					laBin2PRGFolders[m.lnI] = alltrim(Fullpath(m.tcCurrFolder + m.lcFolder))
 					If Not Directory(laBin2PRGFolders[m.lnI]) Then
 						Messagebox('Folder "' + m.lcFolder + '" not found.', 16,	;
 							'VFPX Project Deployment')
@@ -1090,7 +1090,7 @@ Endproc &&ReleaseThis
 
 **********************************************************************************
 *                                                                                *
-* Thor independend                                                               *
+* Thor independent                                                               *
 *                                                                                *
 **********************************************************************************
 
