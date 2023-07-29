@@ -206,6 +206,9 @@ Procedure Deploy
 * Get the current project settings into public variables.
 
 	lcProjectSettings = Filetostr(m.lcProjectFile)
+	
+	*** JRN 2023-07-29 : Treat tabs like spaces (could also have been handled in Alltrim, which occurs farther on)
+	lcProjectSettings = Chrtran(m.lcProjectSettings, Chr[9], ' ')
 
 * Release the PUBLICS in ReleaseThis procedure
 	Public;
@@ -902,6 +905,8 @@ Procedure ReplacePlaceholders_Once
 	For tnPlaceholder = 1 To Alen(taPlaceholders,1)
 		lcText = Strtran(m.lcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
 	Endfor &&tnPlaceholder
+	
+	*** JRN 2023-07-29 : This is a problem when there are uses of Text / EndText within lcText
 	lcText = Textmerge(m.lcText)
 
 	For lnI = Occurs('@@@', m.lcText) To 1 Step -1
