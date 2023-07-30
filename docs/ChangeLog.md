@@ -8,6 +8,7 @@
 - It now handles tabs in ProjectSettings.txt.
 - It now ignores errors when textmerging the version file.
 - It now strips placeholders from the version file.
+- It no longer creates .gitignore in the InstalledFiles folder.
 
 ## 2023-07-08 Version 1.4.08589
 - Fixed typos in documentation

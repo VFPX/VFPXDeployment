@@ -591,10 +591,11 @@ Procedure Deploy
 
 			Next &&lnI
 
-			If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*** DH 2023-07-30: no longer do this
+*			If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 *ignore all in staging folder
-				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
-			Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*			Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 
 		Endif &&File(m.lcInstalledFilesListing)
 
