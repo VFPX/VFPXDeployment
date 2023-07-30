@@ -613,6 +613,7 @@ Procedure Deploy
 		lcVersion = Strtran(m.lcVersion, '{CATEGORY}',  m.lcCategory,   -1, -1, 1)
 
 		lcVersion = ReplacePlaceholders_Once(@laPlaceholders,m.lcVersion)
+		lcVersion = StripPlaceholders(@laPlaceholders, m.lcVersion)
 
 		Strtofile(m.lcVersion, m.lcVersionFile)
 
@@ -906,8 +907,10 @@ Procedure ReplacePlaceholders_Once
 		lcText = Strtran(m.lcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
 	Endfor &&tnPlaceholder
 	
-	*** JRN 2023-07-29 : This is a problem when there are uses of Text / EndText within lcText
-	lcText = Textmerge(m.lcText)
+	try
+		lcText = Textmerge(m.lcText)
+	catch
+	endtry
 
 	For lnI = Occurs('@@@', m.lcText) To 1 Step -1
 		lcRemove = Strextract(m.lcText, '@@@', '\\\', m.lnI, 4)
@@ -964,6 +967,30 @@ Procedure ReplacePlaceholders_Run
 
 	Return m.tcText
 Endproc &&ReplacePlaceholders_Run
+
+* Strips <!-- --> placeholders and comments.
+
+function StripPlaceholders(taPlaceholders, tcText)
+	local lcText, ;
+		lnPlaceholder, ;
+		lcStart, ;
+		lcEnd, ;
+		lcComment
+	lcText = tcText
+	for lnPlaceholder = 1 to alen(m.taPlaceholders, 1)
+		lcStart = '<!--'  + taPlaceholders(m.lnPlaceholder, 1) + '-->'
+		lcEnd   = '<!--/' + taPlaceholders(m.lnPlaceholder, 1) + '-->'
+		lcText  = strtran(m.lcText, m.lcStart, '', -1, -1, 1)
+		lcText  = strtran(m.lcText, m.lcEnd,   '', -1, -1, 1)
+	next lnPlaceholder
+
+	for lnPlaceholder = occurs('<!--', m.lcText) to 1 step -1
+		lcComment = strextract(m.lcText, '<!--', '-->', lnPlaceholder, 4)
+		lcText    = strtran(m.lcText, m.lcComment)
+	next lnPlaceholder
+
+	return m.lcText
+endfunc
 
 * ================================================================================
 * ================================================================================

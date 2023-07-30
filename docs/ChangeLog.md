@@ -4,7 +4,12 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08589<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08611<!--/VerNo-->
+- It now handles tabs in ProjectSettings.txt.
+- It now ignores errors when textmerging the version file.
+- It now strips placeholders from the version file.
+
+## 2023-07-08 Version 1.4.08589
 - Fixed typos in documentation
 - Add ALLTRIM() to folder for FoxBin2PRG to process in case there's a space in the FoxBin2PRGFolder setting in ProjectSettings.txt
 
@@ -115,6 +120,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

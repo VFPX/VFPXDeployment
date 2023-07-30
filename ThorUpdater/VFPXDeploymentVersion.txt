@@ -1,11 +1,11 @@
 Lparameters toUpdateObject
 Local lcDate, ldDate
 
-lcDate = '20230708'
+lcDate = '20230730'
 
 With m.toUpdateObject
 	.VersionNumber    = '1.4 - ' + lcDate
-	.AvailableVersion = 'VFPX Deployment-1.4-08589-' + lcDate
+	.AvailableVersion = 'VFPX Deployment-1.4-08611-' + lcDate
 	.Notes            = GetReleaseNotes()
 Endwith
 
@@ -21,10 +21,13 @@ Text to lcNote NoShow
 # Release History
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
-<!-- Note, the next line needs to be on top to auto generate version and date for this version,
-     old version must be without the substitution marks (HTML comments),
-     so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08589<!--/VerNo-->
+
+## 2023-07-30 Version 1.4.08611
+- It now handles tabs in ProjectSettings.txt.
+- It now ignores errors when textmerging the version file.
+- It now strips placeholders from the version file.
+
+## 2023-07-08 Version 1.4.08589
 - Fixed typos in documentation
 - Add ALLTRIM() to folder for FoxBin2PRG to process in case there's a space in the FoxBin2PRGFolder setting in ProjectSettings.txt
 
@@ -135,7 +138,7 @@ Text to lcNote NoShow
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE-->
+Last changed: 2023-07-30
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
 

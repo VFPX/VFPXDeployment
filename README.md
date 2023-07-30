@@ -7,7 +7,7 @@ On each build, the sections framed by
 
 Project home: https://github.com/VFPX/VFPXDeployment
 
-Project manager: {Your Name}
+Project manager: Doug Hennig
 
 VFPX Deployment automates the steps needed to include your project in the Thor Check for Updates (CFU) dialogue
 so you can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.
@@ -22,8 +22,8 @@ See the [Documentation](./docs/Documentation.md) for details on using VFPX Deplo
 
 ## Releases
 
-Latest release: <!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE-->,
-Version <!--VERNO-->1.4.08589<!--/VerNo-->
+Latest release: <!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE-->,
+Version <!--VERNO-->1.4.08611<!--/VerNo-->
 
 See the [Release history](./docs/ChangeLog.md) for release information.
 
@@ -48,5 +48,5 @@ Download via Thor Check for Updates and run from Thor.
 
 See [How to contribute to VFPX Deployment](.github/CONTRIBUTING.md) for details on how to help with this project.
 
-Last changed: _<!--CVERSIONDATE-->2023-07-08<!--/CVERSIONDATE-->_   
+Last changed: _<!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE-->_   
 ![powered by VFPX](./docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")
