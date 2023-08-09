@@ -221,6 +221,7 @@ Procedure Deploy
 		pcThisDate    As String,;
 		pcRepository  As String,;
 		pcVersionFile_Remote As String,;
+		pcPJXFile     As String,;
 		plRun_Bin2Prg As Boolean,;
 		plRun_git     As Boolean
 
@@ -297,6 +298,9 @@ Procedure Deploy
 */SF 20230512
 		Endcase
 	Next &&lnI
+
+*just to expose it:
+	pcPJXFile = m.lcPJXFile
 
 *SF 20230512, get pjx version
 	If Upper(m.pcVersion)=='PJX' Then
@@ -1085,7 +1089,8 @@ Procedure ReleaseThis
 		pcJulian,;
 		pcThisDate,;
 		pcRepository,;
-		pcVersionFile_Remote
+		pcVersionFile_Remote,;
+		pcPJXFile
 
 Endproc &&ReleaseThis
 

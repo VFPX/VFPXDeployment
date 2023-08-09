@@ -39,7 +39,7 @@ with m.toUpdateObject
 	.ProjectCreationDate  = {CURRDATE}
 <<iif('{COMPONENT}' = 'No', '*', '')>>	.RegisterWithThor     = m.lcRegisterWithThor
 endwith
-
+	.Dependencies         = ''	&& a comma or space delimited list of other Thor applications (ApplicationName) that this project depends on
 return m.toUpdateObject
 
 *created by VFPX Deployment, <<DATETIME()>>

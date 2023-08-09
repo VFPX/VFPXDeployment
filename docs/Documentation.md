@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.5.08579<!--/VerNo-->
+## Version <!--VERNO-->1.5.08620<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -255,12 +255,13 @@ and [file substitution](#file-substitution).
 | **pcThisDate** | the release date `DATE`as a string (DATE(YYYY, MM, DD)) | Yes |
 | **pcJulian** | the release date as string as days since 2000/01/01 | Yes |
 | **pcChangeLog** | the ChangeLog setting | Yes (The file name, not the file content) | No |
-| **plContinue** | .T. to continue the deployment process or .F. to stop | No |
+| **plContinue** | Return of [BuildMe.prg](#buildme). .T. to continue the deployment process after running or .F. to stop | No |
 | **plRun_Bin2Prg** | .T. to auto run FoxBin2prg (default) | No |
 | **plRun_git** | .T. to auto run git (default) | No |
 | **pcFullVersion** | The version as it should look like to replace in README.md on each run. Default: pcVersion | Yes |
 | **pcRepository** | The URL of the remote repository (for web, not git access) | Yes |
 | **pcVersionFile_Remote** | The name of the remote version file, *VersionFile_Remote*  | Yes |
+| **pcPJXFile**: | The PJXFile setting **Read only**| No |
 
 ### Placeholders
 Placeholders that will be substituted.  
@@ -364,6 +365,8 @@ This is an optional task.
 If you need to perform specific tasks as part of the build process, such as updating version numbers in code or include files, edit *[BuildProcess\\BuildMe.prg](../BuildProcess/BuildMe.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). If the Version setting isn't specified in ProjectSettings.txt and the prompt setting is N, set the pcVersion variable to the appropriate value.
 
 If no specific tasks are needed beyond what the VFPX Deployment process does, you can delete BuildMe.prg.
+
+The program may set the public variable **plContinue** to .F. to cancel the build process.
 
 #### AfterBuild
 If you need to perform specific tasks after the build process, such as running your own idea of git, like add ., tag, push, etc, edit *[BuildProcess\\AfterBuild.prg](../Source/Apps/VFPXDeployment/AfterBuild.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). 
@@ -520,6 +523,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-06-28<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-08-08<!--/CVERSIONDATE-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
