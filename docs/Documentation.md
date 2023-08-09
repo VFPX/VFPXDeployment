@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.4.08611<!--/VerNo-->
+## Version <!--VERNO-->1.5.08621<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -154,7 +154,7 @@ This is a staging folder that contains only the files Thor CFU should install, n
 - You can manually create the InstalledFiles folder and copy the necessary files into it.
 - If [InstalledFiles.txt](#installedfilestxt) exists, in the BuildProcess folder, VFPX Deployment copies the files listed in it to the InstalledFiles folder (creating that folder and any subdirectories of it if they don't exist).
   - If [InstalledFiles.txt](#installedfilestxt) exists, the *Clear_InstalledFiles* settings controls if all files will be removed from this folder to create an empty folder to copy to.
-- a .gitignore file will be added to this folder to keep it out of the repository. Note: If already in the repo, this will not remove the files!
+- If the Ignore_InstalledFiles setting is "YES", a .gitignore file will be added to this folder to keep it out of the repository. Note: If already in the repo, this will not remove the files!
 
 
 > Note: you can specify a different folder name using the InstalledFilesFolder setting in [ProjectSettings.txt](#settings).
@@ -229,11 +229,12 @@ Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../
 | **Bin2PRGFolder** | A comma-separated list of relative paths to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folders to create their text equivalents. This is important because Git cannot do diffs on binary files. Also git is bad on binaries, it's made for text files.<br />FoxBin2PRG: is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting. The use of FoxBin2Prg can be turned off, see *RunBin2Prg*. |
 | **InstalledFilesFolder** | By default, the staging folder VFPX Deployment uses to generate the ZIP file from is called InstalledFiles. This setting allows you to specify a different name. |
 | **Clear_InstalledFiles** | "Yes" to remove all files from the staging folder, if the InstalledFiles.txt](#installedfilestxt) file exists. If "No" (default), the files / folders defined in InstalledFiles.txt are copied on top of the existing files.<br />Will be ignored if InstalledFiles.txt file is not existing. |
+| **gitIgnore_InstalledFiles** | "Yes" to autocreate a .gitignore file in the staging folder to keep the whole folder out of git repository. |
 | **RunBin2Prg** | "Yes" to auto run FoxBin2prg (Default), else "No" to not run. |
 | **RunGit** | "Yes" to auto run git (Default), else "No" to not run. |
 | **Include_VFPX** | "Yes" to create community files, else "No" to not create. (Default)<br />This will create some files if missing, but not overwrite existing files.<br />See [VFPX Templates](./vfpx_templates.md) for the use of this. |
 | **Include_Thor** | "Yes" to create Thor files (Default), else "No" to not create.<br />This will create the content of the ThorUpdater folder and zip it, if enabled.|
-| **VersionFile_Remote** | The file used to control the update stored on projects remote repository (github). Default is {AppID}Version.txt<br />This setting is to allow VFPX Deployment to work for projects inherited.<br />This is the file created by VFPX Deplayment on local computer to be pushed to remote repository.<br />Check existing property *.VersionFileURL* set in existing Thor_Update_{AppId}.prg | |
+| **VersionFile_Remote** | The file used to control the update stored on projects remote repository (github). Default is {AppID}Version.txt<br />This setting is to allow VFPX Deployment to work for projects inherited.<br />This is the file created by VFPX Deplayment on local computer to be pushed to remote repository.<br />Check existing property *.VersionFileURL* set in existing Thor_Update_{AppId}.prg |
 
 If both *Include_VFPX* and *Include_Thor* are disabled, [File substitution](#file-substitution) will be processed and FoxBin2prg may run. Also the optinal programs [BuildMe](#buildme) and [AfterBuild](#afterbuild) may run.
 
@@ -255,11 +256,13 @@ and [file substitution](#file-substitution).
 | **pcThisDate** | the release date `DATE`as a string (DATE(YYYY, MM, DD)) | Yes |
 | **pcJulian** | the release date as string as days since 2000/01/01 | Yes |
 | **pcChangeLog** | the ChangeLog setting | Yes (The file name, not the file content) | No |
-| **plContinue** | .T. to continue the deployment process or .F. to stop | No |
+| **plContinue** | Return of [BuildMe.prg](#buildme). .T. to continue the deployment process after running or .F. to stop | No |
 | **plRun_Bin2Prg** | .T. to auto run FoxBin2prg (default) | No |
 | **plRun_git** | .T. to auto run git (default) | No |
 | **pcFullVersion** | The version as it should look like to replace in README.md on each run. Default: pcVersion | Yes |
 | **pcRepository** | The URL of the remote repository (for web, not git access) | Yes |
+| **pcVersionFile_Remote** | The name of the remote version file, *VersionFile_Remote*  | Yes |
+| **pcPJXFile**: | The PJXFile setting **Read only**| No |
 
 ### Placeholders
 Placeholders that will be substituted.  
@@ -284,7 +287,7 @@ For Thor_Update_{AppID}.prg and VFPX documentation on first run, for {AppID}Vers
 | **CHANGELOG** | \[pcChangeLog\] | substituted with the **contents** of the file specified in *pcChangeLog*.<br/>Only for {AppID}Version.txt, each run. | Yes | No |
 | **CATEGORY** | Category | substituted with the value of the *Category* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run. | Yes | No |
 | **COMPONENT** | Component | substituted with the value of the *Component* setting in ProjectSettings.txt.<br/>Only for {AppID}Version.txt, each run and<br/>Thor_Update_{AppID}.prg, first run. | Yes | No |
-| **VERSIONFILE** | VersionFile_Remote | substituted with the value of the *VersionFile_Remote* setting.<br/>Only for Thor_Update_{AppID}.prg, first run. | Yes | No |
+| **VERSIONFILE** | VersionFile_Remote | substituted with the value of the *VersionFile_Remote* setting /  *pcVersionFile_Remote*.<br/>Only for Thor_Update_{AppID}.prg, first run. | Yes | No |
 
 ## Setting up the build process
 
@@ -363,6 +366,8 @@ This is an optional task.
 If you need to perform specific tasks as part of the build process, such as updating version numbers in code or include files, edit *[BuildProcess\\BuildMe.prg](../BuildProcess/BuildMe.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). If the Version setting isn't specified in ProjectSettings.txt and the prompt setting is N, set the pcVersion variable to the appropriate value.
 
 If no specific tasks are needed beyond what the VFPX Deployment process does, you can delete BuildMe.prg.
+
+The program may set the public variable **plContinue** to .F. to cancel the build process.
 
 #### AfterBuild
 If you need to perform specific tasks after the build process, such as running your own idea of git, like add ., tag, push, etc, edit *[BuildProcess\\AfterBuild.prg](../Source/Apps/VFPXDeployment/AfterBuild.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). 
@@ -519,6 +524,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-08-09<!--/CVERSIONDATE-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

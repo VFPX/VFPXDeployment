@@ -168,7 +168,6 @@ Procedure Deploy
 		lcValue              As String,;
 		lcVersion            As String,;
 		lcVersionFile        As String,;
-		lcVersionFileR       As String,;
 		lcVersionTemplateFile As String,;
 		lcZipFile            As String,;
 		llClear_InstalledFiles As Boolean,;
@@ -176,6 +175,7 @@ Procedure Deploy
 		llInclude_VFPX       As Boolean,;
 		llPrompt             As Boolean,;
 		llRecompile          As Boolean,;
+		llAddStagingIgnore   As Boolean,;
 		lnBin2PRGFolders     As Number,;
 		lnFiles              As Number,;
 		lnI                  As Number,;
@@ -224,6 +224,8 @@ Procedure Deploy
 		pcJulian      As String,;
 		pcThisDate    As String,;
 		pcRepository  As String,;
+		pcVersionFile_Remote As String,;
+		pcPJXFile     As String,;
 		plRun_Bin2Prg As Boolean,;
 		plRun_git     As Boolean
 
@@ -296,10 +298,18 @@ Procedure Deploy
 			Case m.lcUName == 'INCLUDE_THOR'
 				llInclude_Thor = Upper(m.lcValue) = 'Y'
 			Case m.lcUName == 'VERSIONFILE_REMOTE'
-				lcVersionFileR = m.lcValue
+				pcVersionFile_Remote = m.lcValue
 */SF 20230512
+*SF 20230809: new flags
+			Case m.lcUName == 'GITIGNORE_INSTALLEDFILES'
+				llAddStagingIgnore = Upper(m.lcValue) = 'Y'
+*/SF 20230809
+				
 		Endcase
 	Next &&lnI
+
+*just to expose it:
+	pcPJXFile = m.lcPJXFile
 
 *SF 20230512, get pjx version
 	If Upper(m.pcVersion)=='PJX' Then
@@ -386,9 +396,9 @@ Procedure Deploy
 		Return
 	Endif &&Not Empty(m.lcPJXFile) And Val(Version(4)) > 9
 
-	If Empty(m.lcVersionFileR) Then
-		lcVersionFileR = m.pcAppID + 'Version.txt'
-	Endif &&Empty(m.lcVersionFileR)
+	If Empty(m.pcVersionFile_Remote) Then
+		pcVersionFile_Remote = m.pcAppID + 'Version.txt'
+	Endif &&Empty(m.pcVersionFile_Remote)
 
 * If Bin2PRGFolderSource or PJXFile was supplied, find FoxBin2PRG.EXE.
 
@@ -428,7 +438,7 @@ Procedure Deploy
 * a string version of the release date.
 
 	lcZipFile     = 'ThorUpdater\' + m.pcAppID + '.zip'
-	lcVersionFile = 'ThorUpdater\' + m.lcVersionFileR
+	lcVersionFile = 'ThorUpdater\' + m.pcVersionFile_Remote
 	lcUpdateFile  = m.tcCurrFolder + 'BuildProcess\Thor_Update_' + m.pcAppID + '.prg'
 	pcDate        = Dtoc(m.pdVersionDate, 1)
 	pcVersionDate = Stuff(Stuff(m.pcDate, 7, 0, '-'), 5, 0, '-')
@@ -591,11 +601,12 @@ Procedure Deploy
 
 			Next &&lnI
 
+*SF 2023-08-09 turn back on, but with option
 *** DH 2023-07-30: no longer do this
-*			If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+			If m.llAddStagingIgnore And Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore') 
 *ignore all in staging folder
-*				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
-*			Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+			Endif &&m.llAddStagingIgnore And Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 
 		Endif &&File(m.lcInstalledFilesListing)
 
@@ -636,7 +647,7 @@ Procedure Deploy
 
 			lcContent = Strtran(m.lcContent, '{COMPONENT}', m.lcComponent, ;
 				-1, -1, 1)
-			lcContent = Strtran(m.lcContent, '{VERSIONFILE}', m.lcVersionFileR, ;
+			lcContent = Strtran(m.lcContent, '{VERSIONFILE}', m.pcVersionFile_Remote, ;
 				-1, -1, 1)
 			Strtofile(m.lcContent, m.lcUpdateFile)
 
@@ -1117,7 +1128,9 @@ Procedure ReleaseThis
 		pcDate,;
 		pcJulian,;
 		pcThisDate,;
-		pcRepository
+		pcRepository,;
+		pcVersionFile_Remote,;
+		pcPJXFile
 
 Endproc &&ReleaseThis
 

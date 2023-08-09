@@ -4,6 +4,8 @@
 * as updating version numbers in code or include files. This program can use the public
 * variables discussed in the documentation as necessary.
 
+* set public var plContinue = .F. to cancel VFPXDeployment
+
 return
 
 *Stuff we can do:

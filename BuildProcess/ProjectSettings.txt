@@ -1,4 +1,7 @@
 AppName   = VFPX Deployment
 AppID     = VFPXDeployment
-Version   = 1.4
+Version   = 1.5
 ChangeLog = docs/ChangeLog.md
+
+*add a gitignore to InstalledFiles directory to not add this directory to git repository
+gitIgnore_InstalledFiles = Yes

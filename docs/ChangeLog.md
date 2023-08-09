@@ -4,7 +4,13 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE--> Version <!--VERNO-->1.4.08611<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-08-09<!--/CVERSIONDATE--> Version <!--VERNO-->1.5.08621<!--/VerNo-->
+- Added new public var, to deal with GoFish complex creation.
+- Added new public var, to expose PJXFile (Read Only).
+- Added new setting to control the creation of .gitignore file in staging folder
+- Minor in file documentation changes
+
+## 2023-07-30 Version 1.4.08611
 - It now handles tabs in ProjectSettings.txt.
 - It now ignores errors when textmerging the version file.
 - It now strips placeholders from the version file.
@@ -121,6 +127,5 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

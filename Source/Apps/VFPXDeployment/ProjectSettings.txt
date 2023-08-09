@@ -1,6 +1,6 @@
 *ProjectSettings.txt to create Thor deployment
 *See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md for help.
-*Paths relative are based on git toplevel folder
+*Paths relative are based on git toplevel directory
 
 *The name to show in Thor. Mandatory
 AppName   = MyApp
@@ -32,7 +32,7 @@ Component = No
 *Include_Thor = No
 
 
-* The remaining lines are options to are not mandatory uncomment the options to use *
+* The remaining lines are options that are not mandatory. Uncomment the options to use.
 
 *"Yes" to auto run FoxBin2prg (Default), else "No" to not run.
 *RunBin2Prg = No
@@ -59,11 +59,14 @@ Component = No
 *A comma-separated list of relative paths to which FoxBin2PRG is to be applied.
 *Bin2PRGFolder = {MySource1,MySource1}
 
-*A different name for the staging folder.
+*A different name for the staging directory.
 *InstalledFilesFolder = {MyInstallFolder}
 
-*Remove all files from InstalledFiles folder if InstalledFiles.txt is given
+*Remove all files from InstalledFiles directory if InstalledFiles.txt is given
 *Clear_InstalledFiles = No
+
+*add a gitignore to InstalledFiles directory to not add this directory to git repository
+*gitIgnore_InstalledFiles = No
 
 *A different name for version file used to publish info on the remote server.
 *A help with old projects using a different name for the version file
