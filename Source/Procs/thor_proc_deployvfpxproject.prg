@@ -175,6 +175,7 @@ Procedure Deploy
 		llInclude_VFPX       As Boolean,;
 		llPrompt             As Boolean,;
 		llRecompile          As Boolean,;
+		llAddStagingIgnore   As Boolean,;
 		lnBin2PRGFolders     As Number,;
 		lnFiles              As Number,;
 		lnI                  As Number,;
@@ -299,6 +300,11 @@ Procedure Deploy
 			Case m.lcUName == 'VERSIONFILE_REMOTE'
 				pcVersionFile_Remote = m.lcValue
 */SF 20230512
+*SF 20230809: new flags
+			Case m.lcUName == 'GITIGNORE_INSTALLEDFILES'
+				llAddStagingIgnore = Upper(m.lcValue) = 'Y'
+*/SF 20230809
+				
 		Endcase
 	Next &&lnI
 
@@ -595,11 +601,12 @@ Procedure Deploy
 
 			Next &&lnI
 
+*SF 2023-08-09 turn back on, but with option
 *** DH 2023-07-30: no longer do this
-*			If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+			If m.llAddStagingIgnore And Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore') 
 *ignore all in staging folder
-*				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
-*			Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+			Endif &&m.llAddStagingIgnore And Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 
 		Endif &&File(m.lcInstalledFilesListing)
 

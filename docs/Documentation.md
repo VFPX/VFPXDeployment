@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.4.08611<!--/VerNo-->
+## Version <!--VERNO-->1.5.08621<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -154,7 +154,7 @@ This is a staging folder that contains only the files Thor CFU should install, n
 - You can manually create the InstalledFiles folder and copy the necessary files into it.
 - If [InstalledFiles.txt](#installedfilestxt) exists, in the BuildProcess folder, VFPX Deployment copies the files listed in it to the InstalledFiles folder (creating that folder and any subdirectories of it if they don't exist).
   - If [InstalledFiles.txt](#installedfilestxt) exists, the *Clear_InstalledFiles* settings controls if all files will be removed from this folder to create an empty folder to copy to.
-- a .gitignore file will be added to this folder to keep it out of the repository. Note: If already in the repo, this will not remove the files!
+- If the Ignore_InstalledFiles setting is "YES", a .gitignore file will be added to this folder to keep it out of the repository. Note: If already in the repo, this will not remove the files!
 
 
 > Note: you can specify a different folder name using the InstalledFilesFolder setting in [ProjectSettings.txt](#settings).
@@ -229,6 +229,7 @@ Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../
 | **Bin2PRGFolder** | A comma-separated list of relative paths to which [FoxBin2PRG](https://github.com/fdbozzo/foxbin2prg) is to be applied. If this is specified, FoxBin2PRG is run on all VFP binary files (SCX, VCX, PJX, etc.) in the specified folders to create their text equivalents. This is important because Git cannot do diffs on binary files. Also git is bad on binaries, it's made for text files.<br />FoxBin2PRG: is automatically run on the project file specified in the PJXFile setting. If PJXFile is specified and the only files that need to have FoxBin2PRG run on them are included in the project, you can omit the Bin2PRGFolder setting. The use of FoxBin2Prg can be turned off, see *RunBin2Prg*. |
 | **InstalledFilesFolder** | By default, the staging folder VFPX Deployment uses to generate the ZIP file from is called InstalledFiles. This setting allows you to specify a different name. |
 | **Clear_InstalledFiles** | "Yes" to remove all files from the staging folder, if the InstalledFiles.txt](#installedfilestxt) file exists. If "No" (default), the files / folders defined in InstalledFiles.txt are copied on top of the existing files.<br />Will be ignored if InstalledFiles.txt file is not existing. |
+| **gitIgnore_InstalledFiles** | "Yes" to autocreate a .gitignore file in the staging folder to keep the whole folder out of git repository. |
 | **RunBin2Prg** | "Yes" to auto run FoxBin2prg (Default), else "No" to not run. |
 | **RunGit** | "Yes" to auto run git (Default), else "No" to not run. |
 | **Include_VFPX** | "Yes" to create community files, else "No" to not create. (Default)<br />This will create some files if missing, but not overwrite existing files.<br />See [VFPX Templates](./vfpx_templates.md) for the use of this. |
@@ -523,6 +524,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-07-30<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-08-09<!--/CVERSIONDATE-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
