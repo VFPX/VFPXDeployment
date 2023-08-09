@@ -5,16 +5,24 @@
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
 ## <!--CVERSIONDATE-->2023-08-08<!--/CVERSIONDATE--> Version <!--VERNO-->1.5.08620<!--/VerNo-->
+- Added new public var, to deal with GoFish complex creation.
 - Added new public var, to expose PJXFile (Read Only).
 - minor in file documentation changes
 
-## 2023-06-28 Version 1.5.08579
-- Added new public var, to deal with GoFish complex creation.
+## 2023-07-30 Version 1.4.08611
+- It now handles tabs in ProjectSettings.txt.
+- It now ignores errors when textmerging the version file.
+- It now strips placeholders from the version file.
+- It no longer creates .gitignore in the InstalledFiles folder.
 
-## 2023-06-28 Version 1.4.08579
+## 2023-07-08 Version 1.4.08589
+- Fixed typos in documentation
+- Add ALLTRIM() to folder for FoxBin2PRG to process in case there's a space in the FoxBin2PRGFolder setting in ProjectSettings.txt
+
+## 2023-06-11 Version 1.4.08562
 - Fixed an issue with ActiveProject as target
 
-2023-06-07 Version 1.3.08558
+## 2023-06-07 Version 1.3.08558
 - Fixed an issue with ActiveProject not in toplevel folder
 - Fixed problem with autocreated .gitignore in staging folder, if no InstalledFiles.txt is given. The file must be removed manually.
 
@@ -118,6 +126,5 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-08-08<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

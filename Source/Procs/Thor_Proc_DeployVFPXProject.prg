@@ -205,6 +205,9 @@ Procedure Deploy
 * Get the current project settings into public variables.
 
 	lcProjectSettings = Filetostr(m.lcProjectFile)
+	
+	*** JRN 2023-07-29 : Treat tabs like spaces (could also have been handled in Alltrim, which occurs farther on)
+	lcProjectSettings = Chrtran(m.lcProjectSettings, Chr[9], ' ')
 
 * Release the PUBLICS in ReleaseThis procedure
 	Public;
@@ -411,7 +414,7 @@ Procedure Deploy
 				lnBin2PRGFolders = Alines(laBin2PRGFolders, m.lcBin2PRGFolderSource, 4, ',')
 				For lnI = 1 To m.lnBin2PRGFolders
 					lcFolder                = laBin2PRGFolders[m.lnI]
-					laBin2PRGFolders[m.lnI] = Fullpath(m.tcCurrFolder + m.lcFolder)
+					laBin2PRGFolders[m.lnI] = alltrim(Fullpath(m.tcCurrFolder + m.lcFolder))
 					If Not Directory(laBin2PRGFolders[m.lnI]) Then
 						Messagebox('Folder "' + m.lcFolder + '" not found.', 16,	;
 							'VFPX Project Deployment')
@@ -592,10 +595,11 @@ Procedure Deploy
 
 			Next &&lnI
 
-			If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*** DH 2023-07-30: no longer do this
+*			If Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 *ignore all in staging folder
-				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
-			Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
+*			Endif &&Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 
 		Endif &&File(m.lcInstalledFilesListing)
 
@@ -614,6 +618,7 @@ Procedure Deploy
 		lcVersion = Strtran(m.lcVersion, '{CATEGORY}',  m.lcCategory,   -1, -1, 1)
 
 		lcVersion = ReplacePlaceholders_Once(@laPlaceholders,m.lcVersion)
+		lcVersion = StripPlaceholders(@laPlaceholders, m.lcVersion)
 
 		Strtofile(m.lcVersion, m.lcVersionFile)
 
@@ -906,7 +911,11 @@ Procedure ReplacePlaceholders_Once
 	For tnPlaceholder = 1 To Alen(taPlaceholders,1)
 		lcText = Strtran(m.lcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
 	Endfor &&tnPlaceholder
-	lcText = Textmerge(m.lcText)
+	
+	try
+		lcText = Textmerge(m.lcText)
+	catch
+	endtry
 
 	For lnI = Occurs('@@@', m.lcText) To 1 Step -1
 		lcRemove = Strextract(m.lcText, '@@@', '\\\', m.lnI, 4)
@@ -963,6 +972,30 @@ Procedure ReplacePlaceholders_Run
 
 	Return m.tcText
 Endproc &&ReplacePlaceholders_Run
+
+* Strips <!-- --> placeholders and comments.
+
+function StripPlaceholders(taPlaceholders, tcText)
+	local lcText, ;
+		lnPlaceholder, ;
+		lcStart, ;
+		lcEnd, ;
+		lcComment
+	lcText = tcText
+	for lnPlaceholder = 1 to alen(m.taPlaceholders, 1)
+		lcStart = '<!--'  + taPlaceholders(m.lnPlaceholder, 1) + '-->'
+		lcEnd   = '<!--/' + taPlaceholders(m.lnPlaceholder, 1) + '-->'
+		lcText  = strtran(m.lcText, m.lcStart, '', -1, -1, 1)
+		lcText  = strtran(m.lcText, m.lcEnd,   '', -1, -1, 1)
+	next lnPlaceholder
+
+	for lnPlaceholder = occurs('<!--', m.lcText) to 1 step -1
+		lcComment = strextract(m.lcText, '<!--', '-->', lnPlaceholder, 4)
+		lcText    = strtran(m.lcText, m.lcComment)
+	next lnPlaceholder
+
+	return m.lcText
+endfunc
 
 * ================================================================================
 * ================================================================================
@@ -1096,7 +1129,7 @@ Endproc &&ReleaseThis
 
 **********************************************************************************
 *                                                                                *
-* Thor independend                                                               *
+* Thor independent                                                               *
 *                                                                                *
 **********************************************************************************
 
