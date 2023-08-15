@@ -25,6 +25,7 @@ If Pcount() = 1								;
 
 * Required
 		.Prompt		   = 'VFPX Project Deployment' && used in menus
+		.AppID		   = 'VFPXDeployment'
 
 		TEXT To .Description NOSHOW
 Deploy VFPX Project
