@@ -9,6 +9,7 @@
 - Added new public var, to expose PJXFile (Read Only).
 - Added new setting to control the creation of .gitignore file in staging folder
 - Minor in file documentation changes
+- Added help program BeforeZip.prg, to run before zip
 
 ## 2023-07-30 Version 1.4.08611
 - It now handles tabs in ProjectSettings.txt.
