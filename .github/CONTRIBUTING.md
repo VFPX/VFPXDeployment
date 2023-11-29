@@ -26,7 +26,7 @@ Most likely you must alter something in InstallFiles or it's sub folders.
 4. Update major changes in _README.md_.
 4. Update _docs\Documentation.md_ on chages how to USE this tool.
 4. Update _docs\VFPXDeployment.md_  on chages how this tool WORKS.
-5. Describe the changes in the top of _docs\Change Log.md_.
+5. Describe the changes in the top of _docs\ChangeLog.md_.
 6. Run the VFPX Deployment tool to create the installation files by
     -   Invoking menu item  **Thor Tools -> Applications -> VFPX Project Deployment**  
     -   Or executing ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')``` 
@@ -39,6 +39,6 @@ Most likely you must alter something in InstallFiles or it's sub folders.
 9. Create a pull request
 
 ----
-Last changed: _2023-05-18_
+Last changed: _2023-11-29_
 
 ![powered by VFPX](../docs/Images/vfpxpoweredby_alternative.gif "powered by VFPX")
