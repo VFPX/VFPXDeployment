@@ -34,7 +34,7 @@ Component = No
 
 * The remaining lines are options that are not mandatory. Uncomment the options to use.
 
-*"Yes" to auto run FoxBin2prg (Default), else "No" to not run.
+*"Yes" to auto run FoxBin2Prg (Default), else "No" to not run.
 *RunBin2Prg = No
 
 *"Yes" to auto run git (Default), else "No" to not run.
@@ -56,8 +56,8 @@ Component = No
 *Builds the project specified in PJXFile without the RECOMPILE clause.
 *Recompile = No
 
-*A comma-separated list of relative paths to which FoxBin2PRG is to be applied.
-*Bin2PRGFolder = {MySource1,MySource1}
+*A comma-separated list of relative paths to which FoxBin2Prg is to be applied.
+*Bin2PrgFolder = {MySource1,MySource1}
 
 *A different name for the staging directory.
 *InstalledFilesFolder = {MyInstallFolder}

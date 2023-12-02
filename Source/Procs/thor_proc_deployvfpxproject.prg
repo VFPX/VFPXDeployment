@@ -84,7 +84,7 @@ Procedure Main
 	Endif &&Not Directory(m.lcCurrFolder)
 
 * If we don't have ProjectSettings.txt, copy it, VersionTemplate.txt, and
-* BuildMe.prg, AfterBuild.prg from the VFPXDeployment folder.
+* BuildMe.prg, BeforeZip.prg and AfterBuild.prg from the VFPXDeployment folder.
 * Stop process to let the user set up the tool
 
 	lcVFPXDeploymentFolder = _Screen.cThorFolder + 'Tools\Apps\VFPXDeployment\'
@@ -96,6 +96,8 @@ Procedure Main
 			(m.lcCurrFolder + 'VersionTemplate.txt')
 		Copy File (m.lcVFPXDeploymentFolder + 'BuildMe.prg') To ;
 			(m.lcCurrFolder + 'BuildMe.prg')
+		Copy File (m.lcVFPXDeploymentFolder + 'BeforeZip.prg') To ;
+			(m.lcCurrFolder + 'BeforeZip.prg')
 		Copy File (m.lcVFPXDeploymentFolder + 'AfterBuild.prg') To ;
 			(m.lcCurrFolder + 'AfterBuild.prg')
 		Messagebox('Please edit ProjectSettings.txt and fill in the settings ' + ;
@@ -136,6 +138,7 @@ Procedure Deploy
 
 	Local;
 		lcAfterBuildProgram  As String,;
+		lcBeforeZipProgram   As String,;
 		lcAppFile            As String,;
 		lcBin2PRGFolder      As String,;
 		lcBin2PRGFolderSource As String,;
@@ -198,6 +201,7 @@ Procedure Deploy
 	lcSubstituteListing     = m.tcCurrFolder + 'BuildProcess\Substitute.txt'
 	lcInstalledFilesFolder  = 'InstalledFiles'
 	lcBuildProgram          = m.tcCurrFolder + 'BuildProcess\BuildMe.prg'
+	lcBeforeZipProgram      = m.tcCurrFolder + 'BuildProcess\BeforeZip.prg'
 	lcAfterBuildProgram     = m.tcCurrFolder + 'BuildProcess\AfterBuild.prg'
 	lcVersionTemplateFile   = m.tcCurrFolder + 'BuildProcess\VersionTemplate.txt'
 	lcUpdateTemplateFile    = _Screen.cThorFolder + ;
@@ -653,7 +657,19 @@ Procedure Deploy
 
 		Endif &&File(m.lcUpdateTemplateFile) And Not File(m.lcUpdateFile)
  
+* Execute BeforeZip.prg if it exists. If it sets plContinue to .F., exit.
+
+	If File(m.lcBeforeZipProgram) Then
+		Do (m.lcBeforeZipProgram)
+		If Not m.plContinue
+			ReleaseThis()
+			Return
+
+		Endif &&Not m.plContinue
+	Endif &&File(m.lcBeforeZipProgram)
+
 * Zip the source files.
+*we do not zip the .gitignore in stagig
 		lcContent = ''
 		If File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 *ignore all in staging folder

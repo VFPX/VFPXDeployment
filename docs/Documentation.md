@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.5.08621<!--/VerNo-->
+## Version <!--VERNO-->1.6.08733<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -42,6 +42,7 @@ A brief idea how to give your project a standard look is discussed in [BestPract
   - [Customize the version template](#customize-the-version-template)
   - [Customize the build tasks](#customize-the-build-tasks)
     - [BuildMe](#buildme)
+    - [BeforeZip](#beforezip)
     - [AfterBuild](#afterbuild)
   - [Customize documentation](#customize-documentation)
     - [Templates substitution](#templates-substitution)
@@ -138,6 +139,8 @@ BuildProcess contains the files for the build process:
 - VersionTemplate.txt: contains the template for the Thor CFU version file. Although it has a TXT extension, it actually contains VFP code.
 This will be used to create the version file for the remote *ThorUpdater\{AppID}Version.txt* file
 - [BuildMe.prg:](#buildme) contains custom code you write to do whatever is necessary for the build process. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
+- [BeforeZip.prg](#beforezip) contains custom code that is intended to alter the staging folder just before zipping.
+For example to create filelist to uninstall. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
 - [AfterBuild.prg:](#afterbuild) contains custom code you write to do whatever is necessary after the build process. It can use public variables created by VFPX Deployment (discussed later). This program is optional.
 - [Substitute.txt](#substitutetxt) contains a list of files or folders that will be processed like [README.md](#readmemd) on each run to substitute Version and date. This file is optional.
 - Thor_Update_{AppID}.prg (where *AppID* is the value of the AppID setting in ProjectSettings.txt): the Thor CFU update program, which contains the URLs for Thor to use to download the version and ZIP files to install the tool. This file is created the [first time](#first-time-task) you use the VFPX Deployment process and then not updated again after that.
@@ -219,7 +222,7 @@ Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../
 | **Repository** | When VFPX Deployment generates Thor_Update_{AppID}.prg, it assumes the project repository is github.com/VFPX/{AppID}. If your project exists in a different location (for example, github.com/\[YourName\]/{AppID}), add a <br /> Repository setting with the full URL, such as ```https://github.com/DougHennig/SFMail```.   
 | | You can also add the following optional settings if you wish |
 | **VersionDate** | The release date formatted as YYYY-MM-DD; if omitted, today's date is used. |
-| **Prompt** | Yes (default) to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If *Version* isn't specified, your code in BuildMe.prg can set the public *pcVersion* variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
+| **Prompt** | Yes (default) to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If *Version* isn't specified, your code in [BuildMe.prg](#buildme) can set the public *pcVersion* variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
 | **ChangeLog** | The path for a file containing changes (see below). |
 | **Component** | "Yes" for Components (default), else "No" (exactly so) for Apps.<ul><li>Apps create Thor tools for use in your IDE (e.g., GoFish, PEMEditor).</li><li>Components are not called directly from Thor tools but are used indirectly in either your IDE (FoxBin2PRG) or in production applications (Dynamic Forms)</li></ul> |
 | **Category** | The category to use when adding to the Thor menu. If this is omitted, "Applications" is used. This is only used when Component is No. |
@@ -236,11 +239,12 @@ Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../
 | **Include_Thor** | "Yes" to create Thor files (Default), else "No" to not create.<br />This will create the content of the ThorUpdater folder and zip it, if enabled.|
 | **VersionFile_Remote** | The file used to control the update stored on projects remote repository (github). Default is {AppID}Version.txt<br />This setting is to allow VFPX Deployment to work for projects inherited.<br />This is the file created by VFPX Deplayment on local computer to be pushed to remote repository.<br />Check existing property *.VersionFileURL* set in existing Thor_Update_{AppId}.prg |
 
-If both *Include_VFPX* and *Include_Thor* are disabled, [File substitution](#file-substitution) will be processed and FoxBin2prg may run. Also the optinal programs [BuildMe](#buildme) and [AfterBuild](#afterbuild) may run.
+If both *Include_VFPX* and *Include_Thor* are disabled, [File substitution](#file-substitution) will be processed and FoxBin2prg may run. Also the optinal programs [BuildMe](#buildme), [BeforeZip.prg](#beforezip) and [AfterBuild](#afterbuild) may run.
 
 ### Public variables
 Public variables read from the  BuildProcess\\ProjectSettings.txt file,
 that might be modified or used in [BuildMe.prg](#buildme) preprocessing,
+[BeforeZip.prg](#beforezip) program,
 or in the [AfterBuild.prg](#afterbuild) postprocess program.   
 A lot of these variables may be used by [templates substitution](#templates-substitution)
 and [file substitution](#file-substitution).
@@ -256,7 +260,7 @@ and [file substitution](#file-substitution).
 | **pcThisDate** | the release date `DATE`as a string (DATE(YYYY, MM, DD)) | Yes |
 | **pcJulian** | the release date as string as days since 2000/01/01 | Yes |
 | **pcChangeLog** | the ChangeLog setting | Yes (The file name, not the file content) | No |
-| **plContinue** | Return of [BuildMe.prg](#buildme). .T. to continue the deployment process after running or .F. to stop | No |
+| **plContinue** | Return of [BuildMe.prg](#buildme) and [BeforeZip.prg](#beforezip). .T. to continue the deployment process after running or .F. to stop | No |
 | **plRun_Bin2Prg** | .T. to auto run FoxBin2prg (default) | No |
 | **plRun_git** | .T. to auto run git (default) | No |
 | **pcFullVersion** | The version as it should look like to replace in README.md on each run. Default: pcVersion | Yes |
@@ -369,6 +373,14 @@ If no specific tasks are needed beyond what the VFPX Deployment process does, yo
 
 The program may set the public variable **plContinue** to .F. to cancel the build process.
 
+####  BeforeZip
+If you need to perform specific tasks as part of the build process after the creation of the files in the staging folder, such as creating a list of files to remove files from older installs, edit 
+*[BuildProcess\\BeforeZip.prg](../BuildProcess/BeforeZip.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier).
+
+If no specific tasks are needed beyond what the VFPX Deployment process does, you can delete BuildMe.prg.
+
+The program may set the public variable **plContinue** to .F. to cancel the build process.
+
 #### AfterBuild
 If you need to perform specific tasks after the build process, such as running your own idea of git, like add ., tag, push, etc, edit *[BuildProcess\\AfterBuild.prg](../Source/Apps/VFPXDeployment/AfterBuild.prg "Example file")* to perform those tasks. It can use the [Public variables](#public-variables) created by VFPX Deployment (discussed earlier). 
 
@@ -459,12 +471,13 @@ What to do you should note step by step into **.github\\CONTRIBUTING.md** so eve
 11. Now the program checks for the existence of several [Folders and files](#folder).
 If something is missing, the file or folder is created, and some information like {AppName} name is substituted.
 12. If a [ InstalledFiles.txt](#installedfilestxt) file is provided, copy all files listed to the [staging](#installedfiles) folder
-13. Check for [ThorUpdater](#thorupdater) folder and create if missing.
-14. Create Thor files
+13. Run, if available, [BeforeZip.prg](#beforezip) to modify the staging folder
+14. Check for [ThorUpdater](#thorupdater) folder and create if missing.
+15. Create Thor files
     - {AppID}Version.txt (or the file defined by *VersionFile_Remote* setting) from BuildProcess\\VersionTemplate.txt
- Zips the contents of the staging folder into {AppID}.zip in the [ThorUpdater](#thorupdater) folder.
-15. If enabled, run git
-16. If found, [BuildProcess\\AfterBuild.prg](#afterbuild) runs user defined code to post-process. Some ideas are provided in the file.
+    - Zips the contents of the staging folder into {AppID}.zip in the [ThorUpdater](#thorupdater) folder.
+16. If enabled, run git
+17. If found, [BuildProcess\\AfterBuild.prg](#afterbuild) runs user defined code to post-process. Some ideas are provided in the file.
 
 ## Running the build process
 
@@ -524,6 +537,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-08-09<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-11-29<!--/CVERSIONDATE-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
