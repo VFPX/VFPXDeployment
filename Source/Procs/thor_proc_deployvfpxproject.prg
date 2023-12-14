@@ -464,15 +464,15 @@ Procedure Deploy
 * Get the repository to use if it wasn't specified.
 
 	If Empty(m.pcRepository) Then
-		If Isnull(m.lcRepository_URL + m.pcRepository_Branch) Then
+		If Isnull(m.lcRepository_URL) OR  Isnull(m.pcRepository_Branch) THEN 
 			pcRepository          = m.lcRepositoryRoot + 'VFPX/' + m.pcAppID
 			m.pcRepository_Branch = 'master'
 
-		Else  &&ISNULL(m.lcRepository_URL + m.pcRepository_Branch)
+		Else  &&Isnull(m.lcRepository_URL) OR Isnull(m.pcRepository_Branch)
 			pcRepository          = m.lcRepositoryRoot + m.lcRepository_URL
 *			m.pcRepository_Branch is defined
 
-		Endif &&ISNULL(m.lcRepository_URL + m.pcRepository_Branch)
+		Endif &&Isnull(m.lcRepository_URL) OR Isnull(m.pcRepository_Branch)
 	Else  &&Empty(m.pcRepository)
 *		m.pcRepository is defined
 		m.pcRepository_Branch = 'master'
