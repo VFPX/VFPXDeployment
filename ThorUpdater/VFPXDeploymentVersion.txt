@@ -1,11 +1,11 @@
 Lparameters toUpdateObject
 Local lcDate, ldDate
 
-lcDate = '20231129'
+lcDate = '20231214'
 
 With m.toUpdateObject
 	.VersionNumber    = '1.6 - ' + lcDate
-	.AvailableVersion = 'VFPX Deployment-1.6-08733-' + lcDate
+	.AvailableVersion = 'VFPX Deployment-1.6-08748-' + lcDate
 	.Notes            = GetReleaseNotes()
 Endwith
 
@@ -22,7 +22,10 @@ Text to lcNote NoShow
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
 
-## 2023-11-29 Version 1.6.08733
+## 2023-12-14 Version 1.6.08748
+- Added new setting to control 
+
+## 2023-12-09 Version 1.6.08743
 - Added help program BeforeZip.prg, to run before zip
 - Run zip with APIRun
 - JRN, via merge: Added ThorInfo.APPID property to both program and template
@@ -150,6 +153,7 @@ Text to lcNote NoShow
 - Initial release
 
 ----
+Last changed: 2023-12-14
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
 

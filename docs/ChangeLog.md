@@ -4,7 +4,10 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-11-29<!--/CVERSIONDATE--> Version <!--VERNO-->1.6.08733<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-12-14<!--/CVERSIONDATE--> Version <!--VERNO-->1.6.08748<!--/VerNo-->
+- Added new setting to control 
+
+## 2023-12-09 Version 1.6.08743
 - Added help program BeforeZip.prg, to run before zip
 - Run zip with APIRun
 - JRN, via merge: Added ThorInfo.APPID property to both program and template
@@ -132,6 +135,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-11-29<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-12-14<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

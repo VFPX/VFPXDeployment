@@ -13,7 +13,7 @@ local;
 lcRepositoryURL   = '{REPOSITORY}'
 	&& the URL for the project's repository
 * Note: If you use a more recent version of git, your default branch may not be "master".
-lcDownloadsBranch = 'master'
+lcDownloadsBranch = '{BRANCH}'
 lcDownloadsURL    = strtran(m.lcRepositoryURL, 'github.com', ;
 	'raw.githubusercontent.com') + '/' + m.lcDownloadsBranch + '/ThorUpdater/'
 lcVersionFileURL  = m.lcDownloadsURL + '{VERSIONFILE}' &&'{APPID}Version.txt'
