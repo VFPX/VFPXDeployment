@@ -173,6 +173,7 @@ Procedure Deploy
 		lcVersionFile        As String,;
 		lcVersionTemplateFile As String,;
 		lcZipFile            As String,;
+		lcRepository_URL     As String,;
 		llClear_InstalledFiles As Boolean,;
 		llInclude_Thor       As Boolean,;
 		llInclude_VFPX       As Boolean,;
@@ -210,8 +211,8 @@ Procedure Deploy
 * Get the current project settings into public variables.
 
 	lcProjectSettings = Filetostr(m.lcProjectFile)
-	
-	*** JRN 2023-07-29 : Treat tabs like spaces (could also have been handled in Alltrim, which occurs farther on)
+
+*** JRN 2023-07-29 : Treat tabs like spaces (could also have been handled in Alltrim, which occurs farther on)
 	lcProjectSettings = Chrtran(m.lcProjectSettings, Chr[9], ' ')
 
 * Release the PUBLICS in ReleaseThis procedure
@@ -228,6 +229,7 @@ Procedure Deploy
 		pcJulian      As String,;
 		pcThisDate    As String,;
 		pcRepository  As String,;
+		pcRepository_Branch  As String,;
 		pcVersionFile_Remote As String,;
 		pcPJXFile     As String,;
 		plRun_Bin2Prg As Boolean,;
@@ -242,6 +244,7 @@ Procedure Deploy
 	plRun_Bin2Prg = .T.		&& Run FoxBin2Prg; from ProjectSettings.txt
 	plRun_git     = .T.		&& Run git; from ProjectSettings.txt
 */SF 20230512
+	pcRepository_Branch   = .Null.
 	llPrompt              = .T.
 	lcBin2PRGFolderSource = ''
 	lcComponent           = 'Yes'
@@ -249,11 +252,12 @@ Procedure Deploy
 	lcPJXFile             = ''
 	llRecompile           = .F.
 	lcAppFile             = ''
-	lcRepositoryRoot      = 'https://github.com/VFPX/'
+	lcRepositoryRoot      = 'https://github.com/'
 	pcRepository          = ''
 	llInclude_VFPX        = .F.
 	llInclude_Thor        = .T.
 	lnSettings            = Alines(laSettings, m.lcProjectSettings)
+	lcRepository_URL      = .Null.
 
 	For lnI = 1 To m.lnSettings
 		lcLine  = laSettings[m.lnI]
@@ -288,6 +292,10 @@ Procedure Deploy
 				lcAppFile = m.lcValue
 			Case m.lcUName == 'REPOSITORY'
 				pcRepository = m.lcValue
+			Case m.lcUName == 'REPOSITORY_URL'
+				lcRepository_URL = m.lcValue
+			Case m.lcUName == 'REPOSITORY_BRANCH'
+				pcRepository_Branch = m.lcValue
 			Case m.lcUName == 'INSTALLEDFILESFOLDER'
 				lcInstalledFilesFolder = m.lcValue
 *SF 20230512: new flags
@@ -308,7 +316,7 @@ Procedure Deploy
 			Case m.lcUName == 'GITIGNORE_INSTALLEDFILES'
 				llAddStagingIgnore = Upper(m.lcValue) = 'Y'
 */SF 20230809
-				
+
 		Endcase
 	Next &&lnI
 
@@ -424,7 +432,7 @@ Procedure Deploy
 				lnBin2PRGFolders = Alines(laBin2PRGFolders, m.lcBin2PRGFolderSource, 4, ',')
 				For lnI = 1 To m.lnBin2PRGFolders
 					lcFolder                = laBin2PRGFolders[m.lnI]
-					laBin2PRGFolders[m.lnI] = alltrim(Fullpath(m.tcCurrFolder + m.lcFolder))
+					laBin2PRGFolders[m.lnI] = Alltrim(Fullpath(m.tcCurrFolder + m.lcFolder))
 					If Not Directory(laBin2PRGFolders[m.lnI]) Then
 						Messagebox('Folder "' + m.lcFolder + '" not found.', 16,	;
 							'VFPX Project Deployment')
@@ -456,7 +464,19 @@ Procedure Deploy
 * Get the repository to use if it wasn't specified.
 
 	If Empty(m.pcRepository) Then
-		pcRepository = m.lcRepositoryRoot + m.pcAppID
+		If Isnull(m.lcRepository_URL + m.pcRepository_Branch) Then
+			pcRepository          = m.lcRepositoryRoot + 'VFPX/' + m.pcAppID
+			m.pcRepository_Branch = 'master'
+
+		Else  &&ISNULL(m.lcRepository_URL + m.pcRepository_Branch)
+			pcRepository          = m.lcRepositoryRoot + m.lcRepository_URL
+*			m.pcRepository_Branch is defined
+
+		Endif &&ISNULL(m.lcRepository_URL + m.pcRepository_Branch)
+	Else  &&Empty(m.pcRepository)
+*		m.pcRepository is defined
+		m.pcRepository_Branch = 'master'
+
 	Endif &&Empty(m.pcRepository)
 
 * Get the version number if it wasn't specified and we're supposed to.
@@ -607,7 +627,7 @@ Procedure Deploy
 
 *SF 2023-08-09 turn back on, but with option
 *** DH 2023-07-30: no longer do this
-			If m.llAddStagingIgnore And Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore') 
+			If m.llAddStagingIgnore And Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 *ignore all in staging folder
 				Strtofile('#.gitignore by VFPX Deployment' + CRLF + '*.*' , Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
 			Endif &&m.llAddStagingIgnore And Not File(Addbs(Fullpath(m.lcInstalledFilesFolder, m.tcCurrFolder)) + '.gitignore')
@@ -656,17 +676,17 @@ Procedure Deploy
 			Strtofile(m.lcContent, m.lcUpdateFile)
 
 		Endif &&File(m.lcUpdateTemplateFile) And Not File(m.lcUpdateFile)
- 
+
 * Execute BeforeZip.prg if it exists. If it sets plContinue to .F., exit.
 
-	If File(m.lcBeforeZipProgram) Then
-		Do (m.lcBeforeZipProgram)
-		If Not m.plContinue
-			ReleaseThis()
-			Return
+		If File(m.lcBeforeZipProgram) Then
+			Do (m.lcBeforeZipProgram)
+			If Not m.plContinue
+				ReleaseThis()
+				Return
 
-		Endif &&Not m.plContinue
-	Endif &&File(m.lcBeforeZipProgram)
+			Endif &&Not m.plContinue
+		Endif &&File(m.lcBeforeZipProgram)
 
 * Zip the source files.
 *we do not zip the .gitignore in stagig
@@ -934,11 +954,11 @@ Procedure ReplacePlaceholders_Once
 	For tnPlaceholder = 1 To Alen(taPlaceholders,1)
 		lcText = Strtran(m.lcText, '{' + taPlaceholders(m.tnPlaceholder, 1) + '}', taPlaceholders(m.tnPlaceholder, 2), -1, -1, 1)
 	Endfor &&tnPlaceholder
-	
-	try
-		lcText = Textmerge(m.lcText)
-	catch
-	endtry
+
+	Try
+			lcText = Textmerge(m.lcText)
+		Catch
+	Endtry
 
 	For lnI = Occurs('@@@', m.lcText) To 1 Step -1
 		lcRemove = Strextract(m.lcText, '@@@', '\\\', m.lnI, 4)
@@ -998,27 +1018,27 @@ Endproc &&ReplacePlaceholders_Run
 
 * Strips <!-- --> placeholders and comments.
 
-function StripPlaceholders(taPlaceholders, tcText)
-	local lcText, ;
+Function StripPlaceholders(taPlaceholders, tcText)
+	Local lcText, ;
 		lnPlaceholder, ;
 		lcStart, ;
 		lcEnd, ;
 		lcComment
 	lcText = tcText
-	for lnPlaceholder = 1 to alen(m.taPlaceholders, 1)
+	For lnPlaceholder = 1 To Alen(m.taPlaceholders, 1)
 		lcStart = '<!--'  + taPlaceholders(m.lnPlaceholder, 1) + '-->'
 		lcEnd   = '<!--/' + taPlaceholders(m.lnPlaceholder, 1) + '-->'
-		lcText  = strtran(m.lcText, m.lcStart, '', -1, -1, 1)
-		lcText  = strtran(m.lcText, m.lcEnd,   '', -1, -1, 1)
-	next lnPlaceholder
+		lcText  = Strtran(m.lcText, m.lcStart, '', -1, -1, 1)
+		lcText  = Strtran(m.lcText, m.lcEnd,   '', -1, -1, 1)
+	Next lnPlaceholder
 
-	for lnPlaceholder = occurs('<!--', m.lcText) to 1 step -1
-		lcComment = strextract(m.lcText, '<!--', '-->', lnPlaceholder, 4)
-		lcText    = strtran(m.lcText, m.lcComment)
-	next lnPlaceholder
+	For lnPlaceholder = Occurs('<!--', m.lcText) To 1 Step -1
+		lcComment = Strextract(m.lcText, '<!--', '-->', lnPlaceholder, 4)
+		lcText    = Strtran(m.lcText, m.lcComment)
+	Next lnPlaceholder
 
-	return m.lcText
-endfunc
+	Return m.lcText
+Endfunc
 
 * ================================================================================
 * ================================================================================
