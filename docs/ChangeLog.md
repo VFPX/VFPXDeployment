@@ -4,7 +4,7 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-12-14<!--/CVERSIONDATE--> Version <!--VERNO-->1.6.08748<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-12-16<!--/CVERSIONDATE--> Version <!--VERNO-->1.6.08750<!--/VerNo-->
 - Added new setting to control 
 - Switched compiling and FoxBin2prg, so we get the latest version of the pjx.
 
@@ -136,6 +136,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-12-14<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-12-16<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
