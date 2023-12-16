@@ -180,6 +180,7 @@ Procedure Deploy
 		llPrompt             As Boolean,;
 		llRecompile          As Boolean,;
 		llAddStagingIgnore   As Boolean,;
+		llDebug              As Boolean,;
 		lnBin2PRGFolders     As Number,;
 		lnFiles              As Number,;
 		lnI                  As Number,;
@@ -246,6 +247,7 @@ Procedure Deploy
 */SF 20230512
 	pcRepository_Branch   = .Null.
 	llPrompt              = .T.
+	llDebug               = .F.
 	lcBin2PRGFolderSource = ''
 	lcComponent           = 'Yes'
 	lcCategory            = 'Applications'
@@ -292,10 +294,14 @@ Procedure Deploy
 				lcAppFile = m.lcValue
 			Case m.lcUName == 'REPOSITORY'
 				pcRepository = m.lcValue
+*SF 20231216: new flags o define URL
 			Case m.lcUName == 'REPOSITORY_URL'
 				lcRepository_URL = m.lcValue
 			Case m.lcUName == 'REPOSITORY_BRANCH'
 				pcRepository_Branch = m.lcValue
+			Case m.lcUName == 'DEBUGGING'
+				llDebug = Upper(m.lcValue) = 'Y'
+*/SF 20231216: new flags to define URL
 			Case m.lcUName == 'INSTALLEDFILESFOLDER'
 				lcInstalledFilesFolder = m.lcValue
 *SF 20230512: new flags
@@ -464,7 +470,7 @@ Procedure Deploy
 * Get the repository to use if it wasn't specified.
 
 	If Empty(m.pcRepository) Then
-		If Isnull(m.lcRepository_URL) OR  Isnull(m.pcRepository_Branch) THEN 
+		If Isnull(m.lcRepository_URL) Or  Isnull(m.pcRepository_Branch) Then
 			pcRepository          = m.lcRepositoryRoot + 'VFPX/' + m.pcAppID
 			m.pcRepository_Branch = 'master'
 
@@ -663,19 +669,27 @@ Procedure Deploy
 
 * Update Thor_Update program.
 
-		If File(m.lcUpdateTemplateFile) And Not File(m.lcUpdateFile) Then
+*SF 20231216: new flags o define URL
+		If File(m.lcUpdateTemplateFile) Then
+			If m.llDebug Or Not File(m.lcUpdateFile) Then
 
-			lcContent = Filetostr(m.lcUpdateTemplateFile)
+				lcContent = Filetostr(m.lcUpdateTemplateFile)
 
-			lcContent = ReplacePlaceholders_Once(@laPlaceholders,m.lcContent)
+				lcContent = ReplacePlaceholders_Once(@laPlaceholders,m.lcContent)
 
-			lcContent = Strtran(m.lcContent, '{COMPONENT}', m.lcComponent, ;
-				-1, -1, 1)
-			lcContent = Strtran(m.lcContent, '{VERSIONFILE}', m.pcVersionFile_Remote, ;
-				-1, -1, 1)
-			Strtofile(m.lcContent, m.lcUpdateFile)
+				lcContent = Strtran(m.lcContent, '{COMPONENT}', m.lcComponent, ;
+					-1, -1, 1)
+				lcContent = Strtran(m.lcContent, '{VERSIONFILE}', m.pcVersionFile_Remote, ;
+					-1, -1, 1)
 
-		Endif &&File(m.lcUpdateTemplateFile) And Not File(m.lcUpdateFile)
+				If m.llDebug Then
+					lcUpdateFile = Forceext(Addbs(Justpath(m.lcUpdateFile))+Juststem(m.lcUpdateFile)+'_Test',Justext(m.lcUpdateFile))
+				Endif &&m.llDebug
+				Strtofile(m.lcContent, m.lcUpdateFile)
+
+			Endif &&m.llDebug OR Not File(m.lcUpdateFile)
+		Endif &&File(m.lcUpdateTemplateFile)
+*/SF 20231216: new flags o define URL
 
 * Execute BeforeZip.prg if it exists. If it sets plContinue to .F., exit.
 
