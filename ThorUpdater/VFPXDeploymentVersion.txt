@@ -4,8 +4,8 @@ Local lcDate, ldDate
 lcDate = '20231216'
 
 With m.toUpdateObject
-	.VersionNumber    = '1.6 - ' + lcDate
-	.AvailableVersion = 'VFPX Deployment-1.6-08750-' + lcDate
+	.VersionNumber    = '1.7 - ' + lcDate
+	.AvailableVersion = 'VFPX Deployment-1.7-08750-' + lcDate
 	.Notes            = GetReleaseNotes()
 Endwith
 
@@ -22,8 +22,9 @@ Text to lcNote NoShow
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
 
 
-## 2023-12-16 Version 1.6.08750
-- Added new setting to control 
+## 2023-12-16 Version 1.7.08750
+- Added new settings REPOSITORY_URL and REPOSITORY_BRANCH to better control the github URLs allowing to split between *Project/Repository* and *Branch*
+- Added new setting DEBUGGING to allow auto creating a debug version of the Thor_Update_* file for testing.
 - Switched compiling and FoxBin2prg, so we get the latest version of the pjx.
 
 ## 2023-12-09 Version 1.6.08743

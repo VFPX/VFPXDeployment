@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.6.08750<!--/VerNo-->
+## Version <!--VERNO-->1.7.08750<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -238,6 +238,7 @@ Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../
 | **Include_VFPX** | "Yes" to create community files, else "No" to not create. (Default)<br />This will create some files if missing, but not overwrite existing files.<br />See [VFPX Templates](./vfpx_templates.md) for the use of this. |
 | **Include_Thor** | "Yes" to create Thor files (Default), else "No" to not create.<br />This will create the content of the ThorUpdater folder and zip it, if enabled.|
 | **VersionFile_Remote** | The file used to control the update stored on projects remote repository (github). Default is {AppID}Version.txt<br />This setting is to allow VFPX Deployment to work for projects inherited.<br />This is the file created by VFPX Deplayment on local computer to be pushed to remote repository.<br />Check existing property *.VersionFileURL* set in existing Thor_Update_{AppId}.prg |
+| **Debugging** | Used to debug the appication on different web location. Creates a Thor_Update_{AppId}_Test.prg in the BuildProcess directory to be used in Thors *My Updates* directory.<br/>The file will be rebuild on every run, while Thor_Update_{AppId}.prg is only created once.<br/>This works best with an altered URL via the *Repository_URL* / *Repository_Branch* or *Repository* setting. |
 
 If both *Include_VFPX* and *Include_Thor* are disabled, [File substitution](#file-substitution) will be processed and FoxBin2prg may run. Also the optinal programs [BuildMe](#buildme), [BeforeZip.prg](#beforezip) and [AfterBuild](#afterbuild) may run.
 

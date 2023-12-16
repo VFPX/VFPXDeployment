@@ -1,4 +1,4 @@
-*ProjectSettings.txt to create Thor deployment
+*ProjectSettings.txt to create Thor Deployment for {AppID}
 *See https://github.com/VFPX/VFPXDeployment/blob/main/docs/Documentation.md for help.
 *Paths relative are based on git toplevel directory
 
@@ -16,10 +16,19 @@ Version   = 1.0
 *Component of Thor or Tool. Use No for Tool.
 Component = No
 
-*Remote repository on a git server. There are two ways for the remote repository.
-*- the builder assumes https://github.com/VFPX/{AppId}
-*- or enter the URL here (uncomment to use):
-*Repository = {your URL}
+*Remote repository on a git server. There are three ways for the remote repository.
+*==============================================================================
+*- the builder assumes https://github.com/VFPX/{AppId}/master
+*-------------------------------------------
+*- or enter the single parts of the github URL
+*  A github URL comes like https://github.com/Project/Repository/Branch
+*  first enter the repository, this is "Project/Repository"
+*Repository_URL    = {YourProject/YourRepository}
+* second enter the repository, this is "Branch"
+*Repository_Branch = {YourBranch}
+*-------------------------------------------
+*- or enter the URL here. This has precedence.
+*Repository = {your full URL}
 
 *The changelog file. Might be merged into the {AppID}Version.txt
 *The file installed as template (uncomment to use):
@@ -71,3 +80,7 @@ Component = No
 *A different name for version file used to publish info on the remote server.
 *A help with old projects using a different name for the version file
 *VersionFile_Remote = {AppID}Version.txt
+
+*Allow to create Thor_Update_{AppId}_Test.prg file, used for testing this app from a 1different location.
+*Alter Repository_URL / Repository_Branch or Repository for a test location on the web.
+*DEBUGGING = Yes
