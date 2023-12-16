@@ -907,7 +907,7 @@ Procedure ACreate_Placeholders
 	External Array;
 		taPlaceholders
 	Dimension;
-		taPlaceholders(10, 3)
+		taPlaceholders(11, 3)
 
 	taPlaceholders( 1, 1) = 'APPNAME'
 	taPlaceholders( 2, 1) = 'APPID'
@@ -917,8 +917,9 @@ Procedure ACreate_Placeholders
 	taPlaceholders( 6, 1) = 'VERSION'
 	taPlaceholders( 7, 1) = 'JULIAN'
 	taPlaceholders( 8, 1) = 'REPOSITORY'
-	taPlaceholders( 9, 1) = 'VERNO'
-	taPlaceholders(10, 1) = 'CHANGELOG_F'
+	taPlaceholders( 9, 1) = 'BRANCH'
+	taPlaceholders(10, 1) = 'VERNO'
+	taPlaceholders(11, 1) = 'CHANGELOG_F'
 
 	taPlaceholders( 1, 2) = m.pcAppName
 	taPlaceholders( 2, 2) = m.pcAppID
@@ -928,8 +929,9 @@ Procedure ACreate_Placeholders
 	taPlaceholders( 6, 2) = m.pcVersion
 	taPlaceholders( 7, 2) = m.pcJulian
 	taPlaceholders( 8, 2) = m.pcRepository
-	taPlaceholders( 9, 2) = m.pcFullVersion
-	taPlaceholders(10, 2) = m.pcChangeLog
+	taPlaceholders( 9, 2) = m.pcRepository_Branch
+	taPlaceholders(10, 2) = m.pcFullVersion
+	taPlaceholders(11, 2) = m.pcChangeLog
 Endproc &&ACreate_Placeholders
 
 * ================================================================================
@@ -1165,6 +1167,7 @@ Procedure ReleaseThis
 		pcJulian,;
 		pcThisDate,;
 		pcRepository,;
+		pcRepository_Branch,;
 		pcVersionFile_Remote,;
 		pcPJXFile
 
