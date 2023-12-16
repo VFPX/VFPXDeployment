@@ -6,6 +6,7 @@
      so please remove for second newest version-->
 ## <!--CVERSIONDATE-->2023-12-14<!--/CVERSIONDATE--> Version <!--VERNO-->1.6.08748<!--/VerNo-->
 - Added new setting to control 
+- Switched compiling and FoxBin2prg, so we get the latest version of the pjx.
 
 ## 2023-12-09 Version 1.6.08743
 - Added help program BeforeZip.prg, to run before zip

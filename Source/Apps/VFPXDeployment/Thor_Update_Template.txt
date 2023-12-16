@@ -1,5 +1,7 @@
+*File to control Thor CFU for application {APPNAME}
 lparameters;
 	toUpdateObject
+
 local;
 	lcRepositoryURL    as string, ;
 	lcDownloadsBranch  as string, ;
@@ -37,9 +39,11 @@ with m.toUpdateObject
 	.Link                 = m.lcRepositoryURL
 	.LinkPrompt           = '{APPNAME} Home Page'
 	.ProjectCreationDate  = {CURRDATE}
-<<iif('{COMPONENT}' = 'No', '*', '')>>	.RegisterWithThor     = m.lcRegisterWithThor
-endwith
 	.Dependencies         = ''	&& a comma or space delimited list of other Thor applications (ApplicationName) that this project depends on
+<<iif('{COMPONENT}' = 'No', '*', '')>>	.RegisterWithThor     = m.lcRegisterWithThor
+
+endwith
+
 return m.toUpdateObject
 
 *created by VFPX Deployment, <<DATETIME()>>

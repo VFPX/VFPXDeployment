@@ -526,23 +526,6 @@ Procedure Deploy
 		Return
 	Endif &&Empty(m.pcVersion)
 
-*** JRN 2023-01-10 : Call FoxBin2PRG, if applicable
-*SF 20230512: flag to disable FoxBin2PRG
-	If m.plRun_Bin2Prg And Not Empty(m.lcFoxBin2PRG) Then
-		If Not Empty(m.lcPJXFile)
-			Do (m.lcFoxBin2PRG) With Fullpath(m.lcPJXFile), '*'
-		Endif &&Not Empty(m.lcPJXFile)
-
-		If Not Empty(m.lcBin2PRGFolderSource) Then
-*** JRN 2023-01-29 : BIN2PRG for folder and sub-folders
-			For lnI = 1 To m.lnBin2PRGFolders
-				lcFolder = laBin2PRGFolders[m.lnI]
-				Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcFolder && + '\*.*'
-
-			Next &&lnI
-		Endif &&Not Empty(m.lcBin2PRGFolderSource)
-	Endif &&m.plRun_Bin2Prg And Not Empty(m.lcFoxBin2PRG)
-
 * Ensure we have a version number (Build.prg may have set it).
 
 * Create an APP/EXE if we're supposed to.
@@ -566,6 +549,23 @@ Procedure Deploy
 		Return
 
 	Endif &&Not Empty(m.lcPJXFile) And File(m.lcErrFile)
+
+*** JRN 2023-01-10 : Call FoxBin2PRG, if applicable
+*SF 20230512: flag to disable FoxBin2PRG
+	If m.plRun_Bin2Prg And Not Empty(m.lcFoxBin2PRG) Then
+		If Not Empty(m.lcPJXFile)
+			Do (m.lcFoxBin2PRG) With Fullpath(m.lcPJXFile), '*'
+		Endif &&Not Empty(m.lcPJXFile)
+
+		If Not Empty(m.lcBin2PRGFolderSource) Then
+*** JRN 2023-01-29 : BIN2PRG for folder and sub-folders
+			For lnI = 1 To m.lnBin2PRGFolders
+				lcFolder = laBin2PRGFolders[m.lnI]
+				Do (m.lcFoxBin2PRG) With 'BIN2PRG', m.lcFolder && + '\*.*'
+
+			Next &&lnI
+		Endif &&Not Empty(m.lcBin2PRGFolderSource)
+	Endif &&m.plRun_Bin2Prg And Not Empty(m.lcFoxBin2PRG)
 
 *get Placeholders
 	ACreate_Placeholders(@laPlaceholders)
