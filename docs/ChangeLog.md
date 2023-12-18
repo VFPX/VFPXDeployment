@@ -4,7 +4,12 @@
 <!-- Note, the next line needs to be on top to auto generate version and date for this version,
      old version must be without the substitution marks (HTML comments),
      so please remove for second newest version-->
-## <!--CVERSIONDATE-->2023-11-29<!--/CVERSIONDATE--> Version <!--VERNO-->1.6.08733<!--/VerNo-->
+## <!--CVERSIONDATE-->2023-12-16<!--/CVERSIONDATE--> Version <!--VERNO-->1.7.08750<!--/VerNo-->
+- Added new settings REPOSITORY_URL and REPOSITORY_BRANCH to better control the github URLs allowing to split between *Project/Repository* and *Branch*
+- Added new setting DEBUGGING to allow auto creating a debug version of the Thor_Update_* file for testing.
+- Switched compiling and FoxBin2prg, so we get the latest version of the pjx.
+
+## 2023-12-09 Version 1.6.08743
 - Added help program BeforeZip.prg, to run before zip
 - Run zip with APIRun
 - JRN, via merge: Added ThorInfo.APPID property to both program and template
@@ -132,6 +137,6 @@
 - Initial release
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-11-29<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-12-16<!--/CVERSIONDATE-->
 
 ![VFPX Deployment logo](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")

@@ -1,6 +1,6 @@
 # VFPX Deployment
 ![VFPX Deployment logo](./Images/vfpxdeployment.png "VFPX Deployment")
-## Version <!--VERNO-->1.6.08733<!--/VerNo-->
+## Version <!--VERNO-->1.7.08750<!--/VerNo-->
 
 These instructions describe how to use VFPX Deployment to include your project in the Thor *Check for Updates* (CFU) dialog so users can easily install your project and update to the latest version without having to clone your project's repository or manually download and extract a ZIP file.   
 It also sets a minimum of community standards as used for VFPX and github.
@@ -111,7 +111,7 @@ More detailed:
    - AppID - Mandatory
    - Version - Mandatory
    - Component - Mandatory
-   - Repository - Mandatory if remote repository is not at github.com/VFPX/{AppID}
+   - Repository or the pair Repository_URL + Repository_Branch- Mandatory if remote repository is not at github.com/VFPX/{AppID}/master
    - Others, see [ProjectSettings](#settings)
 9. Rerun 
 10. The [ProjectSettings](#settings) will be read
@@ -157,7 +157,7 @@ This is a staging folder that contains only the files Thor CFU should install, n
 - You can manually create the InstalledFiles folder and copy the necessary files into it.
 - If [InstalledFiles.txt](#installedfilestxt) exists, in the BuildProcess folder, VFPX Deployment copies the files listed in it to the InstalledFiles folder (creating that folder and any subdirectories of it if they don't exist).
   - If [InstalledFiles.txt](#installedfilestxt) exists, the *Clear_InstalledFiles* settings controls if all files will be removed from this folder to create an empty folder to copy to.
-- If the Ignore_InstalledFiles setting is "YES", a .gitignore file will be added to this folder to keep it out of the repository. Note: If already in the repo, this will not remove the files!
+- If the gitIgnore_InstalledFiles setting is "YES", a .gitignore file will be added to this folder to keep it out of the repository. Note: If already in the repo, this will not remove the files!
 
 
 > Note: you can specify a different folder name using the InstalledFilesFolder setting in [ProjectSettings.txt](#settings).
@@ -199,7 +199,6 @@ This is the project root. Some files will copied on first run, if they are not e
 - *README.md*: Basic information about your project, the main information on git server pages.
   - Fit to your needs
   - The second run on your system use [ProjectSettings.txt:](#settings) to set the project with the value of AppName
-  - The second run on your system use [ProjectSettings.txt:](#settings) to set the project with the value of AppName
   - [All following runs](#readmemd) will merge the values of *pdVersionDate* and *pcVersionDate* into this file. There are comments as place holder.
 - *.gitignore*: File to control what to exclude from git, for example executables and backups.
   - There are two ways to do this, this is the conventional *exclude* one.
@@ -218,9 +217,10 @@ Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../
 | **AppName** | The display name for the project. |
 | **AppID** | Similar to appName but must be URL-friendly (no spaces or other illegal URL characters). |
 | **Version** | The version number, such as 1.0 (optional; see below).<br />There is a special value *pjx*. If this is set, the version number will be read from the project provided by PJXFile. |
-| | Most will like to set up there own repository |
-| **Repository** | When VFPX Deployment generates Thor_Update_{AppID}.prg, it assumes the project repository is github.com/VFPX/{AppID}. If your project exists in a different location (for example, github.com/\[YourName\]/{AppID}), add a <br /> Repository setting with the full URL, such as ```https://github.com/DougHennig/SFMail```.   
-| | You can also add the following optional settings if you wish |
+| web information | Most will like to set up there own repository.<br/>When VFPX Deployment generates Thor_Update_{AppID}.prg, it assumes the project repository is github.com/VFPX/{AppID}/master. If your project exists in a different location (for example, github.com/\[YourName\]/{AppID}/main), add a repository. Use one of the both following ways to adress your repository on the web. |
+| **Repository** | Give the full URL to your remote repository, like<br/>`Repository = https://github.com/DougHennig/SFMail`. Branch uses *master* |
+| Alternative<br/> **Repository_URL** <br/> **Repository_Branch** | Use the pair "Repository_URL" and "Repository_Branch" for use in github repositories.<br/>github repositories are definied in the form `https://github.com/Project/Repository/Branch` "Repository_URL" is Project/Repository, "Repository_Branch" the Branch part of the URL. This allows finer control.<br/>For the example `https://github.com/DougHennig/SFMail/master`:<br/>`Repository_URL = DougHennig/SFMail`<br/>`Repository_Branch = master`<br/>If used, both fields must be defined. **Repository** will take precedence. |
+| optional part | You can also add the following optional settings if you wish: |
 | **VersionDate** | The release date formatted as YYYY-MM-DD; if omitted, today's date is used. |
 | **Prompt** | Yes (default) to prompt for Version if it isn't specified; No to not prompt. Not required if Version is specified. If *Version* isn't specified, your code in [BuildMe.prg](#buildme) can set the public *pcVersion* variable (for example, by reading a value from an INI or include file), so set Prompt to No in that case. If Version isn't specified, Prompt is No, and your code doesn't set pcVersion, a warning message is displayed and the build process terminates. |
 | **ChangeLog** | The path for a file containing changes (see below). |
@@ -238,6 +238,7 @@ Those are the settings available in the *[BuildProcess\\ProjectSettings.txt](../
 | **Include_VFPX** | "Yes" to create community files, else "No" to not create. (Default)<br />This will create some files if missing, but not overwrite existing files.<br />See [VFPX Templates](./vfpx_templates.md) for the use of this. |
 | **Include_Thor** | "Yes" to create Thor files (Default), else "No" to not create.<br />This will create the content of the ThorUpdater folder and zip it, if enabled.|
 | **VersionFile_Remote** | The file used to control the update stored on projects remote repository (github). Default is {AppID}Version.txt<br />This setting is to allow VFPX Deployment to work for projects inherited.<br />This is the file created by VFPX Deplayment on local computer to be pushed to remote repository.<br />Check existing property *.VersionFileURL* set in existing Thor_Update_{AppId}.prg |
+| **Debugging** | Used to debug the appication on different web location. Creates a Thor_Update_{AppId}_Test.prg in the BuildProcess directory to be used in Thors *My Updates* directory.<br/>The file will be rebuild on every run, while Thor_Update_{AppId}.prg is only created once.<br/>This works best with an altered URL via the *Repository_URL* / *Repository_Branch* or *Repository* setting. |
 
 If both *Include_VFPX* and *Include_Thor* are disabled, [File substitution](#file-substitution) will be processed and FoxBin2prg may run. Also the optinal programs [BuildMe](#buildme), [BeforeZip.prg](#beforezip) and [AfterBuild](#afterbuild) may run.
 
@@ -265,6 +266,7 @@ and [file substitution](#file-substitution).
 | **plRun_git** | .T. to auto run git (default) | No |
 | **pcFullVersion** | The version as it should look like to replace in README.md on each run. Default: pcVersion | Yes |
 | **pcRepository** | The URL of the remote repository (for web, not git access) | Yes |
+| **pcRepository_Branch** | The branch part of the remote repository (for web, not git access). Defaults to *master* if not defiened via Repository_Branch setting | Yes |
 | **pcVersionFile_Remote** | The name of the remote version file, *VersionFile_Remote*  | Yes |
 | **pcPJXFile**: | The PJXFile setting **Read only**| No |
 
@@ -286,6 +288,7 @@ For Thor_Update_{AppID}.prg and VFPX documentation on first run, for {AppID}Vers
 | **VERSION** | pcVersion | substituted with the value of *pcVersion*. | Yes | Yes |
 | **JULIAN** | pcJulian | substituted with the value of *pcJulian* as a numeric value: the release date as string as days since 2000/01/01. | Yes | Yes |
 | **REPOSITORY** | pcRepository | substituted with the value of *pcRepository*. | Yes | Yes |
+| **BRANCH** | pcRepository_Branch | substituted with the value of *pcRepository_Branch*. | Yes | Yes |
 | **VERNO** | pcFullVersion | substituted with the value of the *pcFullVersion* variable. |
 | **CHANGELOG_F** | pcChangeLog | substituted with **value** of *pcChangeLog*.| Yes | Yes |
 | **CHANGELOG** | \[pcChangeLog\] | substituted with the **contents** of the file specified in *pcChangeLog*.<br/>Only for {AppID}Version.txt, each run. | Yes | No |
@@ -305,7 +308,7 @@ In order to work with VFPX Deployment, your project must be under git control, a
   - or clone the remote, that's up to your choice and level of git knowledge.
 
 ### Download the VFPX Deployment tool
-- Choose Check for Updates from the Thor menu and install VFPX Deployment. It's automatically added to the Thor Tools menu under Applications, VFPX Project Deployment.
+- Choose *Check for Updates* from the Thor menu and install VFPX Deployment. It's automatically added to the Thor Tools menu under Applications, VFPX Project Deployment.
 
 ### Customize the project settings for your project
 Start VFP, CD to the folder containing your project, and invoke the VFPX Deployment tool (from the Thor Tools, Application, VFPX Project Deployment menu item or using ```EXECSCRIPT(_screen.cThorDispatcher, 'Thor_Tool_DeployVFPXProject')```. The first time you do that, it'll create a BuildProcess subdirectory of the project root folder, copy some files to it, and terminate.
@@ -320,7 +323,7 @@ See [Settings](#settings) for details.
 
 There are two ways to determine what to install
 - Copy all what you need to the [staging](#installedfiles) folder.
-- Use the *BuildProcess\\InstalledFiles.txt* file to determine to files that should be copied to the staging folder by the build process.   
+- Use the *BuildProcess\\InstalledFiles.txt* file to determine the files that should be copied to the staging folder by the build process.   
 
 #### InstalledFiles.txt
 Edit *[BuildProcess\\InstalledFiles.txt](../BuildProcess/InstalledFiles.txt "Example file")* and list each file to be copied to the [staging](#installedfiles) folder on a separate line. **All paths should be relative to the project root folder.**   
@@ -537,6 +540,6 @@ It is posible to set up VFPX Deployment for projects already running under Thor.
 - https://doughennig.blogspot.com/2023/05/anatomy-of-vfpx-project.html
 
 ----
-Last changed: <!--CVERSIONDATE-->2023-11-29<!--/CVERSIONDATE-->
+Last changed: <!--CVERSIONDATE-->2023-12-16<!--/CVERSIONDATE-->
 
 ![powered by VFPX](./Images/vfpxpoweredby_alternative.gif "powered by VFPX")
