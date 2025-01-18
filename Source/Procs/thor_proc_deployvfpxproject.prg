@@ -72,11 +72,11 @@ Procedure Main
 
 	lcCurrFolder = Addbs(Addbs(m.tcFolder) + 'BuildProcess') && BuildProcess
 	If Not Directory(m.lcCurrFolder) Then
-*SF 20230512 we better check if a different Thor exists
+*SF 20230512 we better check if a different ThorUpdater exists
 * this is not fool-proof, since there are many ways to do Thor
 * but a very common one
 		If Directory(Addbs(m.tcFolder) + 'ThorUpdater') Then
-			Messagebox('There is already a Thor folder.' + CRLF + CRLF + 'Stoped.' + CRLF + CRLF + 'You need to carefully create the setup manually.', ;
+			Messagebox('There is already a ThorUpdater folder.' + CRLF + CRLF + 'You need to carefully create the setup manually.', ;
 				16, 'VFPX Project Deployment')
 			Return
 		Endif &&Directory(Addbs(m.tcFolder) + 'ThorUpdater')
